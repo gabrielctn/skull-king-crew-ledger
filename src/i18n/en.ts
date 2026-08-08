@@ -63,7 +63,9 @@ export const en: Strings = {
         : "Your games join your shared table.",
     tableInvite: "Invite",
     tableJoin: "Join",
-    support: "Support the developer ☕",
+    freeAdFree: "Free and ad-free",
+    support: "Support",
+    legalAndCosts: "Legal & costs",
     supportHint: "Optional contribution · the app remains completely free.",
     supportCost: (amountEur) =>
       `Publishing the app on the App Store costs the developer €${amountEur} a year. Contributions go towards that bill first.`,

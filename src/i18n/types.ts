@@ -85,7 +85,9 @@ export interface Strings {
     tableHint: (name: string | null) => string;
     tableInvite: string;
     tableJoin: string;
+    freeAdFree: string;
     support: string;
+    legalAndCosts: string;
     supportHint: string;
     /**
      * What the App Store listing costs the developer every year, so the ask

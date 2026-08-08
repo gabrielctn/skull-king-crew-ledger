@@ -58,7 +58,9 @@ export const de: Strings = {
         : "Deine Spiele landen an deinem gemeinsamen Tisch.",
     tableInvite: "Einladen",
     tableJoin: "Beitreten",
-    support: "Entwickler unterstützen ☕",
+    freeAdFree: "Kostenlos und werbefrei",
+    support: "Unterstützen",
+    legalAndCosts: "Rechtliches und Kosten",
     supportHint: "Freiwilliger Beitrag · die App bleibt vollständig kostenlos.",
     supportCost: (amountEur) =>
       `Die App im App Store zu veröffentlichen kostet den Entwickler ${amountEur} €/Jahr. Beiträge decken zuerst diese Rechnung.`,

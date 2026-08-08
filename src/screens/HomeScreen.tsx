@@ -23,7 +23,9 @@ import { loadSeenRelease, saveSeenRelease } from "../storage";
 import WhatsNewModal from "../components/WhatsNewModal";
 import DisclosureChevron from "../components/DisclosureChevron";
 import GlassSurface from "../components/GlassSurface";
+import AppIcon from "../components/AppIcon";
 import { APP_STORE_ANNUAL_COST_EUR, SUPPORT_URL } from "../support";
+import { HOME_ACTIONS_HEIGHT, homeHeroSize, homeTopInset } from "../homeLayout";
 
 /** Games listed before the "show all" toggle takes over. */
 const HISTORY_PREVIEW_COUNT = 3;
@@ -44,6 +46,8 @@ interface Props {
   onInviteToTable: () => void;
   /** Type in the code showing on a friend's phone (the guest's side). */
   onJoinTable: () => void;
+  initialScrollOffset: number;
+  onScrollOffsetChange: (offset: number) => void;
 }
 
 type RemovalIntent = "delete" | "abandon";
@@ -60,6 +64,8 @@ export default function HomeScreen({
   onOpenSettings,
   onInviteToTable,
   onJoinTable,
+  initialScrollOffset,
+  onScrollOffsetChange,
 }: Props) {
   const { t, lang } = useI18n();
   const { width } = useWindowDimensions();
@@ -70,6 +76,10 @@ export default function HomeScreen({
   } | null>(null);
   const [whatsNewOpen, setWhatsNewOpen] = React.useState(false);
   const [showAllHistory, setShowAllHistory] = React.useState(false);
+  const [supportDetailsOpen, setSupportDetailsOpen] = React.useState(false);
+  const scrollRef = React.useRef<ScrollView>(null);
+  const initialScrollOffsetRef = React.useRef(Math.max(0, initialScrollOffset));
+  const lastReportedScrollOffset = React.useRef(initialScrollOffsetRef.current);
   // The game the "resume" card offers: the one the app currently points at,
   // or failing that any other still in progress.
   const activeGame = React.useMemo(
@@ -158,41 +168,45 @@ export default function HomeScreen({
     setWhatsNewOpen(false);
     void saveSeenRelease(CURRENT_RELEASE);
   };
+  const hasContent = gameHistory.length > 0;
+  const heroSize = homeHeroSize({
+    isDesktop: layout.isDesktop,
+    hasContent,
+  });
+  const topInset = homeTopInset({
+    isWeb: Platform.OS === "web",
+    hasContent,
+  });
+
+  React.useEffect(() => {
+    const restore = () => {
+      scrollRef.current?.scrollTo({
+        x: 0,
+        y: initialScrollOffsetRef.current,
+        animated: false,
+      });
+    };
+    const frame = requestAnimationFrame(restore);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  const handleScroll = (offset: number) => {
+    if (Math.abs(offset - lastReportedScrollOffset.current) < 4) return;
+    lastReportedScrollOffset.current = offset;
+    onScrollOffsetChange(offset);
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
-      <GlassSurface
-        intensity={48}
-        style={[
-          styles.topActions,
-          Platform.OS !== "web" && styles.topActionsNative,
-        ]}
-      >
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={onOpenStats}
-          accessibilityRole="button"
-          accessibilityLabel={t.stats.open}
-        >
-          <Text style={styles.topActionIcon}>🏆</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.iconButton, styles.iconButtonLast]}
-          onPress={onOpenSettings}
-          accessibilityRole="button"
-          accessibilityLabel={t.settings.open}
-        >
-          {/*
-            Emoji presentation (U+FE0F), not the text one: the text gear is
-            drawn from the system UI font, whose glyph box does not match the
-            emoji metrics, so it sat off-centre in the button next to 🏆.
-          */}
-          <Text style={styles.topActionIcon}>⚙️</Text>
-        </TouchableOpacity>
-      </GlassSurface>
-      <ScrollView
-        contentContainerStyle={styles.scroll}
+      <View style={styles.homeContent}>
+        <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={[styles.scroll, { paddingTop: topInset }]}
         showsVerticalScrollIndicator={false}
+        onScroll={(event) =>
+          handleScroll(Math.max(0, event.nativeEvent.contentOffset.y))
+        }
+        scrollEventThrottle={16}
       >
         <View
           style={[
@@ -205,22 +219,27 @@ export default function HomeScreen({
           ]}
         >
           <View style={[styles.hero, layout.isDesktop && styles.heroDesktop]}>
-            <View style={styles.emblemWrap}>
+            <View
+              style={[
+                styles.emblemWrap,
+                { width: heroSize.emblem, height: heroSize.height },
+              ]}
+            >
               <View style={styles.emblemBg}>
                 <Image
                   source={illustrations.compass}
-                  style={styles.compass}
+                  style={[styles.compass, { width: heroSize.emblem, height: heroSize.emblem }]}
                   resizeMode="contain"
                 />
               </View>
               <Image
                 source={illustrations.skullKing}
-                style={styles.skullKing}
+                style={[styles.skullKing, { width: heroSize.skull, height: heroSize.height }]}
                 resizeMode="contain"
               />
             </View>
             <Text style={styles.unofficial}>{t.home.unofficial}</Text>
-            <Text style={styles.title}>{t.home.title}</Text>
+            <Text style={styles.title} accessibilityRole="header">{t.home.title}</Text>
             <Text style={styles.subtitle}>{t.home.subtitle}</Text>
           </View>
 
@@ -229,7 +248,9 @@ export default function HomeScreen({
               <>
                 <View style={styles.activeGameCard}>
                   <View style={styles.activeGameHeader}>
-                    <Text style={styles.activeGameTitle}>{t.home.activeTitle}</Text>
+                    <Text style={styles.activeGameTitle} accessibilityRole="header">
+                      {t.home.activeTitle}
+                    </Text>
                     <Text style={styles.activeGameStatus}>{t.home.inProgress}</Text>
                   </View>
                   <Text style={styles.activeGameMeta}>
@@ -307,26 +328,31 @@ export default function HomeScreen({
             */}
             {tableSharingAvailable ? (
               <View style={styles.tableCard}>
-                <Text style={styles.tableTitle}>⚓ {t.home.tableTitle}</Text>
+                <View style={styles.tableTitleRow}>
+                  <AppIcon name="anchor" size={18} color={colors.gold} />
+                  <Text style={styles.tableTitle} accessibilityRole="header">
+                    {t.home.tableTitle}
+                  </Text>
+                </View>
                 <Text style={styles.tableHint} numberOfLines={2}>
                   {t.home.tableHint(tableName)}
                 </Text>
                 <View style={styles.tableActions}>
                   <TouchableOpacity
-                    style={[styles.tableBtn, styles.tableBtnPrimary]}
+                    style={styles.tableBtn}
                     onPress={onInviteToTable}
                     accessibilityRole="button"
                   >
-                    <Text style={styles.tableBtnPrimaryText}>
+                    <Text style={styles.tableBtnText}>
                       {t.home.tableInvite}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={[styles.tableBtn, styles.tableBtnSecondary]}
+                    style={[styles.tableBtn, styles.tableBtnLast]}
                     onPress={onJoinTable}
                     accessibilityRole="button"
                   >
-                    <Text style={styles.tableBtnSecondaryText}>
+                    <Text style={styles.tableBtnText}>
                       {t.home.tableJoin}
                     </Text>
                   </TouchableOpacity>
@@ -336,7 +362,9 @@ export default function HomeScreen({
 
             {historyGames.length > 0 ? (
               <View style={styles.history}>
-                <Text style={styles.historyTitle}>{t.home.history}</Text>
+                <Text style={styles.historyTitle} accessibilityRole="header">
+                  {t.home.history}
+                </Text>
                 <Text style={styles.historyHint}>{t.home.historyHint}</Text>
                 <View style={styles.historyList}>
                   {visibleHistory.map((historyGame, index) => {
@@ -421,6 +449,7 @@ export default function HomeScreen({
             ) : null}
 
             <View style={styles.support}>
+              <Text style={styles.freeAdFree}>{t.home.freeAdFree}</Text>
               <TouchableOpacity
                 style={styles.supportBtn}
                 onPress={openSupportPage}
@@ -428,13 +457,27 @@ export default function HomeScreen({
                 accessibilityLabel={t.home.support}
                 accessibilityHint={t.home.supportHint}
               >
+                <AppIcon name="coffee-outline" size={16} color={colors.gold} />
                 <Text style={styles.supportText}>{t.home.support}</Text>
               </TouchableOpacity>
-              <Text style={styles.supportHint}>{t.home.supportHint}</Text>
-              <Text style={styles.supportCost}>
-                {t.home.supportCost(APP_STORE_ANNUAL_COST_EUR)}
-              </Text>
-              <Text style={styles.disclaimer}>{t.home.disclaimer}</Text>
+              <TouchableOpacity
+                style={styles.legalBtn}
+                onPress={() => setSupportDetailsOpen((open) => !open)}
+                accessibilityRole="button"
+                accessibilityState={{ expanded: supportDetailsOpen }}
+              >
+                <Text style={styles.legalText}>{t.home.legalAndCosts}</Text>
+                <DisclosureChevron expanded={supportDetailsOpen} />
+              </TouchableOpacity>
+              {supportDetailsOpen ? (
+                <View style={styles.supportDetails}>
+                  <Text style={styles.supportHint}>{t.home.supportHint}</Text>
+                  <Text style={styles.supportCost}>
+                    {t.home.supportCost(APP_STORE_ANNUAL_COST_EUR)}
+                  </Text>
+                  <Text style={styles.disclaimer}>{t.home.disclaimer}</Text>
+                </View>
+              ) : null}
             </View>
 
             {Platform.OS === "web" ? (
@@ -442,7 +485,26 @@ export default function HomeScreen({
             ) : null}
           </View>
         </View>
-      </ScrollView>
+        </ScrollView>
+        <GlassSurface intensity={48} style={styles.topActions}>
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={onOpenStats}
+            accessibilityRole="button"
+            accessibilityLabel={t.stats.open}
+          >
+            <AppIcon name="trophy-outline" size={22} color={colors.gold} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.iconButton, styles.iconButtonLast]}
+            onPress={onOpenSettings}
+            accessibilityRole="button"
+            accessibilityLabel={t.settings.open}
+          >
+            <AppIcon name="cog-outline" size={22} color={colors.gold} />
+          </TouchableOpacity>
+        </GlassSurface>
+      </View>
       <Modal
         visible={pendingRemoval !== null}
         transparent
@@ -496,6 +558,7 @@ export default function HomeScreen({
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "transparent" },
+  homeContent: { flex: 1 },
   scroll: { flexGrow: 1, justifyContent: "center" },
   topActions: {
     position: "absolute",
@@ -506,14 +569,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderRadius: radius.lg,
     padding: spacing.xs,
-  },
-  topActionsNative: {
-    position: "relative",
-    top: 0,
-    end: 0,
-    alignSelf: "flex-end",
-    marginTop: spacing.sm,
-    marginEnd: spacing.md,
+    height: HOME_ACTIONS_HEIGHT,
   },
   iconButton: {
     width: 44,
@@ -524,12 +580,6 @@ const styles = StyleSheet.create({
     marginEnd: spacing.sm,
   },
   iconButtonLast: { marginEnd: 0 },
-  topActionIcon: {
-    color: colors.gold,
-    fontSize: 21,
-    lineHeight: 24,
-    textAlign: "center",
-  },
   container: {
     flex: 1,
     width: "100%",
@@ -538,14 +588,12 @@ const styles = StyleSheet.create({
   },
   containerDesktop: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
   },
   hero: { alignItems: "center", marginBottom: spacing.xl },
-  heroDesktop: { flex: 1, marginBottom: 0 },
+  heroDesktop: { flex: 1, marginBottom: 0, paddingTop: spacing.xl },
   emblemWrap: {
-    width: 230,
-    height: 210,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: spacing.xs,
@@ -556,8 +604,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     pointerEvents: "none",
   },
-  compass: { width: 230, height: 230, opacity: 0.16 },
-  skullKing: { width: 170, height: 190 },
+  compass: { opacity: 0.16 },
+  skullKing: {},
   unofficial: {
     color: colors.goldDim,
     fontSize: 11,
@@ -568,13 +616,19 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.gold,
-    fontSize: 38,
-    lineHeight: 43,
+    fontSize: 36,
+    lineHeight: 41,
     fontWeight: "800",
     letterSpacing: 0.4,
     textAlign: "center",
   },
-  subtitle: { color: colors.textDim, fontSize: 17, marginTop: spacing.xs },
+  subtitle: {
+    color: colors.text,
+    fontSize: 23,
+    fontWeight: "800",
+    letterSpacing: 0.3,
+    marginTop: 2,
+  },
   actions: { width: "100%", alignSelf: "center" },
   actionsDesktop: { flex: 1, maxWidth: 420 },
   activeGameCard: {
@@ -684,7 +738,13 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md,
   },
-  tableTitle: { color: colors.text, fontSize: 15, fontWeight: "800" },
+  tableTitleRow: { flexDirection: "row", alignItems: "center" },
+  tableTitle: {
+    color: colors.text,
+    fontSize: 15,
+    fontWeight: "800",
+    marginStart: spacing.xs,
+  },
   tableHint: {
     color: colors.textDim,
     fontSize: 12,
@@ -699,14 +759,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: radius.md,
     paddingHorizontal: spacing.sm,
-  },
-  tableBtnPrimary: { backgroundColor: colors.gold, marginEnd: spacing.sm },
-  tableBtnPrimaryText: { color: colors.bg, fontSize: 14, fontWeight: "800" },
-  tableBtnSecondary: {
     borderColor: colors.controlBorder,
     borderWidth: 1,
+    marginEnd: spacing.sm,
   },
-  tableBtnSecondaryText: { color: colors.text, fontSize: 14, fontWeight: "700" },
+  tableBtnLast: { marginEnd: 0 },
+  tableBtnText: { color: colors.gold, fontSize: 14, fontWeight: "800" },
   history: { marginTop: spacing.xl },
   historyTitle: { color: colors.text, fontSize: 19, fontWeight: "800" },
   historyHint: { color: colors.textDim, fontSize: 13, marginTop: spacing.xs },
@@ -767,21 +825,35 @@ const styles = StyleSheet.create({
   },
   support: {
     marginTop: spacing.xl,
-    paddingTop: spacing.lg,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.cardBorder,
+    flexDirection: "row",
+    flexWrap: "wrap",
     alignItems: "center",
+    justifyContent: "center",
   },
+  freeAdFree: { color: colors.textDim, fontSize: 12, marginEnd: spacing.sm },
   supportBtn: {
     minHeight: 44,
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: colors.goldDim,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.xs,
   },
-  supportText: { color: colors.gold, fontSize: 15, fontWeight: "800" },
+  supportText: {
+    color: colors.gold,
+    fontSize: 14,
+    fontWeight: "800",
+    marginStart: 3,
+  },
+  legalBtn: {
+    minHeight: 44,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: spacing.xs,
+    marginStart: spacing.sm,
+  },
+  legalText: { color: colors.gold, fontSize: 14, fontWeight: "800", marginEnd: 3 },
+  supportDetails: { width: "100%", alignItems: "center", marginTop: spacing.xs },
   supportHint: {
     color: colors.textDim,
     fontSize: 12,

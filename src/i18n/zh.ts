@@ -52,7 +52,9 @@ export const zh: Strings = {
       name ? `你的对局会记入「${name}」牌桌。` : "你的对局会记入你的共享牌桌。",
     tableInvite: "邀请",
     tableJoin: "加入",
-    support: "支持开发者 ☕",
+    freeAdFree: "免费且无广告",
+    support: "支持",
+    legalAndCosts: "法律信息与费用",
     supportHint: "自愿支持 · 本应用将始终完全免费。",
     supportCost: (amountEur) =>
       `将应用发布到 App Store 每年需要开发者支付 ${amountEur} 欧元。支持款项会优先用于这笔费用。`,

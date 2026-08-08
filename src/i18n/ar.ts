@@ -129,7 +129,9 @@ export const ar: Strings = {
         : "تنضم مبارياتك إلى طاولتك المشتركة.",
     tableInvite: "دعوة",
     tableJoin: "انضمام",
-    support: "ادعم المطوّر ☕",
+    freeAdFree: "مجاني وبدون إعلانات",
+    support: "ادعم التطبيق",
+    legalAndCosts: "القانون والتكاليف",
     supportHint: "مساهمة اختيارية · سيبقى التطبيق مجانيًا بالكامل.",
     supportCost: (amountEur) =>
       `نشر التطبيق على App Store يكلّف المطوّر ${amountEur} يورو سنويًا. تذهب المساهمات أولًا لتغطية هذه الفاتورة.`,

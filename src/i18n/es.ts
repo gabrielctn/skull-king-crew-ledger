@@ -59,7 +59,9 @@ export const es: Strings = {
         : "Tus partidas van a tu mesa compartida.",
     tableInvite: "Invitar",
     tableJoin: "Unirse",
-    support: "Apoya al desarrollador ☕",
+    freeAdFree: "Gratis y sin anuncios",
+    support: "Apoyar",
+    legalAndCosts: "Legal y costes",
     supportHint:
       "Contribución opcional · la aplicación seguirá siendo totalmente gratuita.",
     supportCost: (amountEur) =>

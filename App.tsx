@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   BackHandler,
@@ -166,6 +166,7 @@ function StorageWarning({
 
 export default function App() {
   const [screen, setScreen] = useState<AppScreen>("home");
+  const homeScrollOffsetRef = useRef(0);
   // Spectator mode (opened from a scanned share QR code) is resolved in the
   // lazy initializer, before first paint and before analytics can load, so
   // the share payload is stripped from the URL as early as possible.
@@ -212,6 +213,10 @@ export default function App() {
       );
     }
   };
+
+  const saveHomeScrollOffset = useCallback((offset: number) => {
+    homeScrollOffsetRef.current = Math.max(0, offset);
+  }, []);
 
   const restoreHistoryState = (state: unknown) => {
     const games = [gameRef.current, ...historyRef.current].filter(
@@ -952,6 +957,8 @@ export default function App() {
             onOpenSettings={() => navigate("settings")}
             onInviteToTable={() => setInviteOpen(true)}
             onJoinTable={() => setJoinByCodeOpen(true)}
+            initialScrollOffset={homeScrollOffsetRef.current}
+            onScrollOffsetChange={saveHomeScrollOffset}
           />
         )}
         {screen === "stats" && (

@@ -58,7 +58,9 @@ export const fr: Strings = {
         : "Vos parties rejoignent votre table partagée.",
     tableInvite: "Inviter",
     tableJoin: "Rejoindre",
-    support: "Soutenir le développeur ☕",
+    freeAdFree: "Gratuite et sans publicité",
+    support: "Soutenir",
+    legalAndCosts: "Mentions légales et coûts",
     supportHint:
       "Contribution facultative · l’application reste entièrement gratuite.",
     supportCost: (amountEur) =>
