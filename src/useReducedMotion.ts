@@ -2,6 +2,12 @@ import { AccessibilityInfo, Platform } from "react-native";
 import { useEffect, useState } from "react";
 
 const QUERY = "(prefers-reduced-motion: reduce)";
+let nativePreference: boolean | undefined;
+
+export interface ReducedMotionState {
+  reducedMotion: boolean;
+  known: boolean;
+}
 
 export function readWebReducedMotion(): boolean {
   if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
@@ -15,8 +21,12 @@ export function readWebReducedMotion(): boolean {
 }
 
 /** Tracks the platform accessibility setting and updates while the app is open. */
-export function useReducedMotion(): boolean {
-  const [reducedMotion, setReducedMotion] = useState(readWebReducedMotion);
+export function useReducedMotionState(): ReducedMotionState {
+  const web = Platform.OS === "web";
+  const [reducedMotion, setReducedMotion] = useState(() =>
+    web ? readWebReducedMotion() : nativePreference ?? true
+  );
+  const [known, setKnown] = useState(() => web || nativePreference !== undefined);
 
   useEffect(() => {
     if (Platform.OS === "web") {
@@ -32,6 +42,7 @@ export function useReducedMotion(): boolean {
       }
       const update = (event: MediaQueryListEvent) => setReducedMotion(event.matches);
       setReducedMotion(query.matches);
+      setKnown(true);
       if (typeof query.addEventListener === "function") {
         query.addEventListener("change", update);
         return () => query.removeEventListener("change", update);
@@ -41,12 +52,18 @@ export function useReducedMotion(): boolean {
     }
 
     let active = true;
-    void AccessibilityInfo.isReduceMotionEnabled().then((enabled) => {
-      if (active) setReducedMotion(enabled);
-    });
+    const updateNativePreference = (enabled: boolean) => {
+      nativePreference = enabled;
+      if (!active) return;
+      setReducedMotion(enabled);
+      setKnown(true);
+    };
+    void AccessibilityInfo.isReduceMotionEnabled()
+      .then(updateNativePreference)
+      .catch(() => undefined);
     const subscription = AccessibilityInfo.addEventListener(
       "reduceMotionChanged",
-      setReducedMotion
+      updateNativePreference
     );
     return () => {
       active = false;
@@ -54,5 +71,10 @@ export function useReducedMotion(): boolean {
     };
   }, []);
 
-  return reducedMotion;
+  return { reducedMotion, known };
+}
+
+/** Public boolean convenience hook for components that only need the preference. */
+export function useReducedMotion(): boolean {
+  return useReducedMotionState().reducedMotion;
 }

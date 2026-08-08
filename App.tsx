@@ -106,7 +106,7 @@ import { illustrations } from "./src/assets/illustrations";
 import {
   backActionForState,
   historyStateForScreen,
-  screenFromHistoryState,
+  restoredHistoryRoute,
 } from "./src/navigation";
 import type { AppScreen } from "./src/navigation";
 import ScreenTransition from "./src/components/ScreenTransition";
@@ -203,14 +203,29 @@ export default function App() {
   const historySaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const persistenceFailures = useRef(0);
 
-  const navigate = (nextScreen: AppScreen) => {
+  const navigate = (nextScreen: AppScreen, gameId?: string) => {
     setScreen(nextScreen);
     if (Platform.OS === "web" && typeof window !== "undefined") {
       window.history.pushState(
-        historyStateForScreen(window.history.state, nextScreen),
+        historyStateForScreen(window.history.state, nextScreen, gameId),
         ""
       );
     }
+  };
+
+  const restoreHistoryState = (state: unknown) => {
+    const games = [gameRef.current, ...historyRef.current].filter(
+      (game): game is Game => game !== null
+    );
+    const route = restoredHistoryRoute(state, games);
+    if (route.gameId) {
+      const gameForRoute = games.find((game) => game.id === route.gameId);
+      if (gameForRoute) {
+        gameRef.current = gameForRoute;
+        setGame(gameForRoute);
+      }
+    }
+    setScreen(route.screen);
   };
 
   const markStorageFailure = () => {
@@ -412,7 +427,7 @@ export default function App() {
   useEffect(() => {
     if (Platform.OS !== "web" || typeof window === "undefined") return;
     const onPopState = (event: PopStateEvent) => {
-      setScreen(screenFromHistoryState(event.state));
+      restoreHistoryState(event.state);
     };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
@@ -578,14 +593,17 @@ export default function App() {
 
   const handleStart = (g: Game) => {
     persist(g, true);
-    navigate("game");
+    navigate("game", g.id);
   };
 
   const handleOpenHistory = (selectedGame: Game) => {
     setGame(selectedGame);
     queueCurrentSave(selectedGame);
     pushCloud(selectedGame, historyRef.current);
-    navigate(selectedGame.status === "finished" ? "results" : "game");
+    navigate(
+      selectedGame.status === "finished" ? "results" : "game",
+      selectedGame.id
+    );
   };
 
   const handleDeleteGame = (gameId: string) => {
@@ -825,7 +843,7 @@ export default function App() {
     // A finished game must reach history before the user can immediately
     // clear the current slot or launch a rematch from the results screen.
     persist(g, true);
-    navigate("results");
+    navigate("results", g.id);
     void considerSupportPrompt();
   };
 
@@ -852,7 +870,7 @@ export default function App() {
       game.bonusesRequireBid
     );
     persist(rematch, true);
-    navigate("game");
+    navigate("game", rematch.id);
   };
 
   // Storage restoration must finish before resolving "continue game"; otherwise
@@ -920,7 +938,7 @@ export default function App() {
           />
         )}
         {!spectatorActive && (
-          <ScreenTransition routeKey={screen}>
+          <ScreenTransition key={screen} routeKey={screen}>
         {screen === "home" && (
           <HomeScreen
             gameHistory={gameHistory}
@@ -985,7 +1003,7 @@ export default function App() {
             onRematch={handleRematch}
             onNewGame={handleNewFromResults}
             onHome={handleHome}
-            onReview={() => navigate("game")}
+            onReview={() => navigate("game", game.id)}
           />
         )}
           </ScreenTransition>

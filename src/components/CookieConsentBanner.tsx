@@ -30,16 +30,16 @@ export default function CookieConsentBanner() {
   const reveal = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    if (consent === "accepted") {
+      enableGoogleAnalytics();
+      return;
+    }
     reveal.stopAnimation();
     if (reducedMotion) {
       reveal.setValue(1);
       return;
     }
-    if (consent === "accepted") {
-      enableGoogleAnalytics();
-      return;
-    }
-    if (consent !== null || reducedMotion) return;
+    if (consent !== null) return;
 
     const animation = Animated.timing(reveal, {
       toValue: 1,

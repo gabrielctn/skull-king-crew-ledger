@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { Animated, Easing, StyleSheet } from "react-native";
-import { useReducedMotion } from "../useReducedMotion";
+import { useReducedMotionState } from "../useReducedMotion";
 
 interface Props {
   routeKey: string;
@@ -9,23 +9,25 @@ interface Props {
 
 /** Brief route entrance that respects the platform Reduce Motion preference. */
 export default function ScreenTransition({ routeKey, children }: Props) {
-  const reducedMotion = useReducedMotion();
-  const progress = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
+  const { reducedMotion, known } = useReducedMotionState();
+  const progress = useRef(new Animated.Value(1)).current;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     progress.stopAnimation();
-    if (reducedMotion) {
+    if (!known || reducedMotion) {
       progress.setValue(1);
       return;
     }
     progress.setValue(0);
-    Animated.timing(progress, {
+    const animation = Animated.timing(progress, {
       toValue: 1,
       duration: 190,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
-    }).start();
-  }, [progress, reducedMotion, routeKey]);
+    });
+    animation.start();
+    return () => animation.stop();
+  }, [known, progress, reducedMotion, routeKey]);
 
   return (
     <Animated.View
