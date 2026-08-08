@@ -2,11 +2,13 @@ import type { Game } from "./types";
 
 export type FinalRoundHaptic = "impact" | "success";
 
-/** A correction keeps the game's original completion feedback subdued. */
-export function finalRoundHaptic(
+export function gameHadCompleted(
   game: Pick<Game, "status" | "finishedAt">
-): FinalRoundHaptic {
-  return game.status === "finished" || game.finishedAt !== null
-    ? "impact"
-    : "success";
+): boolean {
+  return game.status === "finished" || game.finishedAt !== null;
+}
+
+/** A correction keeps the game's original completion feedback subdued. */
+export function finalRoundHaptic(gameHadCompleted: boolean): FinalRoundHaptic {
+  return gameHadCompleted ? "impact" : "success";
 }

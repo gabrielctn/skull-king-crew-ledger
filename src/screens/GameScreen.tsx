@@ -51,7 +51,10 @@ import { getResponsiveLayout } from "../responsive";
 import { useKeepAwake } from "../wakeLock";
 import GlassSurface from "../components/GlassSurface";
 import { impactHaptic, selectionHaptic, successHaptic } from "../haptics";
-import { finalRoundHaptic } from "../roundCompletionFeedback";
+import {
+  finalRoundHaptic,
+  gameHadCompleted,
+} from "../roundCompletionFeedback";
 
 interface Props {
   game: Game;
@@ -204,10 +207,17 @@ export default function GameScreen({
   // instead of overwriting one another with an older prop/state snapshot.
   const latestGame = useRef(game);
   const receivedGame = useRef(game);
+  const gameHadCompletedRef = useRef(gameHadCompleted(game));
   const latestDraft = useRef(draft);
   if (receivedGame.current !== game) {
+    const gameChanged = receivedGame.current.id !== game.id;
     receivedGame.current = game;
     latestGame.current = game;
+    if (gameChanged) {
+      gameHadCompletedRef.current = gameHadCompleted(game);
+    } else if (gameHadCompleted(game)) {
+      gameHadCompletedRef.current = true;
+    }
   }
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [rulesOpen, setRulesOpen] = useState(false);
@@ -471,11 +481,12 @@ export default function GameScreen({
       // Only the first completion counts: later corrections must not stretch
       // the reported duration by however long the review took.
       next.finishedAt = current.finishedAt ?? next.updatedAt;
-      if (finalRoundHaptic(current) === "impact") {
+      if (finalRoundHaptic(gameHadCompletedRef.current) === "impact") {
         impactHaptic();
       } else {
         successHaptic();
       }
+      gameHadCompletedRef.current = true;
       onUpdateGame(next);
       onFinish(next);
       return;
