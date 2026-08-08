@@ -48,6 +48,7 @@ import { colors, radius, spacing } from "../theme";
 import { getResponsiveLayout } from "../responsive";
 import { useKeepAwake } from "../wakeLock";
 import GlassSurface from "../components/GlassSurface";
+import { impactHaptic, selectionHaptic, successHaptic } from "../haptics";
 
 interface Props {
   game: Game;
@@ -234,6 +235,14 @@ export default function GameScreen({
   const [roundTouched, setRoundTouched] = useState(() =>
     roundHasInput(game, displayRound, draft)
   );
+  // Draft edits deliberately clear `recorded`. Keep the status from when this
+  // displayed round was loaded so a correction does not sound like a first
+  // completion when it is re-scored.
+  const roundWasRecordedRef = useRef(isRoundComplete(game, displayRound));
+  const scrollRef = useRef<ScrollView>(null);
+  const lootIssueOffset = useRef(0);
+  const tricksIssueOffset = useRef(0);
+  const [roundIssueAnnounced, setRoundIssueAnnounced] = useState(false);
 
   // Indicative dealer / first-trick order for the round being shown.
   const dealer = game.players[dealerIndex(game, displayRound)];
@@ -249,7 +258,9 @@ export default function GameScreen({
     latestDraft.current = shownDraft;
     setDraft(shownDraft);
     setDraftRoundNumber(displayRound);
-    setLootReviewed(isRoundComplete(shownGame, displayRound));
+    const shownRoundRecorded = isRoundComplete(shownGame, displayRound);
+    roundWasRecordedRef.current = shownRoundRecorded;
+    setLootReviewed(shownRoundRecorded);
     setLootReviewOpen(false);
     setUntouchedReviewOpen(false);
     setRoundTouched(roundHasInput(shownGame, displayRound, shownDraft));
@@ -292,6 +303,7 @@ export default function GameScreen({
     field: "bid" | "tricks",
     value: number
   ) => {
+    selectionHaptic();
     setLootReviewed(false);
     const capped = Math.min(
       value,
@@ -306,19 +318,24 @@ export default function GameScreen({
     });
   };
 
-  const updateBonus = (playerId: string, bonus: BonusInput) =>
+  const updateBonus = (playerId: string, bonus: BonusInput) => {
+    selectionHaptic();
     persistDraft({
       ...latestDraft.current,
       [playerId]: { ...latestDraft.current[playerId], bonus },
     });
+  };
 
-  const updateRascalBet = (playerId: string, rascalBet: RascalBet) =>
+  const updateRascalBet = (playerId: string, rascalBet: RascalBet) => {
+    selectionHaptic();
     persistDraft({
       ...latestDraft.current,
       [playerId]: { ...latestDraft.current[playerId], rascalBet },
     });
+  };
 
   const setCards = (value: number) => {
+    selectionHaptic();
     setLootReviewed(false);
     const current = latestGame.current;
     const cappedDraft = cloneRound(latestDraft.current, playerIds);
@@ -346,6 +363,21 @@ export default function GameScreen({
   const roundReady = tricksOk;
   const alreadyRecorded = isRoundComplete(game, displayRound);
   const showLootTracker = lootAvailable(game);
+  const roundBlockReason = lootIncomplete
+    ? t.game.lootNeedsPartner
+    : !roundReady
+      ? t.game.tricksNeedReview
+      : null;
+
+  useEffect(() => {
+    setRoundIssueAnnounced(false);
+  }, [displayRound, roundBlockReason]);
+
+  const scrollToRoundIssue = () => {
+    const y = lootIncomplete ? lootIssueOffset.current : tricksIssueOffset.current;
+    scrollRef.current?.scrollTo({ y, animated: true });
+    setRoundIssueAnnounced(true);
+  };
 
   useEffect(() => {
     if (
@@ -367,6 +399,7 @@ export default function GameScreen({
   ]);
 
   const updateLootUses = (nextUses: LootUse[]) => {
+    selectionHaptic();
     setLootReviewed(false);
     const current = latestGame.current;
     persistDraft(latestDraft.current, {
@@ -377,6 +410,7 @@ export default function GameScreen({
   };
 
   const toggleDiscardedTrick = () => {
+    selectionHaptic();
     const current = latestGame.current;
     const nextCount =
       deriveRoundState(current, latestDraft.current, displayRound)
@@ -431,12 +465,19 @@ export default function GameScreen({
       // Only the first completion counts: later corrections must not stretch
       // the reported duration by however long the review took.
       next.finishedAt = current.finishedAt ?? next.updatedAt;
+      if (roundWasRecordedRef.current) {
+        impactHaptic();
+      } else {
+        successHaptic();
+      }
+      roundWasRecordedRef.current = true;
       onUpdateGame(next);
       onFinish(next);
       return;
     }
     next.status = "in_progress";
     next.currentRound = nextRound;
+    impactHaptic();
     onUpdateGame(next);
     setDisplayRound(nextRound);
   };
@@ -492,26 +533,48 @@ export default function GameScreen({
     </View>
   );
   const scoreButton = (
-    <TouchableOpacity
-      style={[
-        styles.scoreBtn,
-        layout.isTablet && !layout.isDesktop && styles.scoreBtnWide,
-        (!roundReady || lootIncomplete) && styles.scoreBtnDisabled,
-      ]}
-      onPress={() => commitRound()}
-      disabled={!roundReady || lootIncomplete}
-      accessibilityRole="button"
-      accessibilityState={{ disabled: !roundReady || lootIncomplete }}
-      aria-disabled={!roundReady || lootIncomplete}
-    >
-      <Text style={styles.scoreBtnText}>
-        {displayRound === game.totalRounds && !alreadyRecorded
-          ? t.game.finish
-          : alreadyRecorded
-            ? t.game.updateRound
-            : t.game.scoreRound}
-      </Text>
-    </TouchableOpacity>
+    <View>
+      {roundBlockReason ? (
+        <React.Fragment>
+          <TouchableOpacity
+            style={styles.roundIssueButton}
+            onPress={scrollToRoundIssue}
+            accessibilityRole="button"
+            accessibilityLabel={roundBlockReason}
+            accessibilityHint={t.game.reviewRoundIssue}
+          >
+            <Text style={styles.roundIssueText} accessible={false}>
+              {roundBlockReason}
+            </Text>
+          </TouchableOpacity>
+          <Text accessibilityLiveRegion="polite" style={styles.screenReaderOnly}>
+            {roundIssueAnnounced
+              ? `${roundBlockReason} ${t.game.reviewRoundIssue}`
+              : ""}
+          </Text>
+        </React.Fragment>
+      ) : null}
+      <TouchableOpacity
+        style={[
+          styles.scoreBtn,
+          layout.isTablet && !layout.isDesktop && styles.scoreBtnWide,
+          (!roundReady || lootIncomplete) && styles.scoreBtnDisabled,
+        ]}
+        onPress={() => commitRound()}
+        disabled={!roundReady || lootIncomplete}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: !roundReady || lootIncomplete }}
+        aria-disabled={!roundReady || lootIncomplete}
+      >
+        <Text style={styles.scoreBtnText}>
+          {displayRound === game.totalRounds && !alreadyRecorded
+            ? t.game.finish
+            : alreadyRecorded
+              ? t.game.updateRound
+              : t.game.scoreRound}
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -639,6 +702,7 @@ export default function GameScreen({
       </View>
 
       <ScrollView
+        ref={scrollRef}
         contentContainerStyle={[
           styles.scroll,
           {
@@ -649,19 +713,25 @@ export default function GameScreen({
         ]}
       >
         {showLootTracker ? (
-          <LootTracker
-            key={`${game.id}_${displayRound}`}
-            players={game.players}
-            entries={draft}
-            lootUses={lootUses}
-            roundRecorded={alreadyRecorded}
-            legacyLootCount={playerIds.reduce(
-              (total, id) => total + (draft[id]?.legacyLoot ?? 0),
-              0
-            )}
-            onChange={updateLootUses}
+          <View
+            onLayout={(event) => {
+              lootIssueOffset.current = event.nativeEvent.layout.y;
+            }}
             style={layout.gameColumns === 2 ? styles.fullWidth : undefined}
-          />
+          >
+            <LootTracker
+              key={`${game.id}_${displayRound}`}
+              players={game.players}
+              entries={draft}
+              lootUses={lootUses}
+              roundRecorded={alreadyRecorded}
+              legacyLootCount={playerIds.reduce(
+                (total, id) => total + (draft[id]?.legacyLoot ?? 0),
+                0
+              )}
+              onChange={updateLootUses}
+            />
+          </View>
         ) : null}
 
         {game.players.map((p) => {
@@ -840,6 +910,9 @@ export default function GameScreen({
             layout.gameColumns === 2 && styles.fullWidth,
             tricksOk ? styles.hintOk : styles.hintWarn,
           ]}
+          onLayout={(event) => {
+            tricksIssueOffset.current = event.nativeEvent.layout.y;
+          }}
         >
           {t.game.tricksRecorded(accountedTricks, cards)}
           {game.twoPlayerGhost
@@ -1300,6 +1373,25 @@ const styles = StyleSheet.create({
   },
   scoreBtnWide: { alignSelf: "center", width: "100%", maxWidth: 440 },
   scoreBtnDisabled: { opacity: 0.45 },
+  roundIssueButton: {
+    minHeight: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: spacing.md,
+    marginBottom: spacing.xs,
+  },
+  roundIssueText: {
+    color: colors.negative,
+    fontSize: 13,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+  screenReaderOnly: {
+    position: "absolute",
+    width: 1,
+    height: 1,
+    overflow: "hidden",
+  },
   scoreBtnText: { color: colors.bg, fontSize: 18, fontWeight: "800" },
   modalOverlay: {
     flex: 1,

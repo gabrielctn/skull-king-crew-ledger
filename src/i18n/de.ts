@@ -333,6 +333,8 @@ export const de: Strings = {
       "Wertet die besonderen 7er und 8er, Davy Jones’ Truhe und den Zweiten. Die übrigen Erweiterungseffekte stehen in den Spielregeln der App.",
     knownPlayers: "Bekannte Spieler",
     useKnownPlayer: (name) => `${name} übernehmen`,
+    duplicatePlayer: (name) => `${name} sitzt bereits am Tisch. Wähle einen anderen Namen.`,
+    maximumPlayers: (count) => `An einem Tisch können höchstens ${count} Spieler sitzen.`,
     start: "Spiel starten ☠️",
     needPlayers: "Mindestens 2 Spieler hinzufügen",
   },
@@ -364,6 +366,9 @@ export const de: Strings = {
     finish: "Spiel beenden 🏁",
     updateRound: "Runde aktualisieren",
     scoreRound: "Runde werten →",
+    reviewRoundIssue: "Prüfe diesen Punkt, um die Runde zu werten.",
+    lootNeedsPartner: "Vervollständige das Loot-Paar vor der Wertung.",
+    tricksNeedReview: "Prüfe die Gesamtzahl der Stiche vor der Wertung.",
     untouchedTitle: "Diese Runde werten?",
     untouchedMessage:
       "Es wurden keine Gebote oder Stiche eingegeben. Bestätige, dass beide Spieler null geboten haben und Graubart alle Stiche gewonnen hat.",

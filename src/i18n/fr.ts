@@ -332,6 +332,8 @@ export const fr: Strings = {
       "Ajoute au décompte les 7 et 8 spéciaux, le Casier de Davy Jones et le Second. Les autres effets de l’extension sont détaillés dans l’aide en jeu.",
     knownPlayers: "Joueurs connus",
     useKnownPlayer: (name) => `Utiliser ${name}`,
+    duplicatePlayer: (name) => `${name} est déjà à table. Choisissez un autre nom.`,
+    maximumPlayers: (count) => `Une table accueille jusqu’à ${count} joueurs.`,
     start: "Commencer ☠️",
     needPlayers: "Ajoutez au moins 2 joueurs",
   },
@@ -364,6 +366,9 @@ export const fr: Strings = {
     finish: "Terminer la partie 🏁",
     updateRound: "Modifier la manche",
     scoreRound: "Valider la manche →",
+    reviewRoundIssue: "Vérifiez ce point avant de valider la manche.",
+    lootNeedsPartner: "Complétez le duo Butin avant de valider.",
+    tricksNeedReview: "Vérifiez le total des plis avant de valider.",
     untouchedTitle: "Valider cette manche ?",
     untouchedMessage:
       "Aucune mise ni aucun pli n’a été saisi. Confirmez que les deux joueurs ont misé zéro et que Barbe Grise a remporté tous les plis.",

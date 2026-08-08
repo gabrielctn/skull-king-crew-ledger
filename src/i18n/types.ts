@@ -336,6 +336,8 @@ export interface Strings {
     newExpansionHint: string;
     knownPlayers: string;
     useKnownPlayer: (name: string) => string;
+    duplicatePlayer: (name: string) => string;
+    maximumPlayers: (count: number) => string;
     start: string;
     needPlayers: string;
   };
@@ -373,6 +375,12 @@ export interface Strings {
     finish: string;
     updateRound: string;
     scoreRound: string;
+    /** Accessibility hint for the control that returns to a blocked round issue. */
+    reviewRoundIssue: string;
+    /** Exact reason shown above Score round when a Loot pair is incomplete. */
+    lootNeedsPartner: string;
+    /** Exact reason shown above Score round when tricks do not add up. */
+    tricksNeedReview: string;
     untouchedTitle: string;
     untouchedMessage: string;
     untouchedCancel: string;

@@ -405,6 +405,8 @@ export const ar: Strings = {
       "يضيف تسجيل نقاط أوراق 7 و8 الخاصة وخزانة ديفي جونز والثاني. تُشرح بقية تأثيرات التوسعة في قواعد اللعبة داخل التطبيق.",
     knownPlayers: "لاعبون معروفون",
     useKnownPlayer: (name) => `استخدم ${name}`,
+    duplicatePlayer: (name) => `${name} موجود بالفعل على الطاولة. استخدم اسمًا آخر.`,
+    maximumPlayers: (count) => `تتسع الطاولة لما يصل إلى ${count} لاعبين.`,
     start: "ابدأ المباراة ☠️",
     needPlayers: "أضف لاعبين اثنين على الأقل",
   },
@@ -435,6 +437,9 @@ export const ar: Strings = {
     finish: "إنهاء المباراة 🏁",
     updateRound: "تحديث الجولة",
     scoreRound: "احتساب الجولة ←",
+    reviewRoundIssue: "راجع هذه المشكلة لاحتساب الجولة.",
+    lootNeedsPartner: "أكمل زوج الغنيمة قبل الاحتساب.",
+    tricksNeedReview: "راجع مجموع الأكلات قبل الاحتساب.",
     untouchedTitle: "احتساب هذه الجولة؟",
     untouchedMessage:
       "لم تُدخل أي مزايدة أو لمّة. أكّد أن كلا اللاعبين زايدا بصفر وأن غراي بيرد فاز بكل اللمّات.",

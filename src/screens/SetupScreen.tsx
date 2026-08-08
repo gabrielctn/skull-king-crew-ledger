@@ -19,6 +19,8 @@ import {
   createGame,
 } from "../scoring";
 import { playerNameSuggestions } from "../stats";
+import { MAX_SETUP_PLAYERS, validateSetupPlayers } from "../setupValidation";
+import { selectionHaptic } from "../haptics";
 import Stepper from "../components/Stepper";
 import ToggleSwitch from "../components/ToggleSwitch";
 import {
@@ -92,28 +94,30 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
     focusNextEmpty(index);
   };
 
-  const addPlayer = () =>
+  const addPlayer = () => {
+    if (players.length >= MAX_SETUP_PLAYERS) return;
+    selectionHaptic();
     setPlayers((prev) => [...prev, { id: newId(), name: "" }]);
+  };
 
   const removePlayer = (id: string) =>
     setPlayers((prev) => prev.filter((p) => p.id !== id));
 
   // Seating order = clockwise table order, which drives the dealer / play-order
   // indicator in-game; let players reorder without retyping.
-  const movePlayer = (index: number, dir: -1 | 1) =>
+  const movePlayer = (index: number, dir: -1 | 1) => {
+    const nextIndex = index + dir;
+    if (nextIndex < 0 || nextIndex >= players.length) return;
+    selectionHaptic();
     setPlayers((prev) => {
       const j = index + dir;
-      if (j < 0 || j >= prev.length) return prev;
       const next = [...prev];
       [next[index], next[j]] = [next[j], next[index]];
       return next;
     });
+  };
 
-  const named = players
-    .map((p) => ({ ...p, name: p.name.trim() }))
-    .filter((p) => p.name.length > 0);
-
-  const canStart = named.length >= 2;
+  const { named, duplicateName, canStart, canAdd } = validateSetupPlayers(players);
   // The Greybeard ghost is the official 2-player variant; only offer it (and
   // only apply it) when there are exactly two real players.
   const isTwoPlayer = named.length === 2;
@@ -184,7 +188,9 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
           >
             <Text style={styles.back}>‹ {t.common.back}</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>{t.setup.title}</Text>
+          <Text style={styles.title} accessibilityRole="header">
+            {t.setup.title}
+          </Text>
           <View style={{ width: 50 }} />
         </GlassSurface>
 
@@ -207,7 +213,9 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
             <Text style={styles.greeterText}>{t.setup.crew}</Text>
           </View>
 
-          <Text style={styles.section}>{t.setup.players}</Text>
+          <Text style={styles.section} accessibilityRole="header">
+            {t.setup.players}
+          </Text>
           <Text style={styles.seatingHint}>{t.setup.seatingHint}</Text>
           {players.map((p, i) => {
             const hasNextEmpty = players.some(
@@ -319,16 +327,30 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
             );
           })}
 
+          {duplicateName ? (
+            <Text style={styles.validationFeedback} accessibilityLiveRegion="polite">
+              {t.setup.duplicatePlayer(duplicateName)}
+            </Text>
+          ) : null}
+          {!canAdd ? (
+            <Text style={styles.maximumFeedback} accessibilityLiveRegion="polite">
+              {t.setup.maximumPlayers(MAX_SETUP_PLAYERS)}
+            </Text>
+          ) : null}
           <TouchableOpacity
-            style={styles.addBtn}
+            style={[styles.addBtn, !canAdd && styles.addBtnDisabled]}
             onPress={addPlayer}
+            disabled={!canAdd}
             accessibilityRole="button"
+            accessibilityState={{ disabled: !canAdd }}
           >
             <Text style={styles.addText}>{t.setup.addPlayer}</Text>
           </TouchableOpacity>
 
           <View style={styles.quickIntro}>
-            <Text style={styles.quickTitle}>{t.setup.quickTitle}</Text>
+            <Text style={styles.quickTitle} accessibilityRole="header">
+              {t.setup.quickTitle}
+            </Text>
             <Text style={styles.quickHint}>{t.setup.quickHint}</Text>
             <View style={styles.ruleChips}>
               {activeRules.map((rule) => (
@@ -370,7 +392,10 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
 
           {customizationVisible ? (
             <>
-              <Text style={[styles.section, { marginTop: spacing.lg }]}>
+              <Text
+                style={[styles.section, { marginTop: spacing.lg }]}
+                accessibilityRole="header"
+              >
                 {t.setup.scoring}
               </Text>
               <Text style={styles.seatingHint}>{t.setup.scoringHint}</Text>
@@ -451,7 +476,10 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
                 </View>
               )}
 
-              <Text style={[styles.section, { marginTop: spacing.lg }]}>
+              <Text
+                style={[styles.section, { marginTop: spacing.lg }]}
+                accessibilityRole="header"
+              >
                 {t.setup.rounds}
               </Text>
               <Text style={styles.seatingHint}>{t.setup.structureHint}</Text>
@@ -535,7 +563,10 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
                 </View>
               </TouchableOpacity>
 
-              <Text style={[styles.section, { marginTop: spacing.lg }]}>
+              <Text
+                style={[styles.section, { marginTop: spacing.lg }]}
+                accessibilityRole="header"
+              >
                 {t.setup.expansion}
               </Text>
               <View style={styles.advancedRow}>
@@ -715,7 +746,19 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
     minHeight: 44,
   },
+  addBtnDisabled: { opacity: 0.35 },
   addText: { color: colors.gold, fontSize: 16, fontWeight: "600" },
+  validationFeedback: {
+    color: colors.negative,
+    fontSize: 13,
+    fontWeight: "700",
+    marginBottom: spacing.sm,
+  },
+  maximumFeedback: {
+    color: colors.textDim,
+    fontSize: 13,
+    marginBottom: spacing.sm,
+  },
   quickIntro: {
     marginTop: spacing.lg,
     paddingTop: spacing.md,

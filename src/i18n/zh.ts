@@ -302,6 +302,8 @@ export const zh: Strings = {
       "加入特殊 7、8、戴维·琼斯的箱子和“副手”的计分。其他扩展效果可在应用内规则中查看。",
     knownPlayers: "历史玩家",
     useKnownPlayer: (name) => `使用 ${name}`,
+    duplicatePlayer: (name) => `${name} 已在牌桌上。请使用其他名称。`,
+    maximumPlayers: (count) => `一桌最多可有 ${count} 名玩家。`,
     start: "开始对局 ☠️",
     needPlayers: "至少添加 2 名玩家",
   },
@@ -332,6 +334,9 @@ export const zh: Strings = {
     finish: "结束对局 🏁",
     updateRound: "更新回合",
     scoreRound: "结算回合 →",
+    reviewRoundIssue: "查看此问题后再结算回合。",
+    lootNeedsPartner: "请先完成战利品配对再结算。",
+    tricksNeedReview: "请先核对墩数总计再结算。",
     untouchedTitle: "结算本回合？",
     untouchedMessage:
       "尚未输入叫牌或赢墩。请确认两位玩家都叫零，且所有墩都由灰胡子赢得。",

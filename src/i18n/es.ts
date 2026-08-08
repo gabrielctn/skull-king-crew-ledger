@@ -337,6 +337,8 @@ export const es: Strings = {
       "Añade la puntuación de los 7 y 8 especiales, el Cofre de Davy Jones y El Segundo. Los demás efectos de la expansión se explican en las reglas de la aplicación.",
     knownPlayers: "Jugadores conocidos",
     useKnownPlayer: (name) => `Usar a ${name}`,
+    duplicatePlayer: (name) => `${name} ya está en la mesa. Usa otro nombre.`,
+    maximumPlayers: (count) => `Una mesa admite hasta ${count} jugadores.`,
     start: "Empezar partida ☠️",
     needPlayers: "Añade al menos 2 jugadores",
   },
@@ -369,6 +371,9 @@ export const es: Strings = {
     finish: "Terminar partida 🏁",
     updateRound: "Actualizar ronda",
     scoreRound: "Puntuar ronda →",
+    reviewRoundIssue: "Revisa este problema para puntuar la ronda.",
+    lootNeedsPartner: "Completa la pareja de Botín antes de puntuar.",
+    tricksNeedReview: "Revisa el total de bazas antes de puntuar.",
     untouchedTitle: "¿Puntuar esta ronda?",
     untouchedMessage:
       "No se han introducido envites ni bazas. Confirma que ambos jugadores envidaron cero y que Barbagris ganó todas las bazas.",

@@ -335,6 +335,8 @@ export const en: Strings = {
       "Adds scoring for the special 7s and 8s, Davy Jones' Locker, and the Second. The other expansion effects are covered in the in-game rules.",
     knownPlayers: "Known players",
     useKnownPlayer: (name) => `Use ${name}`,
+    duplicatePlayer: (name) => `${name} is already seated. Use a different name.`,
+    maximumPlayers: (count) => `A table can have up to ${count} players.`,
     start: "Start game ☠️",
     needPlayers: "Add at least 2 players",
   },
@@ -366,6 +368,9 @@ export const en: Strings = {
     finish: "Finish game 🏁",
     updateRound: "Update round",
     scoreRound: "Score round →",
+    reviewRoundIssue: "Review this issue to finish the round.",
+    lootNeedsPartner: "Complete the Loot pair before scoring.",
+    tricksNeedReview: "Review the trick totals before scoring.",
     untouchedTitle: "Score this round?",
     untouchedMessage:
       "No bids or tricks were entered. Confirm that both players bid zero and Greybeard won every trick.",
