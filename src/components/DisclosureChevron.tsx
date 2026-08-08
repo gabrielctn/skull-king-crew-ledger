@@ -15,6 +15,7 @@ export default function DisclosureChevron({ expanded }: { expanded: boolean }) {
   return (
     <Text
       accessible={false}
+      aria-hidden={true}
       importantForAccessibility="no"
       style={styles.chevron}
     >
