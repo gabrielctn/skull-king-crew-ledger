@@ -20,7 +20,7 @@ import {
 } from "../scoring";
 import { playerNameSuggestions } from "../stats";
 import { MAX_SETUP_PLAYERS, validateSetupPlayers } from "../setupValidation";
-import { selectionHaptic } from "../haptics";
+import { impactHaptic, selectionHaptic } from "../haptics";
 import Stepper from "../components/Stepper";
 import ToggleSwitch from "../components/ToggleSwitch";
 import {
@@ -147,19 +147,19 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
   const start = () => {
     if (!canStart) return;
     const cardsPerRound = structureCards(structure, rounds);
-    onStart(
-      createGame(
-        named,
-        cardsPerRound.length,
-        advanced,
-        isTwoPlayer && twoPlayerGhost,
-        newExpansion,
-        cardsPerRound,
-        scoringMode,
-        scoringMode === "rascal" && rascalBets,
-        scoringMode === "classic" && bonusesRequireBid
-      )
+    const nextGame = createGame(
+      named,
+      cardsPerRound.length,
+      advanced,
+      isTwoPlayer && twoPlayerGhost,
+      newExpansion,
+      cardsPerRound,
+      scoringMode,
+      scoringMode === "rascal" && rascalBets,
+      scoringMode === "classic" && bonusesRequireBid
     );
+    impactHaptic();
+    onStart(nextGame);
   };
 
   return (
@@ -616,7 +616,7 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
             accessibilityState={{ disabled: !canStart }}
           >
             <Text style={styles.startText}>
-              {canStart ? t.setup.start : t.setup.needPlayers}
+              {named.length < 2 ? t.setup.needPlayers : t.setup.start}
             </Text>
           </TouchableOpacity>
         </View>

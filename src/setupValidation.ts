@@ -41,6 +41,7 @@ export function validateSetupPlayers<T extends SetupPlayer>(
     named,
     duplicateName,
     canStart:
+      players.length <= MAX_SETUP_PLAYERS &&
       named.length >= 2 &&
       named.length <= MAX_SETUP_PLAYERS &&
       duplicateName === null,

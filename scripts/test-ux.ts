@@ -225,9 +225,33 @@ check(
   )
 );
 check(
-  "desktop round validation is rendered inside the score sheet",
-  gameSource.includes("layout.isDesktop ? (") &&
-    gameSource.includes("styles.footerDesktop")
+  "desktop round validation keeps its action outside the score sheet",
+  !gameSource.includes("styles.footerDesktop")
+);
+const gameScrollStart = gameSource.indexOf("<ScrollView");
+const gameScrollEnd = gameSource.indexOf("</ScrollView>", gameScrollStart);
+const scoreButtonInsideScroll = gameSource.indexOf("{scoreButton}", gameScrollStart);
+const scoreButtonAfterScroll = gameSource.indexOf("{scoreButton}", gameScrollEnd);
+check(
+  "round guidance and scoring stay outside the scroll sheet at every width",
+  scoreButtonInsideScroll > gameScrollEnd && scoreButtonAfterScroll > gameScrollEnd
+);
+check(
+  "round guidance announces repeat activations on every platform",
+  gameSource.includes("AccessibilityInfo.announceForAccessibility") &&
+    gameSource.includes('Platform.OS === "ios"') &&
+    gameSource.includes("roundIssueAnnouncementCount")
+);
+check(
+  "Setup only vibrates when a valid game is about to start",
+  setupSource.includes("if (!canStart) return;") &&
+    setupSource.includes("impactHaptic();")
+);
+check(
+  "blocked setup Start labels name the real blocker only for too few players",
+  setupSource.includes(
+    "named.length < 2 ? t.setup.needPlayers : t.setup.start"
+  )
 );
 check(
   "results have one primary next action",

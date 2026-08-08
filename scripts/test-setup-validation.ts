@@ -58,6 +58,18 @@ check(
   !ninePlayers.canStart && !ninePlayers.canAdd
 );
 
+const nineSeatsWithEightNames = validateSetupPlayers([
+  ...Array.from({ length: 8 }, (_, index) => ({
+    id: `named-${index + 1}`,
+    name: `Player ${index + 1}`,
+  })),
+  { id: "extra-blank-seat", name: "" },
+]);
+check(
+  "a ninth blank seat cannot bypass the setup player ceiling",
+  !nineSeatsWithEightNames.canStart && !nineSeatsWithEightNames.canAdd
+);
+
 const blankSeats = validateSetupPlayers([
   { id: "ada", name: "Ada" },
   { id: "blank", name: "   " },
