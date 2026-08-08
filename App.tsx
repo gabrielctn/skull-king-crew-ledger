@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  BackHandler,
   Image,
   Linking,
   Platform,
@@ -102,8 +103,14 @@ import {
 } from "./src/appIntents";
 import type { AppIntentDestination } from "./src/appIntents";
 import { illustrations } from "./src/assets/illustrations";
+import {
+  backActionForState,
+  historyStateForScreen,
+  screenFromHistoryState,
+} from "./src/navigation";
+import type { AppScreen } from "./src/navigation";
+import ScreenTransition from "./src/components/ScreenTransition";
 
-type Screen = "home" | "setup" | "game" | "results" | "settings" | "stats";
 type PendingCurrentGame = Game | null | undefined;
 
 /**
@@ -158,7 +165,7 @@ function StorageWarning({
 }
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>("home");
+  const [screen, setScreen] = useState<AppScreen>("home");
   // Spectator mode (opened from a scanned share QR code) is resolved in the
   // lazy initializer, before first paint and before analytics can load, so
   // the share payload is stripped from the URL as early as possible.
@@ -195,6 +202,16 @@ export default function App() {
   const historySaveWorker = useRef<Promise<void> | null>(null);
   const historySaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const persistenceFailures = useRef(0);
+
+  const navigate = (nextScreen: AppScreen) => {
+    setScreen(nextScreen);
+    if (Platform.OS === "web" && typeof window !== "undefined") {
+      window.history.pushState(
+        historyStateForScreen(window.history.state, nextScreen),
+        ""
+      );
+    }
+  };
 
   const markStorageFailure = () => {
     persistenceFailures.current += 1;
@@ -375,6 +392,51 @@ export default function App() {
     };
   }, []);
 
+  const modalOpen =
+    supportPromptVisible ||
+    inviteOpen ||
+    joinByCodeOpen ||
+    pendingJoinCode !== null ||
+    storageError;
+
+  const closeGlobalModals = () => {
+    setSupportPromptVisible(false);
+    setInviteOpen(false);
+    setJoinByCodeOpen(false);
+    setPendingJoinCode(null);
+    setStorageError(false);
+  };
+
+  // Browser navigation only restores routes written by navigate(). It leaves
+  // capability hashes alone, which remain owned by the live-share handlers.
+  useEffect(() => {
+    if (Platform.OS !== "web" || typeof window === "undefined") return;
+    const onPopState = (event: PopStateEvent) => {
+      setScreen(screenFromHistoryState(event.state));
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  // Android back mirrors the browser behavior while giving any global modal
+  // priority over returning to Home or allowing the OS to close the app.
+  useEffect(() => {
+    if (Platform.OS !== "android") return;
+    const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+      const action = backActionForState({ modalOpen, screen });
+      if (action === "close-modal") {
+        closeGlobalModals();
+        return true;
+      }
+      if (action === "home") {
+        navigate("home");
+        return true;
+      }
+      return false;
+    });
+    return () => subscription.remove();
+  }, [modalOpen, screen]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // A QR code scanned while the app is already open navigates to the same page
   // with a new capability in the hash; pick it up without a reload.
   useEffect(() => {
@@ -512,18 +574,18 @@ export default function App() {
     pushCloud(g, next);
   };
 
-  const handleNewGame = () => setScreen("setup");
+  const handleNewGame = () => navigate("setup");
 
   const handleStart = (g: Game) => {
     persist(g, true);
-    setScreen("game");
+    navigate("game");
   };
 
   const handleOpenHistory = (selectedGame: Game) => {
     setGame(selectedGame);
     queueCurrentSave(selectedGame);
     pushCloud(selectedGame, historyRef.current);
-    setScreen(selectedGame.status === "finished" ? "results" : "game");
+    navigate(selectedGame.status === "finished" ? "results" : "game");
   };
 
   const handleDeleteGame = (gameId: string) => {
@@ -763,17 +825,17 @@ export default function App() {
     // A finished game must reach history before the user can immediately
     // clear the current slot or launch a rematch from the results screen.
     persist(g, true);
-    setScreen("results");
+    navigate("results");
     void considerSupportPrompt();
   };
 
-  const handleHome = () => setScreen("home");
+  const handleHome = () => navigate("home");
 
   const handleNewFromResults = () => {
     queueCurrentSave(null);
     setGame(null);
     pushCloud(null, historyRef.current);
-    setScreen("setup");
+    navigate("setup");
   };
 
   const handleRematch = () => {
@@ -790,7 +852,7 @@ export default function App() {
       game.bonusesRequireBid
     );
     persist(rematch, true);
-    setScreen("game");
+    navigate("game");
   };
 
   // Storage restoration must finish before resolving "continue game"; otherwise
@@ -802,6 +864,7 @@ export default function App() {
     setPendingAppIntentDestination(null);
 
     if (destination === "newGame") {
+      // App Intent restoration must not create browser history entries.
       setScreen("setup");
       return;
     }
@@ -856,7 +919,9 @@ export default function App() {
             onExit={handleExitSpectator}
           />
         )}
-        {!spectatorActive && screen === "home" && (
+        {!spectatorActive && (
+          <ScreenTransition routeKey={screen}>
+        {screen === "home" && (
           <HomeScreen
             gameHistory={gameHistory}
             currentGameId={game?.id ?? null}
@@ -865,20 +930,20 @@ export default function App() {
             onNewGame={handleNewGame}
             onOpenGame={handleOpenHistory}
             onDeleteGame={handleDeleteGame}
-            onOpenStats={() => setScreen("stats")}
-            onOpenSettings={() => setScreen("settings")}
+            onOpenStats={() => navigate("stats")}
+            onOpenSettings={() => navigate("settings")}
             onInviteToTable={() => setInviteOpen(true)}
             onJoinTable={() => setJoinByCodeOpen(true)}
           />
         )}
-        {!spectatorActive && screen === "stats" && (
+        {screen === "stats" && (
           <StatsScreen
             gameHistory={gameHistory}
             tableName={tableName}
             onBack={handleHome}
           />
         )}
-        {!spectatorActive && screen === "settings" && (
+        {screen === "settings" && (
           <SettingsScreen
             settings={settings}
             hasGames={gameHistory.length > 0 || game !== null}
@@ -898,14 +963,14 @@ export default function App() {
             onRemoveTable={handleRemoveTable}
           />
         )}
-        {!spectatorActive && screen === "setup" && (
+        {screen === "setup" && (
           <SetupScreen
             gameHistory={gameHistory}
             onStart={handleStart}
             onBack={handleHome}
           />
         )}
-        {!spectatorActive && screen === "game" && game && (
+        {screen === "game" && game && (
           <GameScreen
             game={game}
             keepAwake={settings.keepAwake}
@@ -914,14 +979,16 @@ export default function App() {
             onExit={handleHome}
           />
         )}
-        {!spectatorActive && screen === "results" && game && (
+        {screen === "results" && game && (
           <ResultsScreen
             game={game}
             onRematch={handleRematch}
             onNewGame={handleNewFromResults}
             onHome={handleHome}
-            onReview={() => setScreen("game")}
+            onReview={() => navigate("game")}
           />
+        )}
+          </ScreenTransition>
         )}
         <SupportModal
           visible={supportPromptVisible}

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, Pressable, StyleSheet } from "react-native";
 import { colors } from "../theme";
+import { useReducedMotion } from "../useReducedMotion";
 
 interface Props {
   value: boolean;
@@ -17,14 +18,22 @@ export default function ToggleSwitch({
   disabled = false,
 }: Props) {
   const progress = useRef(new Animated.Value(value ? 1 : 0)).current;
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
-    Animated.timing(progress, {
+    progress.stopAnimation();
+    if (reducedMotion) {
+      progress.setValue(value ? 1 : 0);
+      return;
+    }
+    const animation = Animated.timing(progress, {
       toValue: value ? 1 : 0,
       duration: 150,
       useNativeDriver: false,
-    }).start();
-  }, [progress, value]);
+    });
+    animation.start();
+    return () => animation.stop();
+  }, [progress, reducedMotion, value]);
 
   const trackColor = progress.interpolate({
     inputRange: [0, 1],

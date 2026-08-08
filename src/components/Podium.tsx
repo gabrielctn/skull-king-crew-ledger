@@ -11,6 +11,7 @@ import { useI18n } from "../i18n/context";
 import type { Standing } from "../scoring";
 import type { AwardKind, GameAward } from "../stats";
 import LtrView from "./LtrView";
+import { useReducedMotion } from "../useReducedMotion";
 import {
   colors,
   radius,
@@ -48,50 +49,6 @@ const AWARD_PRIORITY: readonly AwardKind[] = [
   "reckless",
   "castaway",
 ];
-
-function initialReducedMotion(): boolean {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-    return false;
-  }
-  try {
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch {
-    return false;
-  }
-}
-
-/** Tracks live OS/browser motion changes and removes both listener API variants. */
-function usePrefersReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(initialReducedMotion);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-      return;
-    }
-
-    let query: MediaQueryList;
-    try {
-      query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    } catch {
-      return;
-    }
-
-    const update = (event: MediaQueryListEvent) => setReduced(event.matches);
-    setReduced(query.matches);
-
-    if (typeof query.addEventListener === "function") {
-      query.addEventListener("change", update);
-      return () => query.removeEventListener("change", update);
-    }
-
-    if (typeof query.addListener === "function") {
-      query.addListener(update);
-      return () => query.removeListener(update);
-    }
-  }, []);
-
-  return reduced;
-}
 
 function createConfettiParticles(): readonly ConfettiParticle[] {
   return Array.from({ length: 28 }, (_, index) => ({
@@ -133,7 +90,7 @@ function stepColor(rank: number): string {
 /** Top-three result treatment with accessible, motion-aware celebration. */
 export default function Podium({ rows, awards }: Props) {
   const { t } = useI18n();
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const prefersReducedMotion = useReducedMotion();
   const visibleRows = rows.slice(0, 3);
   const orderedAwards = useMemo(
     () =>

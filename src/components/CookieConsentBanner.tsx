@@ -17,14 +17,7 @@ import {
 import { useI18n } from "../i18n/context";
 import { colors, radius, spacing } from "../theme";
 import GlassSurface from "./GlassSurface";
-
-function prefersReducedMotion(): boolean {
-  return (
-    typeof window !== "undefined" &&
-    typeof window.matchMedia === "function" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
-}
+import { useReducedMotion } from "../useReducedMotion";
 
 /** Web-only analytics consent prompt. Google is never contacted before opt-in. */
 export default function CookieConsentBanner() {
@@ -33,21 +26,28 @@ export default function CookieConsentBanner() {
   const [consent, setConsent] = useState<AnalyticsConsent | null>(() =>
     loadAnalyticsConsent()
   );
-  const reducedMotion = useRef(prefersReducedMotion()).current;
-  const reveal = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
+  const reducedMotion = useReducedMotion();
+  const reveal = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    reveal.stopAnimation();
+    if (reducedMotion) {
+      reveal.setValue(1);
+      return;
+    }
     if (consent === "accepted") {
       enableGoogleAnalytics();
       return;
     }
     if (consent !== null || reducedMotion) return;
 
-    Animated.timing(reveal, {
+    const animation = Animated.timing(reveal, {
       toValue: 1,
       duration: 240,
       useNativeDriver: false,
-    }).start();
+    });
+    animation.start();
+    return () => animation.stop();
   }, [consent, reducedMotion, reveal]);
 
   const choose = (choice: AnalyticsConsent) => {
