@@ -1,4 +1,5 @@
 export const HOME_ACTIONS_HEIGHT = 52;
+export const HOME_ACTIONS_TOP = 16;
 
 interface HomeLayoutInput {
   isWeb: boolean;
@@ -21,7 +22,7 @@ export interface HomeHeroSize {
  * content continuous beneath it on every platform.
  */
 export function homeTopInset({ hasContent }: HomeLayoutInput): number {
-  return HOME_ACTIONS_HEIGHT + (hasContent ? 16 : 8);
+  return HOME_ACTIONS_TOP + HOME_ACTIONS_HEIGHT + (hasContent ? 16 : 8);
 }
 
 /** A compact seal keeps returning crews oriented without wasting phone space. */

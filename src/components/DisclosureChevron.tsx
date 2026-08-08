@@ -12,7 +12,15 @@ import { colors } from "../theme";
  * pair — same advance, same ink box, mirrored — so both states line up.
  */
 export default function DisclosureChevron({ expanded }: { expanded: boolean }) {
-  return <Text style={styles.chevron}>{expanded ? "▴" : "▾"}</Text>;
+  return (
+    <Text
+      accessible={false}
+      importantForAccessibility="no"
+      style={styles.chevron}
+    >
+      {expanded ? "▴" : "▾"}
+    </Text>
+  );
 }
 
 const styles = StyleSheet.create({

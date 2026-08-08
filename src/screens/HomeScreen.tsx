@@ -25,7 +25,12 @@ import DisclosureChevron from "../components/DisclosureChevron";
 import GlassSurface from "../components/GlassSurface";
 import AppIcon from "../components/AppIcon";
 import { APP_STORE_ANNUAL_COST_EUR, SUPPORT_URL } from "../support";
-import { HOME_ACTIONS_HEIGHT, homeHeroSize, homeTopInset } from "../homeLayout";
+import {
+  HOME_ACTIONS_HEIGHT,
+  HOME_ACTIONS_TOP,
+  homeHeroSize,
+  homeTopInset,
+} from "../homeLayout";
 
 /** Games listed before the "show all" toggle takes over. */
 const HISTORY_PREVIEW_COUNT = 3;
@@ -80,6 +85,7 @@ export default function HomeScreen({
   const scrollRef = React.useRef<ScrollView>(null);
   const initialScrollOffsetRef = React.useRef(Math.max(0, initialScrollOffset));
   const lastReportedScrollOffset = React.useRef(initialScrollOffsetRef.current);
+  const hasRestoredScrollOffset = React.useRef(false);
   // The game the "resume" card offers: the one the app currently points at,
   // or failing that any other still in progress.
   const activeGame = React.useMemo(
@@ -178,17 +184,15 @@ export default function HomeScreen({
     hasContent,
   });
 
-  React.useEffect(() => {
-    const restore = () => {
-      scrollRef.current?.scrollTo({
-        x: 0,
-        y: initialScrollOffsetRef.current,
-        animated: false,
-      });
-    };
-    const frame = requestAnimationFrame(restore);
-    return () => cancelAnimationFrame(frame);
-  }, []);
+  const restoreInitialScrollOffset = () => {
+    if (hasRestoredScrollOffset.current || !scrollRef.current) return;
+    scrollRef.current.scrollTo({
+      x: 0,
+      y: initialScrollOffsetRef.current,
+      animated: false,
+    });
+    hasRestoredScrollOffset.current = true;
+  };
 
   const handleScroll = (offset: number) => {
     if (Math.abs(offset - lastReportedScrollOffset.current) < 4) return;
@@ -203,6 +207,7 @@ export default function HomeScreen({
         ref={scrollRef}
         contentContainerStyle={[styles.scroll, { paddingTop: topInset }]}
         showsVerticalScrollIndicator={false}
+        onContentSizeChange={restoreInitialScrollOffset}
         onScroll={(event) =>
           handleScroll(Math.max(0, event.nativeEvent.contentOffset.y))
         }
@@ -239,8 +244,18 @@ export default function HomeScreen({
               />
             </View>
             <Text style={styles.unofficial}>{t.home.unofficial}</Text>
-            <Text style={styles.title} accessibilityRole="header">{t.home.title}</Text>
-            <Text style={styles.subtitle}>{t.home.subtitle}</Text>
+            <View
+              accessible
+              accessibilityRole="header"
+              accessibilityLabel={`${t.home.title} ${t.home.subtitle}`}
+            >
+              <Text style={styles.title} accessible={false}>
+                {t.home.title}
+              </Text>
+              <Text style={styles.subtitle} accessible={false}>
+                {t.home.subtitle}
+              </Text>
+            </View>
           </View>
 
           <View style={[styles.actions, layout.isDesktop && styles.actionsDesktop]}>
@@ -464,6 +479,7 @@ export default function HomeScreen({
                 style={styles.legalBtn}
                 onPress={() => setSupportDetailsOpen((open) => !open)}
                 accessibilityRole="button"
+                accessibilityLabel={t.home.legalAndCosts}
                 accessibilityState={{ expanded: supportDetailsOpen }}
               >
                 <Text style={styles.legalText}>{t.home.legalAndCosts}</Text>
@@ -562,7 +578,7 @@ const styles = StyleSheet.create({
   scroll: { flexGrow: 1, justifyContent: "center" },
   topActions: {
     position: "absolute",
-    top: spacing.md,
+    top: HOME_ACTIONS_TOP,
     // Trailing edge, so these ride the left in a right-to-left language.
     end: spacing.md,
     zIndex: 1,
