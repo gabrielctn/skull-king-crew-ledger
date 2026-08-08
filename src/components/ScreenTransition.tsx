@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useRef } from "react";
 import { Animated, Easing, StyleSheet } from "react-native";
 import { useReducedMotionState } from "../useReducedMotion";
+import { screenTransitionAction } from "../screenTransitionPolicy";
 
 interface Props {
   routeKey: string;
@@ -11,13 +12,21 @@ interface Props {
 export default function ScreenTransition({ routeKey, children }: Props) {
   const { reducedMotion, known } = useReducedMotionState();
   const progress = useRef(new Animated.Value(1)).current;
+  const entryEligible = useRef(known && !reducedMotion).current;
+  const hasAnimated = useRef(false);
 
   useLayoutEffect(() => {
     progress.stopAnimation();
-    if (!known || reducedMotion) {
+    const action = screenTransitionAction({
+      entryEligible,
+      hasAnimated: hasAnimated.current,
+      reducedMotion,
+    });
+    if (action !== "animate") {
       progress.setValue(1);
       return;
     }
+    hasAnimated.current = true;
     progress.setValue(0);
     const animation = Animated.timing(progress, {
       toValue: 1,
@@ -27,7 +36,7 @@ export default function ScreenTransition({ routeKey, children }: Props) {
     });
     animation.start();
     return () => animation.stop();
-  }, [known, progress, reducedMotion, routeKey]);
+  }, [entryEligible, progress, reducedMotion, routeKey]);
 
   return (
     <Animated.View

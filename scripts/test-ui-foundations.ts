@@ -8,6 +8,7 @@ import {
   restoredHistoryRoute,
   screenFromHistoryState,
 } from "../src/navigation";
+import { screenTransitionAction } from "../src/screenTransitionPolicy";
 
 let failures = 0;
 
@@ -53,10 +54,6 @@ const cookieConsentSource = readFileSync(
   "src/components/CookieConsentBanner.tsx",
   "utf8"
 );
-const transitionSource = readFileSync(
-  "src/components/ScreenTransition.tsx",
-  "utf8"
-);
 const reducedMotionSource = readFileSync("src/useReducedMotion.ts", "utf8");
 
 check(
@@ -65,13 +62,45 @@ check(
     cookieConsentSource.indexOf("if (reducedMotion)")
 );
 check(
-  "screen transitions reset in a layout effect and stop during cleanup",
-  transitionSource.includes("useLayoutEffect") &&
-    transitionSource.includes("return () => animation.stop()")
-);
-check(
   "native motion stays conservative until its accessibility preference is known",
   reducedMotionSource.includes("known") && reducedMotionSource.includes("true")
+);
+check(
+  "unknown to allowed keeps the already-visible native route still",
+  screenTransitionAction({
+    entryEligible: false,
+    hasAnimated: false,
+    reducedMotion: false,
+  }) === "visible"
+);
+check(
+  "reduced to allowed keeps the current route still",
+  screenTransitionAction({
+    entryEligible: false,
+    hasAnimated: false,
+    reducedMotion: false,
+  }) === "visible"
+);
+check(
+  "known allowed route mount gets one entrance animation",
+  screenTransitionAction({
+    entryEligible: true,
+    hasAnimated: false,
+    reducedMotion: false,
+  }) === "animate"
+);
+check(
+  "allowed to reduced snaps an entering route and never replays it",
+  screenTransitionAction({
+    entryEligible: true,
+    hasAnimated: true,
+    reducedMotion: true,
+  }) === "snap" &&
+    screenTransitionAction({
+      entryEligible: true,
+      hasAnimated: true,
+      reducedMotion: false,
+    }) === "visible"
 );
 
 const priorFinishedGame = { id: "finished-game", status: "finished" as const };
