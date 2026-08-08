@@ -167,13 +167,15 @@ export default function JoinByCodeModal({ visible, onClose, onResolved }: Props)
               onPress={() => void submit()}
               disabled={busy || draft.trim().length === 0}
               accessibilityRole="button"
-              accessibilityState={{ disabled: busy || draft.trim().length === 0 }}
+              accessibilityState={{
+                busy,
+                disabled: busy || draft.trim().length === 0,
+              }}
             >
-              {busy ? (
-                <ActivityIndicator color={colors.bg} />
-              ) : (
+              <View style={styles.submitContents}>
                 <Text style={styles.submitText}>{t.joinByCode.submit}</Text>
-              )}
+                {busy ? <ActivityIndicator color={colors.bg} accessible={false} /> : null}
+              </View>
             </TouchableOpacity>
 
             {failure ? (
@@ -284,6 +286,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   submitButtonDisabled: { opacity: 0.5 },
+  submitContents: { flexDirection: "row", alignItems: "center", columnGap: spacing.sm },
   submitText: { color: colors.bg, fontSize: 15, fontWeight: "800" },
   error: {
     color: colors.negative,

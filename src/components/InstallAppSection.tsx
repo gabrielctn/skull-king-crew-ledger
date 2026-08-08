@@ -10,6 +10,8 @@ import {
   PwaInstallMode,
   subscribeToInstallPrompt,
   wasAppInstalled,
+  detectInstallGuidePlatform,
+  InstallGuidePlatform,
 } from "../pwaInstall";
 
 /**
@@ -30,11 +32,16 @@ export default function InstallAppSection() {
     () => isPwaInstalled() || wasAppInstalled()
   );
   const [installFailed, setInstallFailed] = React.useState(false);
-  // Auto-open the guide when there is no one-tap button to offer (iOS, or any
-  // browser where the prompt is unavailable), so the steps are right there.
-  const [guideOpen, setGuideOpen] = React.useState(
-    () => getPwaInstallMode() !== "prompt"
-  );
+  const [guideOpen, setGuideOpen] = React.useState(false);
+  const [otherGuidesOpen, setOtherGuidesOpen] = React.useState(false);
+  const guidePlatform: InstallGuidePlatform = React.useMemo(() => {
+    if (typeof navigator === "undefined") return "other";
+    return detectInstallGuidePlatform(
+      navigator.userAgent,
+      navigator.platform,
+      navigator.maxTouchPoints
+    );
+  }, []);
 
   React.useEffect(
     () =>
@@ -48,6 +55,16 @@ export default function InstallAppSection() {
   if (Platform.OS !== "web") return null;
 
   const copy = t.settings.install;
+  const guides: Record<Exclude<InstallGuidePlatform, "other">, {
+    title: string;
+    steps: string[];
+  }> = {
+    ios_safari: { title: copy.iosSafariTitle, steps: copy.iosSafariSteps },
+    ios_chrome: { title: copy.iosChromeTitle, steps: copy.iosChromeSteps },
+    android: { title: copy.androidTitle, steps: copy.androidSteps },
+  };
+  const otherPlatforms = (Object.keys(guides) as Array<Exclude<InstallGuidePlatform, "other">>)
+    .filter((platform) => platform !== guidePlatform);
 
   const install = async () => {
     setInstallFailed(false);
@@ -109,19 +126,32 @@ export default function InstallAppSection() {
 
           {guideOpen ? (
             <View style={styles.guideBody}>
-              <PlatformGuide
-                title={copy.iosSafariTitle}
-                steps={copy.iosSafariSteps}
-              />
-              <PlatformGuide
-                title={copy.iosChromeTitle}
-                steps={copy.iosChromeSteps}
-              />
-              <PlatformGuide
-                title={copy.androidTitle}
-                steps={copy.androidSteps}
-                last
-              />
+              {guidePlatform !== "other" ? (
+                <>
+                  <Text style={styles.detectedGuide}>{copy.detectedGuide}</Text>
+                  <PlatformGuide
+                    title={guides[guidePlatform].title}
+                    steps={guides[guidePlatform].steps}
+                  />
+                </>
+              ) : null}
+              <TouchableOpacity
+                style={styles.otherGuidesToggle}
+                onPress={() => setOtherGuidesOpen((open) => !open)}
+                accessibilityRole="button"
+                accessibilityState={{ expanded: otherGuidesOpen }}
+              >
+                <Text style={styles.otherGuidesText}>{copy.otherPlatforms}</Text>
+                <DisclosureChevron expanded={otherGuidesOpen} />
+              </TouchableOpacity>
+              {otherGuidesOpen ? otherPlatforms.map((platform, index) => (
+                <PlatformGuide
+                  key={platform}
+                  title={guides[platform].title}
+                  steps={guides[platform].steps}
+                  last={index === otherPlatforms.length - 1}
+                />
+              )) : null}
             </View>
           ) : null}
         </>
@@ -219,6 +249,20 @@ const styles = StyleSheet.create({
   },
   guideToggleText: { color: colors.gold, fontSize: 14, fontWeight: "800" },
   guideBody: { marginTop: spacing.sm },
+  detectedGuide: {
+    color: colors.textDim,
+    fontSize: 12,
+    fontWeight: "700",
+    marginBottom: spacing.xs,
+  },
+  otherGuidesToggle: {
+    minHeight: 44,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: spacing.sm,
+  },
+  otherGuidesText: { color: colors.accent, fontSize: 13, fontWeight: "800" },
   platformCard: {
     backgroundColor: colors.card,
     borderColor: colors.cardBorder,

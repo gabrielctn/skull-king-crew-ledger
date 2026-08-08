@@ -132,6 +132,15 @@ export const zh: Strings = {
     feedbackTitle: "反馈",
     feedbackHint: "发现问题或有好点子？欢迎告诉我。",
     feedbackButton: "发送反馈",
+    privacy: {
+      title: "隐私",
+      hint: "选择是否允许此浏览器使用匿名访问统计。",
+      analyticsTitle: "使用统计",
+      analyticsHint: "通过统计访问量帮助改进应用。",
+      accepted: "统计已启用",
+      declined: "统计已关闭",
+      reset: "再次询问我",
+    },
     install: {
       title: "安装应用",
       installedTitle: "应用已安装",
@@ -142,6 +151,8 @@ export const zh: Strings = {
       button: "立即安装",
       error: "无法开始安装。请按下方的手动步骤操作。",
       guideTitle: "如何手动安装",
+      detectedGuide: "此设备的指南",
+      otherPlatforms: "其他设备的指南",
       iosSafariTitle: "iPhone 与 iPad（Safari）",
       iosSafariSteps: [
         "在 Safari 中打开此页面。",

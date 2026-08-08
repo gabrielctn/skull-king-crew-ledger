@@ -145,6 +145,15 @@ export const es: Strings = {
     feedbackHint:
       "¿Has encontrado un error o tienes una idea? Me encantará saber de ti.",
     feedbackButton: "Enviar comentarios",
+    privacy: {
+      title: "Privacidad",
+      hint: "Elige si este navegador puede usar estadísticas anónimas de visitas.",
+      analyticsTitle: "Estadísticas de uso",
+      analyticsHint: "Ayudan a mejorar la aplicación al medir las visitas.",
+      accepted: "Estadísticas activadas",
+      declined: "Estadísticas desactivadas",
+      reset: "Preguntarme de nuevo",
+    },
     install: {
       title: "Instalar la aplicación",
       installedTitle: "Aplicación instalada",
@@ -158,6 +167,8 @@ export const es: Strings = {
       error:
         "No se pudo iniciar la instalación. Sigue los pasos manuales de abajo.",
       guideTitle: "Cómo instalarla a mano",
+      detectedGuide: "Guía para este dispositivo",
+      otherPlatforms: "Guías para otros dispositivos",
       iosSafariTitle: "iPhone y iPad (Safari)",
       iosSafariSteps: [
         "Abre esta página en Safari.",

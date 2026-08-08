@@ -215,6 +215,15 @@ export const ar: Strings = {
     feedbackTitle: "ملاحظاتك",
     feedbackHint: "وجدت خطأً أو لديك فكرة؟ يسعدني أن أسمع منك.",
     feedbackButton: "إرسال ملاحظة",
+    privacy: {
+      title: "الخصوصية",
+      hint: "اختر ما إذا كان هذا المتصفح يستطيع استخدام إحصاءات الزيارات المجهولة.",
+      analyticsTitle: "إحصاءات الاستخدام",
+      analyticsHint: "تساعد في تحسين التطبيق عبر قياس الزيارات.",
+      accepted: "الإحصاءات مفعّلة",
+      declined: "الإحصاءات معطّلة",
+      reset: "اسألني مجددًا",
+    },
     install: {
       title: "تثبيت التطبيق",
       installedTitle: "تم تثبيت التطبيق",
@@ -227,6 +236,8 @@ export const ar: Strings = {
       button: "تثبيت الآن",
       error: "تعذّر بدء التثبيت. اتبع الخطوات اليدوية أدناه.",
       guideTitle: "كيفية تثبيته يدويًا",
+      detectedGuide: "دليل هذا الجهاز",
+      otherPlatforms: "أدلة الأجهزة الأخرى",
       iosSafariTitle: "آيفون وآيباد (Safari)",
       iosSafariSteps: [
         "افتح هذه الصفحة في Safari.",

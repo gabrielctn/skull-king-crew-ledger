@@ -142,6 +142,15 @@ export const fr: Strings = {
     feedbackTitle: "Votre avis",
     feedbackHint: "Un bug ou une idée ? N’hésitez pas à m’écrire.",
     feedbackButton: "Envoyer un retour",
+    privacy: {
+      title: "Confidentialité",
+      hint: "Choisissez si ce navigateur peut utiliser des statistiques de visite anonymes.",
+      analyticsTitle: "Statistiques d’utilisation",
+      analyticsHint: "Aide à améliorer l’application en mesurant les visites.",
+      accepted: "Statistiques activées",
+      declined: "Statistiques désactivées",
+      reset: "Me redemander",
+    },
     install: {
       title: "Installer l’application",
       installedTitle: "Application installée",
@@ -155,6 +164,8 @@ export const fr: Strings = {
       error:
         "L’installation n’a pas pu démarrer. Suivez les étapes manuelles ci-dessous.",
       guideTitle: "Comment l’installer manuellement",
+      detectedGuide: "Guide pour cet appareil",
+      otherPlatforms: "Guides pour les autres appareils",
       iosSafariTitle: "iPhone et iPad (Safari)",
       iosSafariSteps: [
         "Ouvrez cette page dans Safari.",

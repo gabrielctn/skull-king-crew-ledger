@@ -70,6 +70,11 @@ export default function JoinTableModal({ code, onClose, onJoin }: Props) {
     }
   };
 
+  const dismiss = () => {
+    if (phase.kind !== "joining") onClose();
+  };
+  const joining = phase.kind === "joining";
+
   const title =
     phase.kind === "preview" ||
     phase.kind === "joining" ||
@@ -84,7 +89,7 @@ export default function JoinTableModal({ code, onClose, onJoin }: Props) {
       visible={code !== null}
       transparent
       animationType="fade"
-      onRequestClose={onClose}
+      onRequestClose={dismiss}
     >
       <View style={styles.overlay}>
         <GlassSurface
@@ -110,10 +115,7 @@ export default function JoinTableModal({ code, onClose, onJoin }: Props) {
           ) : null}
 
           {phase.kind === "joining" ? (
-            <>
-              <Text style={styles.message}>{t.joinTable.busy}</Text>
-              <ActivityIndicator color={colors.gold} style={styles.spinner} />
-            </>
+            <Text style={styles.message}>{t.joinTable.busy}</Text>
           ) : null}
 
           {phase.kind === "joined" ? (
@@ -129,22 +131,31 @@ export default function JoinTableModal({ code, onClose, onJoin }: Props) {
           ) : null}
 
           <View style={styles.actions}>
-            {phase.kind === "preview" ? (
+            {phase.kind === "preview" || joining ? (
               <>
                 <TouchableOpacity
-                  style={styles.confirm}
+                  style={[styles.confirm, joining && styles.confirmBusy]}
                   onPress={() => void join()}
+                  disabled={joining}
                   accessibilityRole="button"
+                  accessibilityState={{ busy: joining, disabled: joining }}
                 >
-                  <Text style={styles.confirmText}>{t.joinTable.confirm}</Text>
+                  <View style={styles.confirmContents}>
+                    <Text style={styles.confirmText}>{t.joinTable.confirm}</Text>
+                    {joining ? (
+                      <ActivityIndicator color={colors.bg} accessible={false} />
+                    ) : null}
+                  </View>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.cancel}
-                  onPress={onClose}
-                  accessibilityRole="button"
-                >
-                  <Text style={styles.cancelText}>{t.joinTable.cancel}</Text>
-                </TouchableOpacity>
+                {!joining ? (
+                  <TouchableOpacity
+                    style={styles.cancel}
+                    onPress={dismiss}
+                    accessibilityRole="button"
+                  >
+                    <Text style={styles.cancelText}>{t.joinTable.cancel}</Text>
+                  </TouchableOpacity>
+                ) : null}
               </>
             ) : null}
             {phase.kind === "joined" || phase.kind === "error" ? (
@@ -197,6 +208,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     paddingHorizontal: spacing.md,
   },
+  confirmBusy: { opacity: 0.78 },
+  confirmContents: { flexDirection: "row", alignItems: "center", columnGap: spacing.sm },
   confirmText: { color: colors.bg, fontSize: 14, fontWeight: "800" },
   cancel: {
     minHeight: 44,

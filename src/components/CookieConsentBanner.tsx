@@ -9,10 +9,11 @@ import {
   useWindowDimensions,
 } from "react-native";
 import {
+  applyAnalyticsConsent,
   AnalyticsConsent,
   enableGoogleAnalytics,
   loadAnalyticsConsent,
-  saveAnalyticsConsent,
+  subscribeAnalyticsConsent,
 } from "../analytics";
 import { useI18n } from "../i18n/context";
 import { colors, radius, spacing } from "../theme";
@@ -28,6 +29,8 @@ export default function CookieConsentBanner() {
   );
   const reducedMotion = useReducedMotion();
   const reveal = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => subscribeAnalyticsConsent(setConsent), []);
 
   useEffect(() => {
     if (consent === "accepted") {
@@ -51,8 +54,7 @@ export default function CookieConsentBanner() {
   }, [consent, reducedMotion, reveal]);
 
   const choose = (choice: AnalyticsConsent) => {
-    saveAnalyticsConsent(choice);
-    setConsent(choice);
+    applyAnalyticsConsent(choice);
   };
 
   if (Platform.OS !== "web" || consent !== null) return null;

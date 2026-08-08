@@ -141,6 +141,15 @@ export const de: Strings = {
     feedbackTitle: "Feedback",
     feedbackHint: "Fehler gefunden oder eine Idee? Ich freue mich über eine Nachricht.",
     feedbackButton: "Feedback senden",
+    privacy: {
+      title: "Datenschutz",
+      hint: "Lege fest, ob dieser Browser anonyme Besuchsstatistiken verwenden darf.",
+      analyticsTitle: "Nutzungsstatistiken",
+      analyticsHint: "Hilft, die App durch die Messung von Besuchen zu verbessern.",
+      accepted: "Statistiken aktiviert",
+      declined: "Statistiken deaktiviert",
+      reset: "Erneut fragen",
+    },
     install: {
       title: "App installieren",
       installedTitle: "App installiert",
@@ -154,6 +163,8 @@ export const de: Strings = {
       error:
         "Die Installation konnte nicht starten. Nutze die manuellen Schritte unten.",
       guideTitle: "So installierst du sie manuell",
+      detectedGuide: "Anleitung für dieses Gerät",
+      otherPlatforms: "Anleitungen für andere Geräte",
       iosSafariTitle: "iPhone & iPad (Safari)",
       iosSafariSteps: [
         "Öffne diese Seite in Safari.",

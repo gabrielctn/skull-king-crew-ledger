@@ -1,4 +1,7 @@
 import { Platform } from "react-native";
+import { detectInstallGuidePlatform } from "./preferences";
+
+export { detectInstallGuidePlatform, type InstallGuidePlatform } from "./preferences";
 
 type InstallOutcome = "accepted" | "dismissed";
 export type PwaInstallMode = "prompt" | "manual_ios" | "none";
@@ -72,11 +75,12 @@ export function wasAppInstalled(): boolean {
 
 export function isIosBrowser(): boolean {
   if (Platform.OS !== "web" || typeof navigator === "undefined") return false;
-  const userAgent = navigator.userAgent;
-  const classicIos = /iPad|iPhone|iPod/.test(userAgent);
-  const ipadDesktopMode =
-    navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
-  return classicIos || ipadDesktopMode;
+  const platform = detectInstallGuidePlatform(
+    navigator.userAgent,
+    navigator.platform,
+    navigator.maxTouchPoints
+  );
+  return platform === "ios_safari" || platform === "ios_chrome";
 }
 
 export function getPwaInstallMode(): PwaInstallMode {

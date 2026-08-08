@@ -180,7 +180,7 @@ export default function TableInviteModal({ visible, tableName, onClose }: Props)
                   </Text>
                   <Text
                     style={[styles.countdown, expired && styles.countdownExpired]}
-                    accessibilityLiveRegion="polite"
+                    accessibilityRole={expired ? "alert" : undefined}
                   >
                     {expired
                       ? t.tableInvite.expired

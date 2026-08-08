@@ -1,7 +1,9 @@
 import React from "react";
 import {
+  KeyboardAvoidingView,
   Linking,
   Modal,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -38,6 +40,7 @@ import ToggleSwitch from "../components/ToggleSwitch";
 import WhatsNewModal from "../components/WhatsNewModal";
 import InstallAppSection from "../components/InstallAppSection";
 import GlassSurface from "../components/GlassSurface";
+import AnalyticsPreferences from "../components/AnalyticsPreferences";
 
 const FEEDBACK_EMAIL = "gabrielcretin@gmail.com";
 const HEADER_HEIGHT = 60;
@@ -226,6 +229,10 @@ export default function SettingsScreen({
 
   return (
     <SafeAreaView style={styles.safe}>
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoider}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
       <ScrollView
         stickyHeaderIndices={[0]}
         contentContainerStyle={[
@@ -236,6 +243,7 @@ export default function SettingsScreen({
           },
         ]}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <View style={styles.headerLayer} pointerEvents="box-none">
           <GlassSurface
@@ -293,6 +301,7 @@ export default function SettingsScreen({
         </View>
 
         <InstallAppSection />
+        <AnalyticsPreferences />
 
         {isWakeLockSupported() ? (
           <>
@@ -573,6 +582,7 @@ export default function SettingsScreen({
         <Text style={styles.footer}>{t.home.offline}</Text>
         </View>
       </ScrollView>
+      </KeyboardAvoidingView>
 
       <Modal
         visible={deleteAllOpen}
@@ -677,6 +687,7 @@ export default function SettingsScreen({
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "transparent" },
+  keyboardAvoider: { flex: 1 },
   headerLayer: {
     width: "100%",
     paddingTop: spacing.sm,

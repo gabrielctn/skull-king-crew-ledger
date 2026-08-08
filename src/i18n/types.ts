@@ -155,6 +155,15 @@ export interface Strings {
     feedbackTitle: string;
     feedbackHint: string;
     feedbackButton: string;
+    privacy: {
+      title: string;
+      hint: string;
+      analyticsTitle: string;
+      analyticsHint: string;
+      accepted: string;
+      declined: string;
+      reset: string;
+    };
     /** "Install the app" section: one-tap button plus manual per-OS guides. */
     install: {
       title: string;
@@ -169,6 +178,8 @@ export interface Strings {
       error: string;
       /** Toggle that reveals the step-by-step manual guide. */
       guideTitle: string;
+      detectedGuide: string;
+      otherPlatforms: string;
       iosSafariTitle: string;
       iosSafariSteps: string[];
       /** Chrome on iOS hides "Add to Home Screen" behind its own share sheet. */
