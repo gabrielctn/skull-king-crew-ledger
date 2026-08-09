@@ -121,6 +121,7 @@ export default function InstallAppSection() {
             onPress={() => setGuideOpen((open) => !open)}
             accessibilityRole="button"
             accessibilityState={{ expanded: guideOpen }}
+            aria-expanded={guideOpen}
           >
             <Text style={styles.guideToggleText}>{copy.guideTitle}</Text>
             <DisclosureChevron expanded={guideOpen} />
@@ -142,6 +143,7 @@ export default function InstallAppSection() {
                 onPress={() => setOtherGuidesOpen((open) => !open)}
                 accessibilityRole="button"
                 accessibilityState={{ expanded: otherGuidesOpen }}
+                aria-expanded={otherGuidesOpen}
               >
                 <Text style={styles.otherGuidesText}>{copy.otherPlatforms}</Text>
                 <DisclosureChevron expanded={otherGuidesOpen} />

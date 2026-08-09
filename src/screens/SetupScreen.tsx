@@ -192,7 +192,7 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
           <Text style={styles.title} accessibilityRole="header">
             {t.setup.title}
           </Text>
-          <View style={{ width: 50 }} />
+          <View style={styles.headerSpacer} />
         </GlassSurface>
 
         <ScrollView
@@ -365,6 +365,7 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
               onPress={() => setCustomizationVisible((visible) => !visible)}
               accessibilityRole="button"
               accessibilityState={{ expanded: customizationVisible }}
+              aria-expanded={customizationVisible}
             >
               <Text style={styles.customizeText}>
                 {customizationVisible
@@ -552,6 +553,7 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
                 onPress={() => setRoundVariantsVisible((visible) => !visible)}
                 accessibilityRole="button"
                 accessibilityState={{ expanded: roundVariantsVisible }}
+                aria-expanded={roundVariantsVisible}
                 accessibilityLabel={
                   roundVariantsVisible
                     ? t.setup.hideOtherStructures
@@ -652,8 +654,16 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
   },
   back: { color: colors.gold, fontSize: 17 },
-  backButton: { minHeight: 44, justifyContent: "center" },
-  title: { color: colors.text, fontSize: 20, fontWeight: "700" },
+  backButton: { width: 92, minHeight: 44, justifyContent: "center" },
+  title: {
+    flex: 1,
+    minWidth: 0,
+    textAlign: "center",
+    color: colors.text,
+    fontSize: 20,
+    fontWeight: "700",
+  },
+  headerSpacer: { width: 92 },
   scroll: {
     width: "100%",
     alignSelf: "center",

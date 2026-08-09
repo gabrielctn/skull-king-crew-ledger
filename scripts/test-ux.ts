@@ -415,6 +415,28 @@ check(
     )
 );
 check(
+  "Settings radio groups expose checked state directly to web accessibility",
+  (settingsSource.match(/accessibilityRole="radiogroup"/g) ?? []).length >= 2 &&
+    settingsSource.includes("aria-checked={lang === option}") &&
+    settingsSource.includes("aria-checked={active}")
+);
+check(
+  "progressive disclosures expose expanded state directly on web",
+  installSource.includes("aria-expanded={guideOpen}") &&
+    installSource.includes("aria-expanded={otherGuidesOpen}") &&
+    homeSource.includes("aria-expanded={showAllHistory}") &&
+    homeSource.includes("aria-expanded={supportDetailsOpen}") &&
+    setupSource.includes("aria-expanded={customizationVisible}") &&
+    setupSource.includes("aria-expanded={roundVariantsVisible}") &&
+    gameSource.includes("aria-expanded={open}") &&
+    scoreBreakdownSource.includes("aria-expanded={open}") &&
+    whatsNewSource.includes("aria-expanded={historyOpen}")
+);
+check(
+  "the Kraken toggle exposes pressed state directly on web",
+  gameSource.includes("aria-pressed={discardedTricks > 0}")
+);
+check(
   "inviting and joining are one tap from the home screen",
   homeSource.includes("t.home.tableInvite") &&
     homeSource.includes("t.home.tableJoin") &&
@@ -443,6 +465,12 @@ check(
     liveShareSource.includes("accessible={false}")
 );
 check(
+  "compact modal close controls have explicit 44 point bounds",
+  [joinByCodeSource, tableInviteSource, scoreBreakdownSource].every((source) =>
+    /closeButton:\s*\{[^}]*\bwidth:\s*44,[^}]*\bheight:\s*44/.test(source)
+  )
+);
+check(
   "touched screen and dialog titles expose heading semantics",
   installSource.includes('accessibilityRole="header"') &&
     analyticsSource.includes('accessibilityRole="header"') &&
@@ -454,6 +482,33 @@ check(
     lootTrackerSource.includes('accessibilityRole="header"') &&
     lootConfirmationSource.includes('accessibilityRole="header"') &&
     scoreBreakdownSource.includes('accessibilityRole="header"')
+);
+check(
+  "key headers wrap cleanly under large text",
+  settingsSource.includes("<View style={styles.headerSpacer} />") &&
+    /title:\s*\{[^}]*\bflex:\s*1,[^}]*\bminWidth:\s*0,[^}]*\btextAlign:\s*"center"/.test(
+      settingsSource
+    ) &&
+    setupSource.includes("<View style={styles.headerSpacer} />") &&
+    /title:\s*\{[^}]*\bflex:\s*1,[^}]*\bminWidth:\s*0,[^}]*\btextAlign:\s*"center"/.test(
+      setupSource
+    ) &&
+    !scoreBreakdownSource.includes(
+      'style={styles.playerName} numberOfLines={1} accessibilityRole="header"'
+    ) &&
+    whatsNewSource.includes(
+      'style={styles.releaseTitle} accessibilityRole="header"'
+    )
+);
+check(
+  "the native Rules sheet reserves the device safe area",
+  rulesSource.includes("SafeAreaView") &&
+    rulesSource.includes("<SafeAreaView style={[styles.sheet")
+);
+check(
+  "the Settings release row uses the shared vector icon family",
+  settingsSource.includes('name="star-four-points-outline"') &&
+    !settingsSource.includes('<Text style={styles.whatsNewIcon}>✦</Text>')
 );
 check(
   "spectator sorting is one radiogroup rather than selected buttons",

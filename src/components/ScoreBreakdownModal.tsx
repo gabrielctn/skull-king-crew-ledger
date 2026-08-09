@@ -195,7 +195,7 @@ export default function ScoreBreakdownModal({
               />
               <View style={styles.identityCopy}>
                 <Text style={styles.eyebrow} accessibilityRole="header">{t.scoreBreakdown.title}</Text>
-                <Text style={styles.playerName} numberOfLines={1} accessibilityRole="header">
+                <Text style={styles.playerName} accessibilityRole="header">
                   {player.name}
                 </Text>
               </View>
@@ -203,7 +203,6 @@ export default function ScoreBreakdownModal({
             <TouchableOpacity
               onPress={onClose}
               style={styles.closeButton}
-              hitSlop={6}
               accessibilityRole="button"
               accessibilityLabel={t.scoreBreakdown.close}
             >
@@ -298,6 +297,7 @@ export default function ScoreBreakdownModal({
                         }
                         accessibilityRole="button"
                         accessibilityState={{ expanded: open }}
+                        aria-expanded={open}
                         accessibilityLabel={`${t.scoreBreakdown.round(
                           round.roundNumber
                         )} · ${t.scoreBreakdown.roundSummary(
@@ -486,10 +486,10 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   closeButton: {
-    width: 38,
-    height: 38,
+    width: 44,
+    height: 44,
     marginStart: spacing.sm,
-    borderRadius: 19,
+    borderRadius: 22,
     borderWidth: 1,
     borderColor: colors.cardBorder,
     backgroundColor: colors.bgElevated,

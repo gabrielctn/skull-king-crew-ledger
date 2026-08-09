@@ -451,6 +451,7 @@ export default function HomeScreen({
                     onPress={() => setShowAllHistory((shown) => !shown)}
                     accessibilityRole="button"
                     accessibilityState={{ expanded: showAllHistory }}
+                    aria-expanded={showAllHistory}
                   >
                     <Text style={styles.historyToggleText}>
                       {showAllHistory
@@ -481,6 +482,7 @@ export default function HomeScreen({
                 accessibilityRole="button"
                 accessibilityLabel={t.home.legalAndCosts}
                 accessibilityState={{ expanded: supportDetailsOpen }}
+                aria-expanded={supportDetailsOpen}
               >
                 <Text style={styles.legalText}>{t.home.legalAndCosts}</Text>
                 <DisclosureChevron expanded={supportDetailsOpen} />

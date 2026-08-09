@@ -4,7 +4,12 @@
 import { readFileSync } from "node:fs";
 import {
   backActionForState,
+  historyDeltaToHome,
+  historyDepthFromState,
+  historyStateForModal,
   historyStateForScreen,
+  isAppHistoryState,
+  isModalHistoryState,
   restoredHistoryRoute,
   screenFromHistoryState,
 } from "../src/navigation";
@@ -37,6 +42,46 @@ check(
 check(
   "history state writes the route",
   historyStateForScreen({}, "stats").skullKingScreen === "stats"
+);
+check(
+  "screen history clears modal state and records an explicit depth",
+  historyStateForScreen(
+    { skullKingModal: true, skullKingDepth: 2 },
+    "settings",
+    undefined,
+    3
+  ).skullKingModal === undefined &&
+    historyDepthFromState(
+      historyStateForScreen({}, "settings", undefined, 3)
+    ) === 3
+);
+check(
+  "modal history preserves its route and depth",
+  isModalHistoryState(
+    historyStateForModal({ skullKingScreen: "settings", skullKingDepth: 2 })
+  ) &&
+    screenFromHistoryState(
+      historyStateForModal({ skullKingScreen: "settings", skullKingDepth: 2 })
+    ) === "settings" &&
+    historyDepthFromState(
+      historyStateForModal({ skullKingScreen: "settings", skullKingDepth: 2 })
+    ) === 2
+);
+check(
+  "invalid history depths are treated as the root entry",
+  historyDepthFromState({ skullKingDepth: -1 }) === 0 &&
+    historyDepthFromState({ skullKingDepth: 1.5 }) === 0
+);
+check(
+  "reload only recognizes complete app history entries",
+  isAppHistoryState({ skullKingScreen: "settings", skullKingDepth: 1 }) &&
+    !isAppHistoryState({ skullKingScreen: "settings" }) &&
+    !isAppHistoryState({ skullKingScreen: "unknown", skullKingDepth: 1 })
+);
+check(
+  "in-app Back returns through existing history instead of pushing Home",
+  historyDeltaToHome({ skullKingDepth: 3 }) === -3 &&
+    historyDeltaToHome({ skullKingDepth: 0 }) === 0
 );
 check(
   "back closes an open modal before leaving its screen",
@@ -144,6 +189,26 @@ check(
 check(
   "web screen transitions do not request the unsupported native animation driver",
   screenTransitionSource.includes("useNativeDriver: Platform.OS !== \"web\"")
+);
+check(
+  "browser history owns modal Back and returns Home without pushing a duplicate route",
+  appSource.includes("historyStateForModal(window.history.state)") &&
+    appSource.includes("isModalHistoryState(event.state)") &&
+    appSource.includes("window.history.go(historyDelta)") &&
+    !appSource.includes('const handleHome = () => navigate("home")')
+);
+check(
+  "reload restores a marked app entry instead of rewriting a second Home root",
+  appSource.includes("if (isAppHistoryState(window.history.state))") &&
+    appSource.includes("restoreHistoryState(window.history.state)")
+);
+check(
+  "the global storage warning stays inside the native bottom safe area",
+  appSource.includes(
+    '<SafeAreaView style={styles.storageWarningSafeArea} pointerEvents="box-none">'
+  ) &&
+    appSource.includes("storageWarningSafeArea: {") &&
+    appSource.includes("...StyleSheet.absoluteFillObject")
 );
 check(
   "native motion stays conservative until its accessibility preference is known",

@@ -70,7 +70,9 @@ export default function WhatsNewModal({
           <Text style={styles.releaseEyebrow}>
             {t.whatsNew.version(CURRENT_RELEASE, releaseDate)}
           </Text>
-          <Text style={styles.releaseTitle}>{t.whatsNew.title}</Text>
+          <Text style={styles.releaseTitle} accessibilityRole="header">
+            {t.whatsNew.title}
+          </Text>
           <ScrollView
             style={styles.releaseScroll}
             contentContainerStyle={styles.releaseScrollContent}
@@ -89,6 +91,7 @@ export default function WhatsNewModal({
                   onPress={() => setHistoryOpen((open) => !open)}
                   accessibilityRole="button"
                   accessibilityState={{ expanded: historyOpen }}
+                  aria-expanded={historyOpen}
                 >
                   <Text style={styles.historyToggleText}>
                     {t.whatsNew.historyTitle}

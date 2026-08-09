@@ -124,7 +124,6 @@ export default function JoinByCodeModal({ visible, onClose, onResolved }: Props)
             <TouchableOpacity
               onPress={onClose}
               style={styles.closeButton}
-              hitSlop={6}
               accessibilityRole="button"
               accessibilityLabel={t.common.dismiss}
             >
@@ -250,10 +249,10 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   closeButton: {
-    width: 38,
-    height: 38,
+    width: 44,
+    height: 44,
     marginStart: spacing.sm,
-    borderRadius: 19,
+    borderRadius: 22,
     borderWidth: 1,
     borderColor: colors.cardBorder,
     backgroundColor: colors.bgElevated,

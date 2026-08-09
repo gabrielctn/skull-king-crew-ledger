@@ -18,8 +18,25 @@ export interface RestoredHistoryRoute {
   gameId: string | null;
 }
 
+function historyRecord(state: unknown): Record<string, unknown> {
+  return state !== null && typeof state === "object"
+    ? (state as Record<string, unknown>)
+    : {};
+}
+
 export function isAppScreen(value: unknown): value is AppScreen {
   return typeof value === "string" && APP_SCREENS.includes(value as AppScreen);
+}
+
+export function isAppHistoryState(state: unknown): boolean {
+  const record = historyRecord(state);
+  const depth = record.skullKingDepth;
+  return (
+    isAppScreen(record.skullKingScreen) &&
+    typeof depth === "number" &&
+    Number.isSafeInteger(depth) &&
+    depth >= 0
+  );
 }
 
 export function screenFromHistoryState(state: unknown): AppScreen {
@@ -36,18 +53,49 @@ export function screenFromHistoryState(state: unknown): AppScreen {
 export function historyStateForScreen(
   state: unknown,
   screen: AppScreen,
-  gameId?: string
+  gameId?: string,
+  depth = historyDepthFromState(state)
 ): Record<string, unknown> {
-  const base =
-    state !== null && typeof state === "object"
-      ? (state as Record<string, unknown>)
-      : {};
-  const { skullKingGameId: _previousGameId, ...preserved } = base;
+  const base = historyRecord(state);
+  const {
+    skullKingGameId: _previousGameId,
+    skullKingModal: _previousModal,
+    skullKingDepth: _previousDepth,
+    ...preserved
+  } = base;
+  const normalizedDepth =
+    Number.isSafeInteger(depth) && depth >= 0 ? depth : 0;
   return {
     ...preserved,
     skullKingScreen: screen,
+    skullKingDepth: normalizedDepth,
     ...(gameId ? { skullKingGameId: gameId } : {}),
   };
+}
+
+export function historyDepthFromState(state: unknown): number {
+  const depth = historyRecord(state).skullKingDepth;
+  return typeof depth === "number" && Number.isSafeInteger(depth) && depth >= 0
+    ? depth
+    : 0;
+}
+
+export function historyStateForModal(state: unknown): Record<string, unknown> {
+  const base = historyRecord(state);
+  return {
+    ...base,
+    skullKingScreen: screenFromHistoryState(base),
+    skullKingDepth: historyDepthFromState(base),
+    skullKingModal: true,
+  };
+}
+
+export function isModalHistoryState(state: unknown): boolean {
+  return historyRecord(state).skullKingModal === true;
+}
+
+export function historyDeltaToHome(state: unknown): number {
+  return -historyDepthFromState(state);
 }
 
 /** Resolves a history entry without letting a stale game id render invalid UI. */

@@ -838,6 +838,7 @@ export default function GameScreen({
                   }
                   accessibilityRole="button"
                   accessibilityState={{ expanded: open }}
+                  aria-expanded={open}
                   accessibilityLabel={`${t.game.bonus} · ${p.name}${
                     bonuses > 0 ? ` · ${bonuses}` : ""
                   }`}
@@ -914,6 +915,7 @@ export default function GameScreen({
           onPress={toggleDiscardedTrick}
           accessibilityRole="button"
           accessibilityState={{ selected: discardedTricks > 0 }}
+          aria-pressed={discardedTricks > 0}
         >
           <Text
             style={[

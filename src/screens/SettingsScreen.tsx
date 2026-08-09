@@ -262,7 +262,7 @@ export default function SettingsScreen({
               <Text style={styles.back}>‹ {t.common.back}</Text>
             </TouchableOpacity>
             <Text style={styles.title} accessibilityRole="header">{t.settings.title}</Text>
-            <View style={{ width: 50 }} />
+            <View style={styles.headerSpacer} />
           </GlassSurface>
         </View>
 
@@ -273,7 +273,11 @@ export default function SettingsScreen({
           ]}
         >
         <Text style={styles.section} accessibilityRole="header">{t.settings.languageTitle}</Text>
-        <View style={styles.languageList}>
+        <View
+          style={styles.languageList}
+          accessibilityRole="radiogroup"
+          accessibilityLabel={t.settings.languageTitle}
+        >
           {SUPPORTED_LANGS.map((option: Lang, index) => (
             <TouchableOpacity
               key={option}
@@ -285,6 +289,7 @@ export default function SettingsScreen({
               accessibilityRole="radio"
               accessibilityLabel={languageNativeName(option)}
               accessibilityState={{ checked: lang === option }}
+              aria-checked={lang === option}
             >
               <Text
                 style={[
@@ -368,7 +373,11 @@ export default function SettingsScreen({
                 <Text style={styles.codeLabel} accessibilityRole="header">
                   {t.settings.cloud.tablesTitle}
                 </Text>
-                <View style={styles.tablesList}>
+                <View
+                  style={styles.tablesList}
+                  accessibilityRole="radiogroup"
+                  accessibilityLabel={t.settings.cloud.tablesTitle}
+                >
                   {tables.map((membership, index) => {
                     const active = membership.ownerId === activeTableId;
                     return (
@@ -392,6 +401,7 @@ export default function SettingsScreen({
                             checked: active,
                             disabled: active || tableBusy,
                           }}
+                          aria-checked={active}
                           accessibilityLabel={
                             active
                               ? tableLabel(membership)
@@ -587,7 +597,13 @@ export default function SettingsScreen({
           accessibilityRole="button"
           accessibilityLabel={t.whatsNew.open}
         >
-          <Text style={styles.whatsNewIcon}>✦</Text>
+          <View style={styles.whatsNewIcon}>
+            <AppIcon
+              name="star-four-points-outline"
+              size={22}
+              color={colors.gold}
+            />
+          </View>
           <View style={styles.whatsNewCopy}>
             <View style={styles.whatsNewTopline}>
               <Text style={styles.whatsNewTitle}>{t.whatsNew.open}</Text>
@@ -730,8 +746,16 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
   },
   back: { color: colors.gold, fontSize: 17 },
-  backButton: { minHeight: 44, justifyContent: "center" },
-  title: { color: colors.text, fontSize: 20, fontWeight: "700" },
+  backButton: { width: 92, minHeight: 44, justifyContent: "center" },
+  title: {
+    flex: 1,
+    minWidth: 0,
+    textAlign: "center",
+    color: colors.text,
+    fontSize: 20,
+    fontWeight: "700",
+  },
+  headerSpacer: { width: 92 },
   scroll: {
     width: "100%",
     alignSelf: "center",
@@ -959,7 +983,13 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     marginTop: spacing.xl,
   },
-  whatsNewIcon: { color: colors.gold, fontSize: 16, marginEnd: spacing.md },
+  whatsNewIcon: {
+    width: 22,
+    height: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    marginEnd: spacing.md,
+  },
   whatsNewCopy: { flex: 1 },
   whatsNewTopline: { flexDirection: "row", alignItems: "center" },
   whatsNewTitle: { color: colors.text, fontSize: 16, fontWeight: "700" },

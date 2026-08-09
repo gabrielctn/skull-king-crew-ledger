@@ -5,6 +5,7 @@ import {
   Image,
   Linking,
   Platform,
+  SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
@@ -105,7 +106,12 @@ import type { AppIntentDestination } from "./src/appIntents";
 import { illustrations } from "./src/assets/illustrations";
 import {
   backActionForState,
+  historyDeltaToHome,
+  historyDepthFromState,
+  historyStateForModal,
   historyStateForScreen,
+  isAppHistoryState,
+  isModalHistoryState,
   restoredHistoryRoute,
 } from "./src/navigation";
 import type { AppScreen } from "./src/navigation";
@@ -150,17 +156,19 @@ function StorageWarning({
   const { t } = useI18n();
   if (!visible) return null;
   return (
-    <View style={styles.storageWarning} accessibilityRole="alert">
-      <Text style={styles.storageWarningText}>{t.common.storageError}</Text>
-      <TouchableOpacity
-        style={styles.storageWarningDismiss}
-        onPress={onDismiss}
-        accessibilityRole="button"
-        accessibilityLabel={t.common.dismiss}
-      >
-        <Text style={styles.storageWarningDismissText}>×</Text>
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView style={styles.storageWarningSafeArea} pointerEvents="box-none">
+      <View style={styles.storageWarning} accessibilityRole="alert">
+        <Text style={styles.storageWarningText}>{t.common.storageError}</Text>
+        <TouchableOpacity
+          style={styles.storageWarningDismiss}
+          onPress={onDismiss}
+          accessibilityRole="button"
+          accessibilityLabel={t.common.dismiss}
+        >
+          <Text style={styles.storageWarningDismissText}>×</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -226,16 +234,40 @@ export default function App() {
   const historySaveWorker = useRef<Promise<void> | null>(null);
   const historySaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const persistenceFailures = useRef(0);
+  const modalOpenRef = useRef(false);
+  const previousModalOpenRef = useRef(false);
+  const closingModalFromHistoryRef = useRef(false);
 
-  const navigate = (nextScreen: AppScreen, gameId?: string) => {
+  const navigate = useCallback((nextScreen: AppScreen, gameId?: string) => {
     setScreen(nextScreen);
     if (Platform.OS === "web" && typeof window !== "undefined") {
+      const nextDepth = historyDepthFromState(window.history.state) + 1;
       window.history.pushState(
-        historyStateForScreen(window.history.state, nextScreen, gameId),
+        historyStateForScreen(
+          window.history.state,
+          nextScreen,
+          gameId,
+          nextDepth
+        ),
         ""
       );
     }
-  };
+  }, []);
+
+  const returnHome = useCallback(() => {
+    if (Platform.OS === "web" && typeof window !== "undefined") {
+      const historyDelta = historyDeltaToHome(window.history.state);
+      if (historyDelta < 0) {
+        window.history.go(historyDelta);
+        return;
+      }
+      window.history.replaceState(
+        historyStateForScreen(window.history.state, "home", undefined, 0),
+        ""
+      );
+    }
+    setScreen("home");
+  }, []);
 
   const saveHomeScrollOffset = useCallback((offset: number) => {
     homeScrollOffsetRef.current = Math.max(0, offset);
@@ -254,6 +286,7 @@ export default function App() {
       }
     }
     setScreen(route.screen);
+    return route;
   };
 
   const markStorageFailure = () => {
@@ -441,25 +474,94 @@ export default function App() {
     joinByCodeOpen ||
     pendingJoinCode !== null ||
     storageError;
+  modalOpenRef.current = modalOpen;
 
-  const closeGlobalModals = () => {
+  const closeGlobalModals = useCallback(() => {
     setSupportPromptVisible(false);
     setInviteOpen(false);
     setJoinByCodeOpen(false);
     setPendingJoinCode(null);
     setStorageError(false);
-  };
+  }, []);
+
+  // A fresh page load establishes one Home root. Reload keeps an existing app
+  // entry and restores its route, so its stored depth still matches the real
+  // browser stack instead of creating a second Home root in place.
+  useEffect(() => {
+    if (
+      loading ||
+      Platform.OS !== "web" ||
+      typeof window === "undefined"
+    ) {
+      return;
+    }
+    if (isAppHistoryState(window.history.state)) {
+      const route = restoreHistoryState(window.history.state);
+      window.history.replaceState(
+        historyStateForScreen(
+          window.history.state,
+          route.screen,
+          route.gameId ?? undefined,
+          historyDepthFromState(window.history.state)
+        ),
+        ""
+      );
+      return;
+    }
+    window.history.replaceState(
+      historyStateForScreen(window.history.state, "home", undefined, 0),
+      ""
+    );
+  }, [loading]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // A global modal owns a same-route history entry. Browser Back therefore
+  // dismisses it even on Home, without changing the underlying screen.
+  useEffect(() => {
+    if (loading || Platform.OS !== "web" || typeof window === "undefined") {
+      return;
+    }
+    const wasOpen = previousModalOpenRef.current;
+    previousModalOpenRef.current = modalOpen;
+    if (!wasOpen && modalOpen) {
+      if (!isModalHistoryState(window.history.state)) {
+        window.history.pushState(
+          historyStateForModal(window.history.state),
+          ""
+        );
+      }
+      return;
+    }
+    if (wasOpen && !modalOpen) {
+      if (closingModalFromHistoryRef.current) {
+        closingModalFromHistoryRef.current = false;
+        return;
+      }
+      if (isModalHistoryState(window.history.state)) {
+        window.history.back();
+      }
+    }
+  }, [loading, modalOpen]);
 
   // Browser navigation only restores routes written by navigate(). It leaves
   // capability hashes alone, which remain owned by the live-share handlers.
   useEffect(() => {
     if (Platform.OS !== "web" || typeof window === "undefined") return;
     const onPopState = (event: PopStateEvent) => {
+      // Forward must not revive a dismissed modal whose transient UI state no
+      // longer exists. Consume that stale modal entry and stay on its route.
+      if (isModalHistoryState(event.state)) {
+        if (!modalOpenRef.current) window.history.back();
+        return;
+      }
+      if (modalOpenRef.current) {
+        closingModalFromHistoryRef.current = true;
+        closeGlobalModals();
+      }
       restoreHistoryState(event.state);
     };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Android back mirrors the browser behavior while giving any global modal
   // priority over returning to Home or allowing the OS to close the app.
@@ -472,13 +574,13 @@ export default function App() {
         return true;
       }
       if (action === "home") {
-        navigate("home");
+        returnHome();
         return true;
       }
       return false;
     });
     return () => subscription.remove();
-  }, [modalOpen, screen]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [closeGlobalModals, modalOpen, returnHome, screen]);
 
   // A QR code scanned while the app is already open navigates to the same page
   // with a new capability in the hash; pick it up without a reload.
@@ -875,7 +977,7 @@ export default function App() {
     void considerSupportPrompt();
   };
 
-  const handleHome = () => navigate("home");
+  const handleHome = returnHome;
 
   const handleNewFromResults = () => {
     queueCurrentSave(null);
@@ -1092,12 +1194,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   loaderText: { color: colors.textDim, fontSize: 14, marginTop: spacing.md },
-  storageWarning: {
-    position: "absolute",
-    left: 16,
-    right: 16,
-    bottom: 16,
+  storageWarningSafeArea: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "flex-end",
     zIndex: 100,
+  },
+  storageWarning: {
+    marginHorizontal: 16,
+    marginBottom: 16,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: colors.danger,

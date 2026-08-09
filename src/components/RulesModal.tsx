@@ -3,6 +3,7 @@ import {
   Image,
   Linking,
   Modal,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -47,7 +48,7 @@ export default function RulesModal({ visible, onClose }: Props) {
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={[styles.backdrop, layout.isTablet && styles.backdropWide]}>
-        <View style={[styles.sheet, layout.isTablet && styles.sheetWide]}>
+        <SafeAreaView style={[styles.sheet, layout.isTablet && styles.sheetWide]}>
           <View style={styles.header}>
             <View style={styles.titleRow}>
               <View style={styles.mermaidCrop}>
@@ -84,7 +85,7 @@ export default function RulesModal({ visible, onClose }: Props) {
             <Section heading={t.rules.headings.special} entries={t.rules.special} />
             <Section heading={t.rules.headings.twoPlayer} entries={t.rules.twoPlayer} />
           </ScrollView>
-        </View>
+        </SafeAreaView>
       </View>
     </Modal>
   );
