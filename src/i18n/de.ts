@@ -76,7 +76,7 @@ export const de: Strings = {
       "Sie ist kostenlos, werbefrei und ohne Konto nutzbar, und das bleibt so. Dahinter steckt keine Firma, sondern ein Spieler, der sie in seiner Freizeit entwickelt.",
     cost: (amountEur) =>
       `Sie im App Store zu halten kostet den Entwickler ${amountEur} €/Jahr. Ein kleiner Beitrag genügt, um diese Rechnung zu decken.`,
-    donate: "Entwickler unterstützen ☕",
+    donate: "Entwickler unterstützen",
     later: "Vielleicht später",
     never: "Nicht mehr fragen",
   },
@@ -347,7 +347,7 @@ export const de: Strings = {
     useKnownPlayer: (name) => `${name} übernehmen`,
     duplicatePlayer: (name) => `${name} sitzt bereits am Tisch. Wähle einen anderen Namen.`,
     maximumPlayers: (count) => `An einem Tisch können höchstens ${count} Spieler sitzen.`,
-    start: "Spiel starten ☠️",
+    start: "Spiel starten",
     needPlayers: "Mindestens 2 Spieler hinzufügen",
   },
 
@@ -375,7 +375,7 @@ export const de: Strings = {
     totalScoreTitle: "Gesamtpunktzahl",
     totalIncludesRound: "Die angezeigte Runde ist in diesen Summen enthalten.",
     totalExcludesRound: "Die angezeigte Runde ist noch nicht enthalten.",
-    finish: "Spiel beenden 🏁",
+    finish: "Spiel beenden",
     updateRound: "Runde aktualisieren",
     scoreRound: "Runde werten →",
     reviewRoundIssue: "Prüfe diesen Punkt, um die Runde zu werten.",

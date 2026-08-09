@@ -196,7 +196,12 @@ export default function ScoreChart({ game }: Props) {
           stays left-to-right, because its x axis is a scale. */}
       <View style={styles.legend}>
         {series.map((player, playerIndex) => (
-          <View key={player.playerId} style={styles.legendItem}>
+          <View
+            key={player.playerId}
+            style={styles.legendItem}
+            role="group"
+            aria-label={summaries[playerIndex]?.label}
+          >
             <View
               style={[
                 styles.legendSwatch,
@@ -206,12 +211,7 @@ export default function ScoreChart({ game }: Props) {
                 },
               ]}
             />
-            <Text
-              accessible
-              accessibilityLabel={summaries[playerIndex]?.label}
-              numberOfLines={1}
-              style={styles.legendName}
-            >
+            <Text accessible={false} aria-hidden numberOfLines={1} style={styles.legendName}>
               {player.name}
             </Text>
           </View>

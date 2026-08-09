@@ -50,6 +50,7 @@ import { colors, radius, spacing } from "../theme";
 import { getResponsiveLayout } from "../responsive";
 import { useKeepAwake } from "../wakeLock";
 import GlassSurface from "../components/GlassSurface";
+import AppIcon from "../components/AppIcon";
 import { impactHaptic, selectionHaptic, successHaptic } from "../haptics";
 import {
   finalRoundHaptic,
@@ -579,13 +580,18 @@ export default function GameScreen({
         accessibilityState={{ disabled: !roundReady || lootIncomplete }}
         aria-disabled={!roundReady || lootIncomplete}
       >
-        <Text style={styles.scoreBtnText}>
-          {displayRound === game.totalRounds && !alreadyRecorded
-            ? t.game.finish
-            : alreadyRecorded
-              ? t.game.updateRound
-              : t.game.scoreRound}
-        </Text>
+        <View style={styles.scoreBtnContents}>
+          {displayRound === game.totalRounds && !alreadyRecorded ? (
+            <AppIcon name="flag-checkered" size={20} color={colors.bg} />
+          ) : null}
+          <Text style={styles.scoreBtnText}>
+            {displayRound === game.totalRounds && !alreadyRecorded
+              ? t.game.finish
+              : alreadyRecorded
+                ? t.game.updateRound
+                : t.game.scoreRound}
+          </Text>
+        </View>
       </TouchableOpacity>
     </View>
   );
@@ -622,7 +628,7 @@ export default function GameScreen({
               accessibilityRole="button"
               accessibilityLabel={t.gameSettings.open}
             >
-              <Text style={styles.help}>⚙</Text>
+              <AppIcon name="cog-outline" size={22} color={colors.gold} />
             </TouchableOpacity>
             {liveAvailable ? (
               <TouchableOpacity
@@ -632,14 +638,21 @@ export default function GameScreen({
                 accessibilityLabel={t.liveShare.open}
                 accessibilityState={{ selected: liveActive }}
               >
-                <Text
-                  style={[
-                    styles.livePillText,
-                    liveActive && styles.livePillTextActive,
-                  ]}
-                >
-                  📡 {t.liveShare.badge}
-                </Text>
+                <View style={styles.livePillContents}>
+                  <AppIcon
+                    name="broadcast"
+                    size={17}
+                    color={liveActive ? colors.bg : colors.gold}
+                  />
+                  <Text
+                    style={[
+                      styles.livePillText,
+                      liveActive && styles.livePillTextActive,
+                    ]}
+                  >
+                    {t.liveShare.badge}
+                  </Text>
+                </View>
               </TouchableOpacity>
             ) : null}
             <TouchableOpacity
@@ -1116,6 +1129,7 @@ const styles = StyleSheet.create({
   livePillActive: { backgroundColor: colors.gold, borderColor: colors.gold },
   livePillText: { color: colors.gold, fontSize: 13, fontWeight: "800" },
   livePillTextActive: { color: colors.bg },
+  livePillContents: { flexDirection: "row", alignItems: "center", columnGap: spacing.xs },
   roundNav: { flexDirection: "row", alignItems: "center" },
   roundNavMobile: { alignSelf: "center", marginTop: spacing.xs },
   roundArrow: {
@@ -1395,6 +1409,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   scoreBtnText: { color: colors.bg, fontSize: 18, fontWeight: "800" },
+  scoreBtnContents: { flexDirection: "row", alignItems: "center", columnGap: spacing.xs },
   modalOverlay: {
     flex: 1,
     backgroundColor: colors.overlay,

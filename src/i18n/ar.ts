@@ -147,7 +147,7 @@ export const ar: Strings = {
       "التطبيق مجاني، بلا إعلانات وبلا حسابات، وسيبقى كذلك. لا توجد شركة خلفه، بل لاعب يطوّره في وقت فراغه.",
     cost: (amountEur) =>
       `إبقاؤه على App Store يكلّف المطوّر ${amountEur} يورو سنويًا. مساهمة صغيرة تكفي لتغطية هذه الفاتورة.`,
-    donate: "ادعم المطوّر ☕",
+    donate: "ادعم المطوّر",
     later: "ربما لاحقًا",
     never: "لا تسألني مجددًا",
   },
@@ -419,7 +419,7 @@ export const ar: Strings = {
     useKnownPlayer: (name) => `استخدم ${name}`,
     duplicatePlayer: (name) => `${name} موجود بالفعل على الطاولة. استخدم اسمًا آخر.`,
     maximumPlayers: (count) => `تتسع الطاولة لما يصل إلى ${count} لاعبين.`,
-    start: "ابدأ المباراة ☠️",
+    start: "ابدأ المباراة",
     needPlayers: "أضف لاعبين اثنين على الأقل",
   },
 
@@ -446,7 +446,7 @@ export const ar: Strings = {
     totalScoreTitle: "مجموع النقاط",
     totalIncludesRound: "الجولة المعروضة مشمولة في هذه المجاميع.",
     totalExcludesRound: "الجولة المعروضة غير مشمولة في هذه المجاميع بعد.",
-    finish: "إنهاء المباراة 🏁",
+    finish: "إنهاء المباراة",
     updateRound: "تحديث الجولة",
     scoreRound: "احتساب الجولة ←",
     reviewRoundIssue: "راجع هذه المشكلة لاحتساب الجولة.",

@@ -11,6 +11,7 @@ import { useI18n } from "../i18n/context";
 import type { Standing } from "../scoring";
 import type { AwardKind, GameAward } from "../stats";
 import LtrView from "./LtrView";
+import AppIcon from "./AppIcon";
 import { useReducedMotion } from "../useReducedMotion";
 import {
   colors,
@@ -69,10 +70,9 @@ function visualOrder(index: number): WebOrderStyle {
   return { order: index === 0 ? 2 : index === 1 ? 1 : 3 };
 }
 
-function medalForRank(rank: number): string {
-  if (rank === 1) return "🥇";
-  if (rank === 2) return "🥈";
-  return "🥉";
+function Medal({ rank }: { rank: number }) {
+  const color = rank === 1 ? colors.gold : rank === 2 ? "#C8D0DA" : "#D79561";
+  return <AppIcon name="medal" size={27} color={color} />;
 }
 
 function stepHeight(rank: number): number {
@@ -224,7 +224,7 @@ export default function Podium({ rows, awards }: Props) {
               ]}
             >
               <View style={styles.playerBlock}>
-                <Text style={styles.medal}>{medalForRank(row.rank)}</Text>
+                <View style={styles.medal}><Medal rank={row.rank} /></View>
                 <Text numberOfLines={1} style={styles.playerName}>
                   {row.player.name}
                 </Text>
@@ -374,8 +374,9 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   medal: {
-    fontSize: 27,
-    lineHeight: 33,
+    height: 33,
+    alignItems: "center",
+    justifyContent: "center",
   },
   playerName: {
     alignSelf: "stretch",

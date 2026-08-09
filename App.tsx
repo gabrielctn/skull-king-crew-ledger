@@ -174,8 +174,13 @@ function LoadingScreen() {
       accessibilityLabel={t.common.loading}
     >
       <StatusBar barStyle="light-content" />
-      <ActivityIndicator color={colors.gold} size="large" accessible={false} />
-      <Text style={styles.loaderText} accessible={false}>
+      <ActivityIndicator
+        color={colors.gold}
+        size="large"
+        accessible={false}
+        aria-hidden
+      />
+      <Text style={styles.loaderText} accessible={false} aria-hidden>
         {t.common.loading}
       </Text>
     </View>

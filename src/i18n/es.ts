@@ -78,7 +78,7 @@ export const es: Strings = {
       "Es gratuita, sin anuncios y sin cuentas, y así seguirá. No hay ninguna empresa detrás: solo un jugador que la desarrolla en su tiempo libre.",
     cost: (amountEur) =>
       `Mantenerla en la App Store le cuesta ${amountEur} €/año al desarrollador. Una pequeña aportación basta para cubrir esa factura.`,
-    donate: "Apoya al desarrollador ☕",
+    donate: "Apoya al desarrollador",
     later: "Quizá más tarde",
     never: "No volver a preguntar",
   },
@@ -351,7 +351,7 @@ export const es: Strings = {
     useKnownPlayer: (name) => `Usar a ${name}`,
     duplicatePlayer: (name) => `${name} ya está en la mesa. Usa otro nombre.`,
     maximumPlayers: (count) => `Una mesa admite hasta ${count} jugadores.`,
-    start: "Empezar partida ☠️",
+    start: "Empezar partida",
     needPlayers: "Añade al menos 2 jugadores",
   },
 
@@ -380,7 +380,7 @@ export const es: Strings = {
     totalIncludesRound: "La ronda mostrada está incluida en estos totales.",
     totalExcludesRound:
       "La ronda mostrada aún no está incluida en estos totales.",
-    finish: "Terminar partida 🏁",
+    finish: "Terminar partida",
     updateRound: "Actualizar ronda",
     scoreRound: "Puntuar ronda →",
     reviewRoundIssue: "Revisa este problema para puntuar la ronda.",

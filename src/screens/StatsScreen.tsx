@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   AccessibilityInfo,
+  findNodeHandle,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -89,7 +91,12 @@ export default function StatsScreen({ gameHistory, tableName, onBack }: Props) {
       const focusable = backButtonRef.current as unknown as {
         focus?: () => void;
       } | null;
-      focusable?.focus?.();
+      if (Platform.OS === "web") {
+        focusable?.focus?.();
+      } else {
+        const node = findNodeHandle(backButtonRef.current);
+        if (node !== null) AccessibilityInfo.setAccessibilityFocus(node);
+      }
     }, 0);
     return () => clearTimeout(focusTimer);
   }, [selected, t]);

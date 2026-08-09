@@ -296,6 +296,26 @@ check(
   supportModalSource.includes('<AppIcon name="coffee"')
 );
 check(
+  "prominent game chrome uses vector icons instead of platform emoji",
+  !/[☠🏁☕]/u.test(playerFacingTextSources.join("\n")) &&
+    !/[☠⚙📡]/u.test(setupSource + gameSource) &&
+    !/[🥇🥈🥉]/u.test(resultsSource + podiumSource) &&
+    !/[⚓]/u.test(
+      joinTableModalSource + lootTrackerSource + lootConfirmationSource
+    )
+);
+check(
+  "results keep numeric ranks centered independently from icon ranks",
+  resultsSource.includes("style={styles.rankNumber}") &&
+    resultsSource.includes("rankNumber:")
+);
+for (const [language, strings] of Object.entries({ en, fr, es, de, ar, zh })) {
+  check(
+    `${language} support donation label does not repeat a coffee emoji`,
+    !/☕/u.test(strings.supportPrompt.donate)
+  );
+}
+check(
   "the support ask offers a way out that sticks",
   supportModalSource.includes("t.supportPrompt.later") &&
     supportModalSource.includes("t.supportPrompt.never") &&
@@ -376,6 +396,23 @@ check(
     joinByCodeSource.includes("cloudBackupManager().redeemInvite(") &&
     joinByCodeSource.includes("onResolved(") &&
     appSource.includes("setPendingJoinCode(code)")
+);
+check(
+  "join-by-code opens on its code field and hides its dismissal backdrop from web AT",
+  joinByCodeSource.includes("autoFocus={visible}") &&
+    joinByCodeSource.includes("accessible={false}") &&
+    joinByCodeSource.includes("aria-hidden")
+);
+check(
+  "join busy buttons own web busy state without duplicate progress indicators",
+  joinByCodeSource.includes("aria-busy={busy}") &&
+    /ActivityIndicator[\s\S]{0,120}accessible=\{false\}[\s\S]{0,120}aria-hidden/.test(
+      joinByCodeSource
+    ) &&
+    joinTableModalSource.includes("aria-busy={joining}") &&
+    /joining \? \([\s\S]{0,180}ActivityIndicator[\s\S]{0,120}accessible=\{false\}[\s\S]{0,120}aria-hidden/.test(
+      joinTableModalSource
+    )
 );
 check(
   "inviting and joining are one tap from the home screen",

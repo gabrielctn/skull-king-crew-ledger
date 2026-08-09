@@ -66,10 +66,15 @@ const statsSource = readFileSync("src/screens/StatsScreen.tsx", "utf8");
 const appIconSource = readFileSync("src/components/AppIcon.tsx", "utf8");
 const spectatorSource = readFileSync("src/screens/SpectatorScreen.tsx", "utf8");
 const liveShareSource = readFileSync("src/components/ShareLiveModal.tsx", "utf8");
+const scoreChartSource = readFileSync("src/components/ScoreChart.tsx", "utf8");
 const settingsSource = readFileSync("src/screens/SettingsScreen.tsx", "utf8");
 const appSource = readFileSync("App.tsx", "utf8");
 const appConfig = readFileSync("app.json", "utf8");
 const manifest = readFileSync("web/manifest.webmanifest", "utf8");
+const screenTransitionSource = readFileSync(
+  "src/components/ScreenTransition.tsx",
+  "utf8"
+);
 
 check(
   "accepted analytics initialization is evaluated before Reduce Motion",
@@ -98,9 +103,47 @@ check(
 );
 check(
   "loading states expose one explicit progress owner and hide duplicate children",
-  appSource.includes('<Text style={styles.loaderText} accessible={false}>') &&
+  appSource.includes('<Text style={styles.loaderText} accessible={false} aria-hidden>') &&
     spectatorSource.includes('accessible\n            accessibilityRole="progressbar"') &&
-    spectatorSource.includes('<Text style={styles.connectingText} accessible={false}>')
+    spectatorSource.includes('<Text style={styles.connectingText} accessible={false} aria-hidden>')
+);
+check(
+  "decorative loading children are hidden from native and web accessibility trees",
+  /ActivityIndicator[\s\S]{0,160}accessible=\{false\}[\s\S]{0,160}aria-hidden/.test(
+    appSource
+  ) &&
+    /ActivityIndicator[\s\S]{0,160}accessible=\{false\}[\s\S]{0,160}aria-hidden/.test(
+      spectatorSource
+    ) &&
+    /ActivityIndicator[\s\S]{0,160}accessible=\{false\}[\s\S]{0,160}aria-hidden/.test(
+      liveShareSource
+    ) &&
+    appSource.includes('style={styles.loaderText} accessible={false} aria-hidden') &&
+    spectatorSource.includes('style={styles.connectingText} accessible={false} aria-hidden')
+);
+check(
+  "Stats restores focus with native accessibility focus and web DOM focus",
+  statsSource.includes("findNodeHandle") &&
+    statsSource.includes("AccessibilityInfo.setAccessibilityFocus") &&
+    statsSource.includes('Platform.OS === "web"')
+);
+check(
+  "Live Share labels its live-session title as a heading",
+  liveShareSource.includes('style={styles.liveOnTitle} accessibilityRole="header"')
+);
+check(
+  "web chart legend summaries use a supported labelled group",
+  scoreChartSource.includes('role="group"') &&
+    scoreChartSource.includes("aria-label={summaries[playerIndex]?.label}")
+);
+check(
+  "web radio and busy semantics use direct ARIA state attributes",
+  spectatorSource.includes("aria-checked={active}") &&
+    liveShareSource.includes("aria-busy={starting}")
+);
+check(
+  "web screen transitions do not request the unsupported native animation driver",
+  screenTransitionSource.includes("useNativeDriver: Platform.OS !== \"web\"")
 );
 check(
   "native motion stays conservative until its accessibility preference is known",

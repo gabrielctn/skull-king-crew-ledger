@@ -77,7 +77,7 @@ export const fr: Strings = {
       "Elle est gratuite, sans publicité et sans compte, et elle le restera. Il n’y a personne derrière, à part un joueur qui la développe sur son temps libre.",
     cost: (amountEur) =>
       `La garder disponible sur l’App Store coûte ${amountEur} €/an à son développeur. Un petit coup de pouce suffit à couvrir cette facture.`,
-    donate: "Soutenir le développeur ☕",
+    donate: "Soutenir le développeur",
     later: "Plus tard",
     never: "Ne plus me le proposer",
   },
@@ -346,7 +346,7 @@ export const fr: Strings = {
     useKnownPlayer: (name) => `Utiliser ${name}`,
     duplicatePlayer: (name) => `${name} est déjà à table. Choisissez un autre nom.`,
     maximumPlayers: (count) => `Une table accueille jusqu’à ${count} joueurs.`,
-    start: "Commencer ☠️",
+    start: "Commencer",
     needPlayers: "Ajoutez au moins 2 joueurs",
   },
 
@@ -375,7 +375,7 @@ export const fr: Strings = {
     totalIncludesRound: "La manche affichée est incluse dans ces totaux.",
     totalExcludesRound:
       "La manche affichée n’est pas encore incluse dans ces totaux.",
-    finish: "Terminer la partie 🏁",
+    finish: "Terminer la partie",
     updateRound: "Modifier la manche",
     scoreRound: "Valider la manche →",
     reviewRoundIssue: "Vérifiez ce point avant de valider la manche.",

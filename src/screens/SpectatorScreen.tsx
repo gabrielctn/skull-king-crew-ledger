@@ -238,8 +238,8 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
             accessibilityRole="progressbar"
             accessibilityLabel={t.spectator.connecting}
           >
-            <ActivityIndicator color={colors.gold} accessible={false} />
-            <Text style={styles.connectingText} accessible={false}>
+            <ActivityIndicator color={colors.gold} accessible={false} aria-hidden />
+            <Text style={styles.connectingText} accessible={false} aria-hidden>
               {t.spectator.connecting}
             </Text>
           </View>
@@ -486,6 +486,7 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
                     onPress={() => changeSort(option.key)}
                     accessibilityRole="radio"
                     accessibilityState={{ checked: active }}
+                    aria-checked={active}
                     accessibilityLabel={option.label}
                   >
                     <Text

@@ -33,6 +33,7 @@ import { illustrations } from "../assets/illustrations";
 import { useI18n } from "../i18n/context";
 import { getResponsiveLayout } from "../responsive";
 import GlassSurface from "../components/GlassSurface";
+import AppIcon from "../components/AppIcon";
 
 interface Props {
   gameHistory: Game[];
@@ -424,10 +425,20 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
                         {selected ? <View style={styles.radioDot} /> : null}
                       </View>
                       <View style={{ flex: 1 }}>
-                        <Text style={styles.advancedTitle}>
-                          {mode === "classic" ? "☠️ " : "🎲 "}
-                          {t.setup.scoringNames[mode]}
-                        </Text>
+                        <View style={styles.advancedTitleRow}>
+                          <AppIcon
+                            name={
+                              mode === "classic"
+                                ? "skull-outline"
+                                : "dice-multiple-outline"
+                            }
+                            size={18}
+                            color={colors.text}
+                          />
+                          <Text style={styles.advancedTitle}>
+                            {t.setup.scoringNames[mode]}
+                          </Text>
+                        </View>
                         <Text style={styles.advancedHint}>
                           {t.setup.scoringHints[mode]}
                         </Text>
@@ -615,9 +626,12 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
             accessibilityRole="button"
             accessibilityState={{ disabled: !canStart }}
           >
-            <Text style={styles.startText}>
-              {named.length < 2 ? t.setup.needPlayers : t.setup.start}
-            </Text>
+            <View style={styles.startContents}>
+              <AppIcon name="play" size={20} color={colors.bg} />
+              <Text style={styles.startText}>
+                {named.length < 2 ? t.setup.needPlayers : t.setup.start}
+              </Text>
+            </View>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -879,6 +893,7 @@ const styles = StyleSheet.create({
   },
   ghostQuick: { marginTop: spacing.sm },
   advancedTitle: { color: colors.text, fontSize: 16, fontWeight: "700" },
+  advancedTitleRow: { flexDirection: "row", alignItems: "center", columnGap: spacing.xs },
   advancedHint: { color: colors.textDim, fontSize: 12, marginTop: 4, lineHeight: 16 },
   footer: { width: "100%", alignSelf: "center", padding: spacing.md },
   startBtn: {
@@ -895,4 +910,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingHorizontal: spacing.sm,
   },
+  startContents: { flexDirection: "row", alignItems: "center", columnGap: spacing.xs },
 });

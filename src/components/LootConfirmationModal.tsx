@@ -14,6 +14,7 @@ import { useI18n } from "../i18n/context";
 import { colors, radius, spacing } from "../theme";
 import { getResponsiveLayout } from "../responsive";
 import GlassSurface from "./GlassSurface";
+import AppIcon from "./AppIcon";
 
 interface Props {
   visible: boolean;
@@ -67,7 +68,12 @@ export default function LootConfirmationModal({
           accessibilityViewIsModal
         >
           <Text style={styles.eyebrow}>{t.lootConfirmation.eyebrow}</Text>
-          <Text style={styles.title} accessibilityRole="header">⚓ {t.lootConfirmation.title}</Text>
+          <View style={styles.titleRow}>
+            <AppIcon name="anchor" size={23} color={colors.gold} />
+            <Text style={styles.title} accessibilityRole="header">
+              {t.lootConfirmation.title}
+            </Text>
+          </View>
           <Text style={styles.intro}>
             {t.lootConfirmation.intro(participantIds.length)}
           </Text>
@@ -178,6 +184,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     marginTop: spacing.xs,
   },
+  titleRow: { flexDirection: "row", alignItems: "center", columnGap: spacing.xs },
   intro: {
     color: colors.textDim,
     fontSize: 14,

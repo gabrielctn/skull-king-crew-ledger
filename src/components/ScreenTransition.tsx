@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useRef } from "react";
-import { Animated, Easing, StyleSheet } from "react-native";
+import { Animated, Easing, Platform, StyleSheet } from "react-native";
 import { useReducedMotionState } from "../useReducedMotion";
 import { screenTransitionAction } from "../screenTransitionPolicy";
 
@@ -32,7 +32,7 @@ export default function ScreenTransition({ routeKey, children }: Props) {
       toValue: 1,
       duration: 190,
       easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== "web",
     });
     animation.start();
     return () => animation.stop();

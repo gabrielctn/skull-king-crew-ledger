@@ -70,7 +70,7 @@ export const zh: Strings = {
       "本应用免费、无广告、无需账号，并将一直如此。它的背后没有公司，只有一位利用业余时间开发它的玩家。",
     cost: (amountEur) =>
       `让它留在 App Store 上，开发者每年需要支付 ${amountEur} 欧元。一点点支持就足以覆盖这笔费用。`,
-    donate: "支持开发者 ☕",
+    donate: "支持开发者",
     later: "以后再说",
     never: "不再询问",
   },
@@ -316,7 +316,7 @@ export const zh: Strings = {
     useKnownPlayer: (name) => `使用 ${name}`,
     duplicatePlayer: (name) => `${name} 已在牌桌上。请使用其他名称。`,
     maximumPlayers: (count) => `一桌最多可有 ${count} 名玩家。`,
-    start: "开始对局 ☠️",
+    start: "开始对局",
     needPlayers: "至少添加 2 名玩家",
   },
 
@@ -343,7 +343,7 @@ export const zh: Strings = {
     totalScoreTitle: "总分",
     totalIncludesRound: "所显示的回合已计入这些总分。",
     totalExcludesRound: "所显示的回合尚未计入这些总分。",
-    finish: "结束对局 🏁",
+    finish: "结束对局",
     updateRound: "更新回合",
     scoreRound: "结算回合 →",
     reviewRoundIssue: "查看此问题后再结算回合。",

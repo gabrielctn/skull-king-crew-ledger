@@ -177,7 +177,7 @@ export default function ShareLiveModal({ visible, game, onClose }: Props) {
                 {sessionActive ? (
                   <>
                     <View style={styles.liveHeaderRow}>
-                      <Text style={styles.liveOnTitle}>
+                      <Text style={styles.liveOnTitle} accessibilityRole="header">
                         {t.liveShare.liveOnTitle}
                       </Text>
                       <View
@@ -268,11 +268,18 @@ export default function ShareLiveModal({ visible, game, onClose }: Props) {
                       disabled={starting}
                       accessibilityRole="button"
                       accessibilityState={{ busy: starting, disabled: starting }}
+                      aria-busy={starting}
                     >
                       <View style={styles.startContents}>
                         <AppIcon name="satellite-variant" size={19} color={colors.bg} />
                         <Text style={styles.startButtonText}>{t.liveShare.start}</Text>
-                        {starting ? <ActivityIndicator color={colors.bg} accessible={false} /> : null}
+                        {starting ? (
+                          <ActivityIndicator
+                            color={colors.bg}
+                            accessible={false}
+                            aria-hidden
+                          />
+                        ) : null}
                       </View>
                     </TouchableOpacity>
                   </>

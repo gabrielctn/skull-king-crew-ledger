@@ -11,6 +11,7 @@ import { cloudBackupManager } from "../cloudSync";
 import { colors, radius, spacing } from "../theme";
 import { useI18n } from "../i18n/context";
 import GlassSurface from "./GlassSurface";
+import AppIcon from "./AppIcon";
 
 interface Props {
   /** Join code consumed from a scanned link; null hides the modal. */
@@ -98,7 +99,12 @@ export default function JoinTableModal({ code, onClose, onJoin }: Props) {
           accessibilityRole="alert"
           accessibilityViewIsModal
         >
-          <Text style={styles.title} accessibilityRole="header">⚓ {title}</Text>
+          <View style={styles.titleRow}>
+            <AppIcon name="anchor" size={22} color={colors.gold} />
+            <Text style={styles.title} accessibilityRole="header">
+              {title}
+            </Text>
+          </View>
 
           {phase.kind === "loading" ? (
             <ActivityIndicator
@@ -139,11 +145,16 @@ export default function JoinTableModal({ code, onClose, onJoin }: Props) {
                   disabled={joining}
                   accessibilityRole="button"
                   accessibilityState={{ busy: joining, disabled: joining }}
+                  aria-busy={joining}
                 >
                   <View style={styles.confirmContents}>
                     <Text style={styles.confirmText}>{t.joinTable.confirm}</Text>
                     {joining ? (
-                      <ActivityIndicator color={colors.bg} accessible={false} />
+                      <ActivityIndicator
+                        color={colors.bg}
+                        accessible={false}
+                        aria-hidden
+                      />
                     ) : null}
                   </View>
                 </TouchableOpacity>
@@ -189,7 +200,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.lg,
   },
-  title: { color: colors.text, fontSize: 20, fontWeight: "800" },
+  titleRow: { flexDirection: "row", alignItems: "center" },
+  title: { color: colors.text, fontSize: 20, fontWeight: "800", marginStart: spacing.xs },
   message: {
     color: colors.textDim,
     fontSize: 14,

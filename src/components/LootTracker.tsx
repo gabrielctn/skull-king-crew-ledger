@@ -11,6 +11,7 @@ import { LootUse, Player, RoundEntries } from "../types";
 import { lootAllianceSucceeded, madeBid } from "../scoring";
 import { colors, radius, spacing } from "../theme";
 import { useI18n } from "../i18n/context";
+import AppIcon from "./AppIcon";
 
 interface Props {
   players: Player[];
@@ -63,7 +64,12 @@ export default function LootTracker({
     <View style={[styles.wrap, style]}>
       <View style={styles.headingRow}>
         <View style={styles.headingCopy}>
-          <Text style={styles.title} accessibilityRole="header">⚓ {t.loot.title}</Text>
+          <View style={styles.titleRow}>
+            <AppIcon name="anchor" size={18} color={colors.gold} />
+            <Text style={styles.title} accessibilityRole="header">
+              {t.loot.title}
+            </Text>
+          </View>
           <Text style={styles.hint}>{t.loot.hint}</Text>
         </View>
         {legacyLootCount === 0 && lootUses.length < 2 ? (
@@ -257,6 +263,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   headingCopy: { flex: 1, marginEnd: spacing.md },
+  titleRow: { flexDirection: "row", alignItems: "center", columnGap: spacing.xs },
   title: { color: colors.gold, fontSize: 16, fontWeight: "800" },
   hint: {
     color: colors.textDim,

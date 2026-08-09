@@ -662,9 +662,14 @@ export default function SettingsScreen({
             <Text style={styles.confirmTitle} accessibilityRole="header">
               {t.settings.cloud.removeTableTitle}
             </Text>
-            <Text style={styles.confirmMessage}>
-              {removeTarget ? `⚓ ${tableLabel(removeTarget)}` : ""}
-            </Text>
+            {removeTarget ? (
+              <View style={styles.removeTableName}>
+                <AppIcon name="anchor" size={18} color={colors.gold} />
+                <Text style={styles.confirmMessage}>
+                  {tableLabel(removeTarget)}
+                </Text>
+              </View>
+            ) : null}
             <Text style={styles.confirmMessage}>
               {t.settings.cloud.removeTableMessage}
             </Text>
@@ -1004,6 +1009,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginTop: spacing.sm,
   },
+  removeTableName: { flexDirection: "row", alignItems: "center", columnGap: spacing.xs },
   confirmActions: {
     flexDirection: "row",
     justifyContent: "flex-end",

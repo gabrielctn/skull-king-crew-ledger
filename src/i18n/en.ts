@@ -81,7 +81,7 @@ export const en: Strings = {
       "It is free, ad-free and account-free, and it will stay that way. There is no company behind it, just a player building it in their spare time.",
     cost: (amountEur) =>
       `Keeping it on the App Store costs the developer €${amountEur} a year. A small contribution is enough to cover that bill.`,
-    donate: "Support the developer ☕",
+    donate: "Support the developer",
     later: "Maybe later",
     never: "Don't ask again",
   },
@@ -349,7 +349,7 @@ export const en: Strings = {
     useKnownPlayer: (name) => `Use ${name}`,
     duplicatePlayer: (name) => `${name} is already seated. Use a different name.`,
     maximumPlayers: (count) => `A table can have up to ${count} players.`,
-    start: "Start game ☠️",
+    start: "Start game",
     needPlayers: "Add at least 2 players",
   },
 
@@ -377,7 +377,7 @@ export const en: Strings = {
     totalIncludesRound: "The displayed round is included in these totals.",
     totalExcludesRound:
       "The displayed round is not included in these totals yet.",
-    finish: "Finish game 🏁",
+    finish: "Finish game",
     updateRound: "Update round",
     scoreRound: "Score round →",
     reviewRoundIssue: "Review this issue to finish the round.",

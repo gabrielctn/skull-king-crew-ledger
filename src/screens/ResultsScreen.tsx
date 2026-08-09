@@ -17,6 +17,7 @@ import { browserLocale, useI18n } from "../i18n/context";
 import { getResponsiveLayout } from "../responsive";
 import ScoreBreakdownModal from "../components/ScoreBreakdownModal";
 import ScoreChart from "../components/ScoreChart";
+import AppIcon from "../components/AppIcon";
 import Podium from "../components/Podium";
 import { gameAwards, gameDuration } from "../stats";
 import {
@@ -40,8 +41,11 @@ interface Props {
   onReview: () => void;
 }
 
-const medal = (rank: number) =>
-  rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : "";
+function RankMarker({ rank }: { rank: number }) {
+  if (rank > 3) return <Text style={styles.rankNumber}>{rank}</Text>;
+  const color = rank === 1 ? colors.gold : rank === 2 ? "#C8D0DA" : "#D79561";
+  return <AppIcon name="medal" size={22} color={color} />;
+}
 
 export default function ResultsScreen({
   game,
@@ -235,9 +239,9 @@ export default function ResultsScreen({
                 row.total
               )}
             >
-              <Text style={styles.rank}>
-                {medal(row.rank) || row.rank}
-              </Text>
+              <View style={styles.rank}>
+                <RankMarker rank={row.rank} />
+              </View>
               <Text style={styles.name} numberOfLines={1}>
                 {row.player.name}
               </Text>
@@ -415,7 +419,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.cardBorder,
   },
-  rank: { width: 40, fontSize: 20, color: colors.text, textAlign: "center" },
+  rank: { width: 40, alignItems: "center", justifyContent: "center" },
+  rankNumber: { color: colors.text, fontSize: 20, textAlign: "center" },
   name: { flex: 1, color: colors.text, fontSize: 18, marginStart: spacing.sm },
   total: { fontSize: 20, fontWeight: "800" },
   scoreInfo: { color: colors.gold, fontSize: 13, marginStart: spacing.sm },

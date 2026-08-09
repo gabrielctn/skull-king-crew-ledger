@@ -101,6 +101,7 @@ export default function JoinByCodeModal({ visible, onClose, onResolved }: Props)
           style={StyleSheet.absoluteFill}
           onPress={onClose}
           accessible={false}
+          aria-hidden
         />
         <View
           style={[styles.sheet, layout.isTablet && styles.sheetWide]}
@@ -138,6 +139,7 @@ export default function JoinByCodeModal({ visible, onClose, onResolved }: Props)
           >
             <TextInput
               style={styles.input}
+              autoFocus={visible}
               value={draft}
               onChangeText={(value) => {
                 setDraft(value);
@@ -171,10 +173,17 @@ export default function JoinByCodeModal({ visible, onClose, onResolved }: Props)
                 busy,
                 disabled: busy || draft.trim().length === 0,
               }}
+              aria-busy={busy}
             >
               <View style={styles.submitContents}>
                 <Text style={styles.submitText}>{t.joinByCode.submit}</Text>
-                {busy ? <ActivityIndicator color={colors.bg} accessible={false} /> : null}
+                {busy ? (
+                  <ActivityIndicator
+                    color={colors.bg}
+                    accessible={false}
+                    aria-hidden
+                  />
+                ) : null}
               </View>
             </TouchableOpacity>
 
