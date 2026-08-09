@@ -166,7 +166,7 @@ export default function ResultsScreen({
             resizeMode="contain"
           />
         </View>
-        <Text style={styles.title}>{t.results.gameOver}</Text>
+        <Text style={styles.title} accessibilityRole="header">{t.results.gameOver}</Text>
         {winner ? (
           <Text
             style={[styles.winner, duration !== null && styles.winnerTight]}
@@ -220,7 +220,7 @@ export default function ResultsScreen({
           </Text>
         ) : null}
 
-        <Text style={styles.sectionTitle}>{t.stats.leaderboard}</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">{t.stats.leaderboard}</Text>
         <View style={styles.card}>
           {rows.map((row) => (
             <TouchableOpacity
@@ -284,7 +284,7 @@ export default function ResultsScreen({
         </TouchableOpacity>
         {(installMode !== "none" || installFailed) && !installDismissed ? (
           <View style={styles.installPrompt}>
-            <Text style={styles.installTitle}>{t.results.installTitle}</Text>
+            <Text style={styles.installTitle} accessibilityRole="header">{t.results.installTitle}</Text>
             <Text
               style={[
                 styles.installHint,

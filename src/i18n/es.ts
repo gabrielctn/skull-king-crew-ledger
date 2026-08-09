@@ -12,6 +12,7 @@ export const es: Strings = {
     newGame: "Nueva partida",
     storageError:
       "No se ha podido guardar localmente. Exporta tus partidas antes de cerrar la aplicación.",
+    loading: "Cargando Skull King Crew Ledger…",
     dismiss: "Cerrar",
   },
 
@@ -428,6 +429,7 @@ export const es: Strings = {
     copyLink: "Copiar enlace",
     copied: "¡Enlace copiado!",
     copyError: "No se pudo copiar el enlace.",
+    shareLink: "Compartir enlace",
     qrLabel:
       "Código QR que abre el seguimiento de puntos de esta partida",
     close: "Cerrar",
@@ -452,7 +454,7 @@ export const es: Strings = {
       "Toca cualquier jugador para ver su detalle completo ronda a ronda: envites, bazas y bonificaciones.",
     identityTitle: "¿Qué jugador eres?",
     identityHint:
-      "Elige tu nombre una vez para seguir tus propias puntuaciones. Queda fijo para esta partida.",
+      "Elige tu nombre para seguir tus propias puntuaciones. Se recuerda y puede cambiarse para esta partida.",
     turnTitle: "Orden de juego",
     sortLabel: "Orden",
     sortName: "A → Z",
@@ -460,9 +462,14 @@ export const es: Strings = {
     sortRank: "Puesto",
     you: "Tú",
     openApp: "Abrir la app para mis propias partidas",
+    retry: "Reintentar la conexión",
+    changeIdentity: "Cambiar quién soy",
     invalidTitle: "No se pudo leer este código",
     invalidBody:
       "El enlace escaneado no contiene una partida legible. Pide al anotador que vuelva a mostrar el código QR y escanéalo de nuevo.",
+    connectionErrorTitle: "No se pudo conectar con la partida en directo",
+    connectionErrorBody:
+      "Comprueba tu conexión y vuelve a intentarlo. El anotador puede seguir compartiendo mientras te reconectas.",
   },
 
   results: {
@@ -596,6 +603,8 @@ export const es: Strings = {
     unavailable: "No disponible",
     chartLabel: (leader, rounds) =>
       `Evolución de la puntuación tras ${rounds} ${rounds === 1 ? "ronda" : "rondas"}; ${leader} va en cabeza.`,
+    chartPoint: (round, total) => `Ronda ${round}, total ${total}`,
+    chartPlayer: (name, points) => `${name}: ${points.join(", ")}`,
     playerSummary: (games, wins) =>
       `${games} ${games === 1 ? "partida" : "partidas"} · ${wins} ${
         wins === 1 ? "victoria" : "victorias"

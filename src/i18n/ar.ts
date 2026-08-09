@@ -83,6 +83,7 @@ export const ar: Strings = {
     newGame: "مباراة جديدة",
     storageError:
       "فشل الحفظ المحلي. صدّر مبارياتك قبل إغلاق التطبيق.",
+    loading: "جارٍ تحميل Skull King Crew Ledger…",
     dismiss: "إغلاق",
   },
 
@@ -493,6 +494,7 @@ export const ar: Strings = {
     copyLink: "نسخ الرابط",
     copied: "تم نسخ الرابط!",
     copyError: "تعذّر نسخ الرابط.",
+    shareLink: "مشاركة الرابط",
     qrLabel: "رمز QR يفتح متابعة النقاط لهذه المباراة",
     close: "إغلاق",
   },
@@ -516,7 +518,7 @@ export const ar: Strings = {
       "اضغط على أي لاعب لعرض تفاصيله الكاملة جولة بجولة: المزايدات واللمّات وكل مكافأة.",
     identityTitle: "أي لاعب أنت؟",
     identityHint:
-      "اختر اسمك مرة واحدة لمتابعة نقاطك الخاصة. يبقى ثابتًا في هذه المباراة.",
+      "اختر اسمك لمتابعة نقاطك الخاصة. يُتذكر اختيارك ويمكن تغييره لهذه المباراة.",
     turnTitle: "ترتيب الأدوار",
     sortLabel: "الترتيب",
     // Leftward arrow: Arabic reads right to left, so alif is the right-hand
@@ -526,9 +528,14 @@ export const ar: Strings = {
     sortRank: "المركز",
     you: "أنت",
     openApp: "افتح التطبيق لمبارياتي الخاصة",
+    retry: "إعادة محاولة الاتصال",
+    changeIdentity: "تغيير هويتي",
     invalidTitle: "تعذّرت قراءة هذا الرمز",
     invalidBody:
       "الرابط الممسوح لا يحتوي على مباراة قابلة للقراءة. اطلب من مدير المباراة عرض رمز QR من جديد، ثم امسحه مرة أخرى.",
+    connectionErrorTitle: "تعذر الوصول إلى المباراة المباشرة",
+    connectionErrorBody:
+      "تحقق من اتصالك ثم حاول مجددًا. يمكن لمدير المباراة متابعة المشاركة أثناء إعادة اتصالك.",
   },
 
   results: {
@@ -658,6 +665,8 @@ export const ar: Strings = {
             ? "جولتين"
             : `${rounds} ${rounds <= 10 ? "جولات" : "جولة"}`
       }؛ ${leader} في الصدارة.`,
+    chartPoint: (round, total) => `الجولة ${round}، المجموع ${total}`,
+    chartPlayer: (name, points) => `${name}: ${points.join("، ")}`,
     playerSummary: (games, wins) =>
       `${gamesText(games)} · ${winsText(wins)}`,
     bidSummary: (successes, attempts) =>

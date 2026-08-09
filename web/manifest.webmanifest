@@ -6,7 +6,7 @@
   "start_url": "/skull-king-crew-ledger/",
   "scope": "/skull-king-crew-ledger/",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "launch_handler": {
     "client_mode": "navigate-existing"
   },

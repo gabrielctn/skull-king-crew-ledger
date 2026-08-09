@@ -9,6 +9,7 @@ import {
   screenFromHistoryState,
 } from "../src/navigation";
 import { screenTransitionAction } from "../src/screenTransitionPolicy";
+import { STATS_ICON_META } from "../src/statsIcons";
 
 let failures = 0;
 
@@ -49,17 +50,57 @@ check(
   "back exits from home with no modal",
   backActionForState({ modalOpen: false, screen: "home" }) === "exit"
 );
+check(
+  "stats icons use stable glyph metadata instead of emoji chrome",
+  STATS_ICON_META.bestFinalScore.name === "crown" &&
+    STATS_ICON_META.totalGames.name === "calendar-blank" &&
+    STATS_ICON_META.empty.name === "map-outline"
+);
 
 const cookieConsentSource = readFileSync(
   "src/components/CookieConsentBanner.tsx",
   "utf8"
 );
 const reducedMotionSource = readFileSync("src/useReducedMotion.ts", "utf8");
+const statsSource = readFileSync("src/screens/StatsScreen.tsx", "utf8");
+const appIconSource = readFileSync("src/components/AppIcon.tsx", "utf8");
+const spectatorSource = readFileSync("src/screens/SpectatorScreen.tsx", "utf8");
+const liveShareSource = readFileSync("src/components/ShareLiveModal.tsx", "utf8");
+const settingsSource = readFileSync("src/screens/SettingsScreen.tsx", "utf8");
+const appSource = readFileSync("App.tsx", "utf8");
+const appConfig = readFileSync("app.json", "utf8");
+const manifest = readFileSync("web/manifest.webmanifest", "utf8");
 
 check(
   "accepted analytics initialization is evaluated before Reduce Motion",
   cookieConsentSource.indexOf('if (consent === "accepted")') <
     cookieConsentSource.indexOf("if (reducedMotion)")
+);
+check(
+  "cross-screen accessibility contracts cover headings, targets, live recovery, and orientation",
+  statsSource.includes("STATS_ICON_META") &&
+    statsSource.includes('accessibilityRole="header"') &&
+    spectatorSource.includes("retryAttempt") &&
+    spectatorSource.includes("t.spectator.retry") &&
+    spectatorSource.includes("t.spectator.changeIdentity") &&
+    liveShareSource.includes("copyTextToClipboard") &&
+    liveShareSource.includes("Share.share") &&
+    liveShareSource.includes("accessibilityState={{ busy: starting") &&
+    settingsSource.includes('accessibilityLiveRegion="polite"') &&
+    appSource.includes('accessibilityRole="progressbar"') &&
+    appConfig.includes('"orientation": "default"') &&
+    appConfig.includes('"orientation": "any"') &&
+    manifest.includes('"orientation": "any"')
+);
+check(
+  "decorative AppIcon glyphs are hidden from the web accessibility tree too",
+  appIconSource.includes("aria-hidden={accessibilityHidden}")
+);
+check(
+  "loading states expose one explicit progress owner and hide duplicate children",
+  appSource.includes('<Text style={styles.loaderText} accessible={false}>') &&
+    spectatorSource.includes('accessible\n            accessibilityRole="progressbar"') &&
+    spectatorSource.includes('<Text style={styles.connectingText} accessible={false}>')
 );
 check(
   "native motion stays conservative until its accessibility preference is known",

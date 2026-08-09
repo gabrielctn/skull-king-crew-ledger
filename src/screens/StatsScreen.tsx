@@ -22,6 +22,8 @@ import {
 import { colors, radius, spacing } from "../theme";
 import { Game } from "../types";
 import GlassSurface from "../components/GlassSurface";
+import AppIcon from "../components/AppIcon";
+import { STATS_ICON_META, StatsIconKey } from "../statsIcons";
 
 interface Props {
   gameHistory: Game[];
@@ -36,7 +38,7 @@ type RecordTone = "fame" | "shame";
 /** Everything one record card shows, already formatted for display. */
 interface RecordCardData {
   key: string;
-  icon: string;
+  icon: StatsIconKey;
   label: string;
   /** Plain-words statement of exactly what the app measured. */
   hint: string;
@@ -57,8 +59,12 @@ interface Formatters {
   date: (value: number) => string;
 }
 
-const rankMedal = (rank: number) =>
-  rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : String(rank);
+function RankMarker({ rank }: { rank: number }) {
+  if (rank > 3) return <Text style={styles.rankText}>{rank}</Text>;
+
+  const color = rank === 1 ? colors.gold : rank === 2 ? "#C8D0DA" : "#D79561";
+  return <AppIcon name="medal" size={22} color={color} />;
+}
 
 /** A rate as a bar width, clamped so bad data cannot overflow the track. */
 const barWidth = (rate: number): `${number}%` =>
@@ -71,6 +77,7 @@ export default function StatsScreen({ gameHistory, tableName, onBack }: Props) {
   const snapshot = useMemo(() => aggregateStats(gameHistory), [gameHistory]);
   const [selectedIdentity, setSelectedIdentity] = useState<string | null>(null);
   const backButtonRef = useRef<React.ElementRef<typeof TouchableOpacity>>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const selected =
     snapshot.players.find((player) => player.identity === selectedIdentity) ?? null;
 
@@ -78,6 +85,7 @@ export default function StatsScreen({ gameHistory, tableName, onBack }: Props) {
     if (!selected) return;
     AccessibilityInfo.announceForAccessibility(t.stats.playerTitle(selected.name));
     const focusTimer = setTimeout(() => {
+      scrollRef.current?.scrollTo({ y: 0, animated: true });
       const focusable = backButtonRef.current as unknown as {
         focus?: () => void;
       } | null;
@@ -114,6 +122,7 @@ export default function StatsScreen({ gameHistory, tableName, onBack }: Props) {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView
+        ref={scrollRef}
         stickyHeaderIndices={[0]}
         contentContainerStyle={[
           styles.scroll,
@@ -143,16 +152,18 @@ export default function StatsScreen({ gameHistory, tableName, onBack }: Props) {
             <View style={styles.titleBlock}>
               <Text
                 style={styles.title}
-                numberOfLines={1}
                 accessibilityRole="header"
                 accessibilityLiveRegion="polite"
               >
                 {selected ? t.stats.playerTitle(selected.name) : t.stats.title}
               </Text>
               {!selected && tableName ? (
-                <Text style={styles.tableName} numberOfLines={1}>
-                  ⚓ {tableName}
-                </Text>
+                <View style={styles.tableNameRow}>
+                  <AppIcon name="anchor" size={13} color={colors.gold} />
+                  <Text style={styles.tableName} numberOfLines={1}>
+                    {tableName}
+                  </Text>
+                </View>
               ) : null}
             </View>
             <View style={styles.headerSpacer} />
@@ -187,8 +198,8 @@ function EmptyState() {
   const { t } = useI18n();
   return (
     <View style={styles.empty}>
-      <Text style={styles.emptyIcon}>🗺️</Text>
-      <Text style={styles.emptyTitle}>{t.stats.emptyTitle}</Text>
+      <AppIcon {...STATS_ICON_META.empty} size={40} color={colors.goldDim} />
+      <Text style={styles.emptyTitle} accessibilityRole="header">{t.stats.emptyTitle}</Text>
       <Text style={styles.emptyBody}>{t.stats.emptyBody}</Text>
     </View>
   );
@@ -212,7 +223,7 @@ function CrewRecords({
   const fame: RecordCardData[] = [
     {
       key: "bestFinalScore",
-      icon: "👑",
+      icon: "bestFinalScore",
       label: t.stats.bestFinalScore,
       hint: t.stats.bestFinalScoreHint,
       holder: records.bestFinalScore && {
@@ -224,7 +235,7 @@ function CrewRecords({
     },
     {
       key: "biggestRound",
-      icon: "💰",
+      icon: "biggestRound",
       label: t.stats.biggestRound,
       hint: t.stats.biggestRoundHint,
       holder: records.biggestRound && {
@@ -239,7 +250,7 @@ function CrewRecords({
     },
     {
       key: "bestExactBid",
-      icon: "🎯",
+      icon: "bestExactBid",
       label: t.stats.bestExactBid,
       hint: t.stats.bestExactBidHint(MIN_RATED_ROUNDS),
       holder: records.bestExactBidRate && {
@@ -253,7 +264,7 @@ function CrewRecords({
     },
     {
       key: "zeroBidMaster",
-      icon: "🕳️",
+      icon: "zeroBidMaster",
       label: t.stats.zeroBidMaster,
       hint: t.stats.zeroBidMasterHint(MIN_ZERO_BIDS),
       holder: records.zeroBidMaster && {
@@ -267,7 +278,7 @@ function CrewRecords({
     },
     {
       key: "longestStreak",
-      icon: "🔥",
+      icon: "longestStreak",
       label: t.stats.longestStreak,
       hint: t.stats.longestStreakHint,
       holder: records.longestStreak && {
@@ -278,7 +289,7 @@ function CrewRecords({
     },
     {
       key: "biggestComeback",
-      icon: "🧭",
+      icon: "biggestComeback",
       label: t.stats.biggestComeback,
       hint: t.stats.biggestComebackHint,
       holder: records.biggestComeback && {
@@ -294,7 +305,7 @@ function CrewRecords({
     },
     {
       key: "biggestBonusHaul",
-      icon: "💎",
+      icon: "biggestBonusHaul",
       label: t.stats.biggestBonusHaul,
       hint: t.stats.biggestBonusHaulHint,
       holder: records.biggestBonusHaul && {
@@ -309,7 +320,7 @@ function CrewRecords({
   const shame: RecordCardData[] = [
     {
       key: "worstFinalScore",
-      icon: "💀",
+      icon: "worstFinalScore",
       label: t.stats.worstFinalScore,
       hint: t.stats.worstFinalScoreHint,
       holder: records.worstFinalScore && {
@@ -321,7 +332,7 @@ function CrewRecords({
     },
     {
       key: "worstRound",
-      icon: "🌊",
+      icon: "worstRound",
       label: t.stats.worstRound,
       hint: t.stats.worstRoundHint,
       holder: records.worstRound && {
@@ -336,7 +347,7 @@ function CrewRecords({
     },
     {
       key: "mostLastPlaces",
-      icon: "🪝",
+      icon: "mostLastPlaces",
       label: t.stats.mostLastPlaces,
       hint: t.stats.mostLastPlacesHint,
       holder: records.mostLastPlaces && {
@@ -351,7 +362,7 @@ function CrewRecords({
     },
     {
       key: "boldestBidder",
-      icon: "💣",
+      icon: "boldestBidder",
       label: t.stats.boldestBidder,
       hint: t.stats.boldestBidderHint,
       holder: records.boldestBidder && {
@@ -368,34 +379,34 @@ function CrewRecords({
   return (
     <>
       <View style={styles.hero}>
-        <Text style={styles.heroIcon}>🏆</Text>
-        <Text style={styles.heroTitle}>{t.stats.groupTitle}</Text>
+        <AppIcon {...STATS_ICON_META.crew} size={32} color={colors.gold} />
+        <Text style={styles.heroTitle} accessibilityRole="header">{t.stats.groupTitle}</Text>
       </View>
 
       <View style={styles.summaryRow}>
         <SummaryTile
-          icon="🗓️"
+          icon="totalGames"
           value={integer(summary.totalGames)}
           label={t.stats.totalGames}
         />
         <SummaryTile
-          icon="🎴"
+          icon="totalRounds"
           value={integer(summary.totalRounds)}
           label={t.stats.totalRounds}
         />
         <SummaryTile
-          icon="💰"
+          icon="totalPlunder"
           value={integer(summary.totalPlunder)}
           label={t.stats.totalPlunder}
         />
         <SummaryTile
-          icon="🏴‍☠️"
+          icon="totalPlayers"
           value={integer(summary.totalPlayers)}
           label={t.stats.totalPlayers}
         />
       </View>
 
-      <Text style={styles.sectionTitle}>{t.stats.leaderboard}</Text>
+      <Text style={styles.sectionTitle} accessibilityRole="header">{t.stats.leaderboard}</Text>
       <View style={styles.card}>
         {players.map((player, index) => (
           <TouchableOpacity
@@ -412,7 +423,7 @@ function CrewRecords({
             )}`}
           >
             <View style={styles.rankBadge}>
-              <Text style={styles.rankText}>{rankMedal(index + 1)}</Text>
+              <RankMarker rank={index + 1} />
             </View>
             <View style={styles.leaderCopy}>
               <Text style={styles.playerName} numberOfLines={1}>
@@ -439,7 +450,7 @@ function CrewRecords({
         ))}
       </View>
 
-      <Text style={styles.sectionTitle}>{t.stats.hallOfFame}</Text>
+      <Text style={styles.sectionTitle} accessibilityRole="header">{t.stats.hallOfFame}</Text>
       <View style={styles.recordGrid}>
         {fame.map((record) => (
           <RecordCard
@@ -451,7 +462,7 @@ function CrewRecords({
         ))}
       </View>
 
-      <Text style={[styles.sectionTitle, styles.sectionTitleShame]}>
+      <Text style={[styles.sectionTitle, styles.sectionTitleShame]} accessibilityRole="header">
         {t.stats.hallOfShame}
       </Text>
       <View style={styles.recordGrid}>
@@ -506,7 +517,11 @@ function RecordCard({
             shame && styles.recordIconBadgeShame,
           ]}
         >
-          <Text style={styles.recordIcon}>{record.icon}</Text>
+          <AppIcon
+            {...STATS_ICON_META[record.icon]}
+            size={20}
+            color={shame ? colors.negative : colors.gold}
+          />
         </View>
         <View style={styles.recordHeadCopy}>
           <Text style={[styles.recordLabel, shame && styles.recordLabelShame]}>
@@ -549,13 +564,13 @@ function SummaryTile({
   value,
   label,
 }: {
-  icon: string;
+  icon: StatsIconKey;
   value: string;
   label: string;
 }) {
   return (
     <View style={styles.summaryTile}>
-      <Text style={styles.summaryIcon}>{icon}</Text>
+      <AppIcon {...STATS_ICON_META[icon]} size={21} color={colors.gold} />
       <Text style={styles.summaryValue} numberOfLines={1} adjustsFontSizeToFit>
         {value}
       </Text>
@@ -587,16 +602,16 @@ function PlayerDetail({
       <View style={styles.playerHero}>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>
-            {Array.from(player.name.trim())[0]?.toLocaleUpperCase() ?? "☠"}
+            {Array.from(player.name.trim())[0]?.toLocaleUpperCase() ?? "?"}
           </Text>
         </View>
-        <Text style={styles.detailName}>{player.name}</Text>
+        <Text style={styles.detailName} accessibilityRole="header">{player.name}</Text>
         <Text style={styles.detailSummary}>
           {t.stats.playerSummary(player.gamesPlayed, player.wins)}
         </Text>
       </View>
 
-      <Text style={styles.sectionTitle}>{t.stats.metricsResults}</Text>
+      <Text style={styles.sectionTitle} accessibilityRole="header">{t.stats.metricsResults}</Text>
       <View style={styles.metricGrid}>
         <Metric label={t.stats.gamesPlayed} value={integer(player.gamesPlayed)} />
         <Metric label={t.stats.wins} value={integer(player.wins)} />
@@ -634,7 +649,7 @@ function PlayerDetail({
         />
       </View>
 
-      <Text style={styles.sectionTitle}>{t.stats.metricsBidding}</Text>
+      <Text style={styles.sectionTitle} accessibilityRole="header">{t.stats.metricsBidding}</Text>
       <View style={styles.metricGrid}>
         <Metric
           label={t.stats.exactBidRate}
@@ -657,7 +672,7 @@ function PlayerDetail({
         />
       </View>
 
-      <Text style={styles.sectionTitle}>{t.stats.metricsScoring}</Text>
+      <Text style={styles.sectionTitle} accessibilityRole="header">{t.stats.metricsScoring}</Text>
       <View style={styles.metricGrid}>
         <Metric
           label={t.stats.averagePoints}
@@ -680,7 +695,7 @@ function PlayerDetail({
         />
       </View>
 
-      <Text style={styles.sectionTitle}>{t.stats.recentGames}</Text>
+      <Text style={styles.sectionTitle} accessibilityRole="header">{t.stats.recentGames}</Text>
       <View style={styles.card}>
         {player.recentGames.map((game, index) => (
           <View
@@ -690,7 +705,7 @@ function PlayerDetail({
               index < player.recentGames.length - 1 && styles.rowBorder,
             ]}
           >
-            <Text style={styles.recentMedal}>{rankMedal(game.rank)}</Text>
+            <View style={styles.recentMedal}><RankMarker rank={game.rank} /></View>
             <View style={styles.recentCopy}>
               <Text style={styles.recentDate}>
                 {t.stats.recentGame(
@@ -744,7 +759,7 @@ const styles = StyleSheet.create({
   },
   backButton: { width: 92, minHeight: 44, justifyContent: "center" },
   back: { color: colors.gold, fontSize: 17 },
-  titleBlock: { flex: 1, alignItems: "center" },
+  titleBlock: { flex: 1, minWidth: 0, alignItems: "center" },
   title: {
     color: colors.text,
     fontSize: 20,
@@ -755,6 +770,13 @@ const styles = StyleSheet.create({
     color: colors.gold,
     fontSize: 12,
     fontWeight: "700",
+    flexShrink: 1,
+    marginStart: 4,
+  },
+  tableNameRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    minWidth: 0,
     marginTop: 2,
   },
   headerSpacer: { width: 92 },

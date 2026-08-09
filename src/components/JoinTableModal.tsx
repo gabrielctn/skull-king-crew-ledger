@@ -98,7 +98,7 @@ export default function JoinTableModal({ code, onClose, onJoin }: Props) {
           accessibilityRole="alert"
           accessibilityViewIsModal
         >
-          <Text style={styles.title}>⚓ {title}</Text>
+          <Text style={styles.title} accessibilityRole="header">⚓ {title}</Text>
 
           {phase.kind === "loading" ? (
             <ActivityIndicator

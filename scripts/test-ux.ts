@@ -78,6 +78,11 @@ const joinByCodeSource = readFileSync(
 const cloudSyncSource = readFileSync("src/cloudSync.ts", "utf8");
 const whatsNewSource = readFileSync("src/components/WhatsNewModal.tsx", "utf8");
 const spectatorSource = readFileSync("src/screens/SpectatorScreen.tsx", "utf8");
+const liveShareSource = readFileSync("src/components/ShareLiveModal.tsx", "utf8");
+const installSource = readFileSync("src/components/InstallAppSection.tsx", "utf8");
+const analyticsSource = readFileSync("src/components/AnalyticsPreferences.tsx", "utf8");
+const joinTableModalSource = readFileSync("src/components/JoinTableModal.tsx", "utf8");
+const lootConfirmationSource = readFileSync("src/components/LootConfirmationModal.tsx", "utf8");
 const playerFacingTextSources = [
   "src/i18n/en.ts",
   "src/i18n/fr.ts",
@@ -288,7 +293,7 @@ check(
 );
 check(
   "the decorative cup stays out of the modal's reading order",
-  /styles\.coin[\s\S]{0,200}aria-hidden/.test(supportModalSource)
+  supportModalSource.includes('<AppIcon name="coffee"')
 );
 check(
   "the support ask offers a way out that sticks",
@@ -387,6 +392,37 @@ check(
     settingsSource.includes("onPress={onJoinTable}") &&
     settingsSource.includes("t.settings.cloud.shareTitle") &&
     settingsSource.includes("t.settings.cloud.joinTitle")
+);
+check(
+  "cross-screen modal and spectator controls keep reachable targets and recovery actions",
+  rulesSource.includes("minHeight: 44") &&
+    gameRulesSource.includes("minHeight: 44") &&
+    supportModalSource.includes("<ScrollView") &&
+    spectatorSource.includes("setRetryAttempt") &&
+    spectatorSource.includes("!changingIdentity") &&
+    spectatorSource.includes("minHeight: 44") &&
+    liveShareSource.includes("copyTextToClipboard") &&
+    liveShareSource.includes("Share.share") &&
+    liveShareSource.includes("accessible={false}")
+);
+check(
+  "touched screen and dialog titles expose heading semantics",
+  installSource.includes('accessibilityRole="header"') &&
+    analyticsSource.includes('accessibilityRole="header"') &&
+    resultsSource.includes('accessibilityRole="header"') &&
+    gameSource.includes('accessibilityRole="header"') &&
+    joinByCodeSource.includes('accessibilityRole="header"') &&
+    tableInviteSource.includes('accessibilityRole="header"') &&
+    joinTableModalSource.includes('accessibilityRole="header"') &&
+    lootTrackerSource.includes('accessibilityRole="header"') &&
+    lootConfirmationSource.includes('accessibilityRole="header"') &&
+    scoreBreakdownSource.includes('accessibilityRole="header"')
+);
+check(
+  "spectator sorting is one radiogroup rather than selected buttons",
+  spectatorSource.includes('accessibilityRole="radiogroup"') &&
+    spectatorSource.includes('accessibilityRole="radio"') &&
+    !spectatorSource.includes('accessibilityState={{ selected: active }}')
 );
 check(
   "settings let the crew name their shared table",

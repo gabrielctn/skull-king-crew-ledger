@@ -103,6 +103,15 @@ async function main() {
     `${templatePath} must keep the html overflow guard`
   );
 
+  const expoConfig = JSON.parse(readFileSync("app.json", "utf8")).expo;
+  const manifest = JSON.parse(readFileSync("web/manifest.webmanifest", "utf8"));
+  check(
+    "orientation leaves native adaptive and both web entry points unconstrained",
+    expoConfig.orientation === "default" &&
+      expoConfig.web?.orientation === "any" &&
+      manifest.orientation === "any"
+  );
+
   console.log(`\n${passed} passed, ${failed} failed`);
   if (failed > 0) process.exit(1);
 }

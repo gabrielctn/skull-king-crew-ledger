@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Game, ScoringMode } from "../types";
 import ToggleSwitch from "./ToggleSwitch";
+import AppIcon from "./AppIcon";
 import { colors, radius, spacing } from "../theme";
 import { useI18n } from "../i18n/context";
 import { getResponsiveLayout } from "../responsive";
@@ -67,7 +68,12 @@ export default function GameRulesModal({
       <View style={[styles.backdrop, layout.isTablet && styles.backdropWide]}>
         <View style={[styles.sheet, layout.isTablet && styles.sheetWide]}>
           <View style={styles.header}>
-            <Text style={styles.title}>⚙ {t.gameSettings.title}</Text>
+            <View style={styles.titleRow}>
+              <AppIcon name="cog-outline" size={22} color={colors.gold} />
+              <Text style={styles.title} accessibilityRole="header">
+                {t.gameSettings.title}
+              </Text>
+            </View>
             <TouchableOpacity
               onPress={onClose}
               style={styles.close}
@@ -83,7 +89,9 @@ export default function GameRulesModal({
               </Text>
             </View>
 
-            <Text style={styles.section}>{t.setup.scoring}</Text>
+            <Text style={styles.section} accessibilityRole="header">
+              {t.setup.scoring}
+            </Text>
             <View
               accessibilityRole="radiogroup"
               accessibilityLabel={t.setup.scoring}
@@ -106,10 +114,20 @@ export default function GameRulesModal({
                       {selected ? <View style={styles.radioDot} /> : null}
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text style={styles.rowTitle}>
-                        {mode === "classic" ? "☠️ " : "🎲 "}
-                        {t.setup.scoringNames[mode]}
-                      </Text>
+                      <View style={styles.rowTitleLine}>
+                        <AppIcon
+                          name={
+                            mode === "classic"
+                              ? "skull-outline"
+                              : "dice-multiple-outline"
+                          }
+                          size={18}
+                          color={colors.text}
+                        />
+                        <Text style={styles.rowTitle}>
+                          {t.setup.scoringNames[mode]}
+                        </Text>
+                      </View>
                       <Text style={styles.rowHint}>
                         {t.setup.scoringHints[mode]}
                       </Text>
@@ -153,7 +171,10 @@ export default function GameRulesModal({
               </View>
             )}
 
-            <Text style={[styles.section, styles.sectionSpacing]}>
+            <Text
+              style={[styles.section, styles.sectionSpacing]}
+              accessibilityRole="header"
+            >
               {t.setup.expansion}
             </Text>
             <View style={styles.row}>
@@ -232,8 +253,27 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.cardBorder,
   },
-  title: { color: colors.gold, fontSize: 20, fontWeight: "800" },
-  close: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
+  titleRow: {
+    flex: 1,
+    minWidth: 0,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  title: {
+    flexShrink: 1,
+    minWidth: 0,
+    color: colors.gold,
+    fontSize: 20,
+    fontWeight: "800",
+    marginStart: spacing.xs,
+  },
+  close: {
+    minHeight: 44,
+    justifyContent: "center",
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    marginStart: spacing.sm,
+  },
   closeText: { color: colors.gold, fontSize: 16, fontWeight: "700" },
   scroll: { padding: spacing.md, paddingBottom: spacing.xl },
   notice: {
@@ -264,6 +304,11 @@ const styles = StyleSheet.create({
   },
   rowSelected: { borderColor: colors.gold },
   rowCopy: { flex: 1, marginEnd: spacing.md },
+  rowTitleLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    columnGap: spacing.xs,
+  },
   rowTitle: { color: colors.text, fontSize: 16, fontWeight: "700" },
   rowHint: {
     color: colors.textDim,

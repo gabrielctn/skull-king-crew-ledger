@@ -12,6 +12,7 @@ export const fr: Strings = {
     newGame: "Nouvelle partie",
     storageError:
       "La sauvegarde locale a échoué. Exportez vos parties avant de fermer l’app.",
+    loading: "Chargement de Skull King Crew Ledger…",
     dismiss: "Fermer",
   },
 
@@ -423,6 +424,7 @@ export const fr: Strings = {
     copyLink: "Copier le lien",
     copied: "Lien copié !",
     copyError: "Impossible de copier le lien.",
+    shareLink: "Partager le lien",
     qrLabel: "QR code ouvrant le suivi des scores de cette partie",
     close: "Fermer",
   },
@@ -446,7 +448,7 @@ export const fr: Strings = {
       "Touchez un joueur pour consulter son détail complet, manche par manche : mises, plis et bonus.",
     identityTitle: "Quel joueur êtes-vous ?",
     identityHint:
-      "Choisissez votre nom une fois pour suivre vos propres scores. Ce choix reste fixe pour cette partie.",
+      "Choisissez votre nom pour suivre vos propres scores. Ce choix est mémorisé et peut être modifié pour cette partie.",
     turnTitle: "Ordre du tour",
     sortLabel: "Ordre",
     sortName: "A → Z",
@@ -454,9 +456,14 @@ export const fr: Strings = {
     sortRank: "Rang",
     you: "Vous",
     openApp: "Ouvrir l’appli pour mes propres parties",
+    retry: "Réessayer la connexion",
+    changeIdentity: "Changer qui je suis",
     invalidTitle: "Code illisible",
     invalidBody:
       "Le lien scanné ne contient pas de partie lisible. Demandez au maître du jeu de réafficher le QR code, puis scannez-le à nouveau.",
+    connectionErrorTitle: "Impossible de joindre la partie en direct",
+    connectionErrorBody:
+      "Vérifiez votre connexion puis réessayez. Le maître du jeu peut continuer le partage pendant la reconnexion.",
   },
 
   results: {
@@ -589,6 +596,8 @@ export const fr: Strings = {
       `Évolution des scores après ${rounds} ${
         rounds === 1 ? "manche" : "manches"
       } ; ${leader} est en tête.`,
+    chartPoint: (round, total) => `Manche ${round}, total ${total}`,
+    chartPlayer: (name, points) => `${name} : ${points.join(" ; ")}`,
     playerSummary: (games, wins) =>
       `${games} ${games === 1 ? "partie" : "parties"} · ${wins} ${
         wins === 1 ? "victoire" : "victoires"

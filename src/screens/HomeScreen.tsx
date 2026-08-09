@@ -534,7 +534,7 @@ export default function HomeScreen({
             accessibilityRole="alert"
             accessibilityViewIsModal
           >
-            <Text style={styles.confirmTitle}>
+            <Text style={styles.confirmTitle} accessibilityRole="header">
               {pendingRemoval?.intent === "abandon"
                 ? t.home.abandonTitle
                 : t.home.deleteTitle}

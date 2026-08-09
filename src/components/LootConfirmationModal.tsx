@@ -67,7 +67,7 @@ export default function LootConfirmationModal({
           accessibilityViewIsModal
         >
           <Text style={styles.eyebrow}>{t.lootConfirmation.eyebrow}</Text>
-          <Text style={styles.title}>⚓ {t.lootConfirmation.title}</Text>
+          <Text style={styles.title} accessibilityRole="header">⚓ {t.lootConfirmation.title}</Text>
           <Text style={styles.intro}>
             {t.lootConfirmation.intro(participantIds.length)}
           </Text>

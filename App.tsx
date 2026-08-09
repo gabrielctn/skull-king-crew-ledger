@@ -56,7 +56,7 @@ import {
   renameMembership,
   upsertMembership,
 } from "./src/tables";
-import { colors } from "./src/theme";
+import { colors, spacing } from "./src/theme";
 import { I18nProvider, detectLang, useI18n } from "./src/i18n/context";
 import { Lang } from "./src/i18n/types";
 import HomeScreen from "./src/screens/HomeScreen";
@@ -160,6 +160,24 @@ function StorageWarning({
       >
         <Text style={styles.storageWarningDismissText}>×</Text>
       </TouchableOpacity>
+    </View>
+  );
+}
+
+function LoadingScreen() {
+  const { t } = useI18n();
+  return (
+    <View
+      style={styles.loader}
+      accessible
+      accessibilityRole="progressbar"
+      accessibilityLabel={t.common.loading}
+    >
+      <StatusBar barStyle="light-content" />
+      <ActivityIndicator color={colors.gold} size="large" accessible={false} />
+      <Text style={styles.loaderText} accessible={false}>
+        {t.common.loading}
+      </Text>
     </View>
   );
 }
@@ -916,10 +934,9 @@ export default function App() {
 
   if (loading || lang === null || settings === null) {
     return (
-      <View style={styles.loader}>
-        <StatusBar barStyle="light-content" />
-        <ActivityIndicator color={colors.gold} size="large" />
-      </View>
+      <I18nProvider initialLang={lang ?? detectLang()}>
+        <LoadingScreen />
+      </I18nProvider>
     );
   }
 
@@ -1069,6 +1086,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  loaderText: { color: colors.textDim, fontSize: 14, marginTop: spacing.md },
   storageWarning: {
     position: "absolute",
     left: 16,

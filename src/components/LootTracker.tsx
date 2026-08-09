@@ -63,7 +63,7 @@ export default function LootTracker({
     <View style={[styles.wrap, style]}>
       <View style={styles.headingRow}>
         <View style={styles.headingCopy}>
-          <Text style={styles.title}>⚓ {t.loot.title}</Text>
+          <Text style={styles.title} accessibilityRole="header">⚓ {t.loot.title}</Text>
           <Text style={styles.hint}>{t.loot.hint}</Text>
         </View>
         {legacyLootCount === 0 && lootUses.length < 2 ? (
@@ -108,7 +108,7 @@ export default function LootTracker({
         return (
           <View key={lootUse.id} style={styles.use}>
             <View style={styles.useHeader}>
-              <Text style={styles.useTitle}>{t.loot.useNumber(index + 1)}</Text>
+              <Text style={styles.useTitle} accessibilityRole="header">{t.loot.useNumber(index + 1)}</Text>
               <TouchableOpacity
                 style={styles.removeButton}
                 onPress={() => removeUse(lootUse.id)}

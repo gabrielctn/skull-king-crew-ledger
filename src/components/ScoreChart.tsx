@@ -3,6 +3,10 @@ import { StyleSheet, Text, View } from "react-native";
 import { browserLocale, useI18n } from "../i18n/context";
 import { standings } from "../scoring";
 import { cumulativeScoreSeries } from "../stats";
+import {
+  createScoreChartFormatters,
+  scoreChartSummaries,
+} from "../scoreChartSummary";
 import { colors, scoreSeriesColors, spacing } from "../theme";
 import type { Game } from "../types";
 
@@ -43,9 +47,13 @@ export default function ScoreChart({ game }: Props) {
       ),
     [series]
   );
-  const formatScore = useMemo(
-    () => new Intl.NumberFormat(browserLocale(lang), { maximumFractionDigits: 0 }),
+  const chartFormatters = useMemo(
+    () => createScoreChartFormatters(browserLocale(lang)),
     [lang]
+  );
+  const summaries = useMemo(
+    () => scoreChartSummaries(series, chartFormatters.formatTotal, t.stats.chartPoint, t.stats.chartPlayer),
+    [series, chartFormatters, t]
   );
 
   if (roundNumbers.length < 2) return null;
@@ -141,7 +149,7 @@ export default function ScoreChart({ game }: Props) {
                 fontSize="11"
                 textAnchor="end"
               >
-                {formatScore.format(total)}
+                {chartFormatters.formatTotal(total)}
               </text>
             </g>
           );
@@ -198,7 +206,12 @@ export default function ScoreChart({ game }: Props) {
                 },
               ]}
             />
-            <Text numberOfLines={1} style={styles.legendName}>
+            <Text
+              accessible
+              accessibilityLabel={summaries[playerIndex]?.label}
+              numberOfLines={1}
+              style={styles.legendName}
+            >
               {player.name}
             </Text>
           </View>

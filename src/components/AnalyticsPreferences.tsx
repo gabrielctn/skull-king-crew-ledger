@@ -32,13 +32,13 @@ export default function AnalyticsPreferences() {
 
   return (
     <>
-      <Text style={[styles.section, styles.sectionSpacing]}>
+      <Text style={[styles.section, styles.sectionSpacing]} accessibilityRole="header">
         {t.settings.privacy.title}
       </Text>
       <Text style={styles.hint}>{t.settings.privacy.hint}</Text>
       <View style={styles.card}>
         <View style={styles.copy}>
-          <Text style={styles.title}>{t.settings.privacy.analyticsTitle}</Text>
+          <Text style={styles.title} accessibilityRole="header">{t.settings.privacy.analyticsTitle}</Text>
           <Text style={styles.hint}>{t.settings.privacy.analyticsHint}</Text>
           {status ? (
             <Text style={styles.status} accessibilityRole="summary">

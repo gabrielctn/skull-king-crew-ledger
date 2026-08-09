@@ -22,6 +22,7 @@ export default function AppIcon({
       color={color}
       accessible={!accessibilityHidden}
       importantForAccessibility={accessibilityHidden ? "no-hide-descendants" : "auto"}
+      aria-hidden={accessibilityHidden}
     />
   );
 }

@@ -4,6 +4,12 @@
  */
 import { createGame, emptyBonus } from "../src/scoring";
 import {
+  createScoreChartFormatters,
+  scoreChartSummaries,
+} from "../src/scoreChartSummary";
+import { en } from "../src/i18n/en";
+import { fr } from "../src/i18n/fr";
+import {
   aggregateStats,
   cumulativeScoreSeries,
   gameAwards,
@@ -473,6 +479,49 @@ deepEq(
   ]
 );
 eq("series has one row per real player", sparseSeries.length, 2);
+deepEq(
+  "chart summaries give each player literal round and total labels",
+  scoreChartSummaries(sparseSeries, (value) => String(value), (round, total) =>
+    `Round ${round}, ${total} total`
+  , (name, points) => `${name}: ${points.join(" | ")}`).map(({ name, label }) => ({ name, label })),
+  [
+    {
+      name: "Sparse A",
+      label: "Sparse A: Round 1, 20 total | Round 3, 50 total",
+    },
+    {
+      name: "Sparse B",
+      label: "Sparse B: Round 1, 10 total | Round 3, 0 total",
+    },
+  ]
+);
+const chartFormatters = createScoreChartFormatters("en-US");
+eq(
+  "chart summaries keep a visible positive-total sign on every platform",
+  chartFormatters.formatTotal(20),
+  "+20"
+);
+deepEq(
+  "chart summary lets each locale own its point separator",
+  [
+    scoreChartSummaries(
+      sparseSeries,
+      chartFormatters.formatTotal,
+      en.stats.chartPoint,
+      en.stats.chartPlayer
+    )[0]?.label,
+    scoreChartSummaries(
+      sparseSeries,
+      chartFormatters.formatTotal,
+      fr.stats.chartPoint,
+      fr.stats.chartPlayer
+    )[0]?.label,
+  ],
+  [
+    "Sparse A: Round 1, +20 total, Round 3, +50 total",
+    "Sparse A : Manche 1, total +20 ; Manche 3, total +50",
+  ]
+);
 
 section("Setup suggestions");
 const suggestionOld = fixtureGame(

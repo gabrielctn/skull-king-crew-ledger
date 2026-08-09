@@ -26,7 +26,7 @@ interface Props {
 function Section({ heading, entries }: { heading: string; entries: Entry[] }) {
   return (
     <View style={{ marginBottom: spacing.lg }}>
-      <Text style={styles.heading}>{heading}</Text>
+      <Text style={styles.heading} accessibilityRole="header">{heading}</Text>
       {entries.map((e) => (
         <View key={e.title} style={styles.entry}>
           <Text style={styles.entryTitle}>{e.title}</Text>
@@ -57,9 +57,9 @@ export default function RulesModal({ visible, onClose }: Props) {
                   resizeMode="contain"
                 />
               </View>
-              <Text style={styles.title}>{t.rules.title}</Text>
+              <Text style={styles.title} accessibilityRole="header">{t.rules.title}</Text>
             </View>
-            <TouchableOpacity onPress={onClose} style={styles.close}>
+            <TouchableOpacity onPress={onClose} style={styles.close} accessibilityRole="button">
               <Text style={styles.closeText}>{t.rules.done}</Text>
             </TouchableOpacity>
           </View>
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.cardBorder,
   },
-  titleRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+  titleRow: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: spacing.sm },
   mermaidCrop: {
     width: 42,
     height: 48,
@@ -132,8 +132,8 @@ const styles = StyleSheet.create({
     width: 82,
     height: 102,
   },
-  title: { color: colors.gold, fontSize: 20, fontWeight: "800" },
-  close: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
+  title: { flexShrink: 1, minWidth: 0, color: colors.gold, fontSize: 20, fontWeight: "800" },
+  close: { minHeight: 44, justifyContent: "center", paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
   closeText: { color: colors.gold, fontSize: 16, fontWeight: "700" },
   scroll: { padding: spacing.md },
   notice: {
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   noticeText: { color: colors.textDim, fontSize: 13, lineHeight: 18 },
   officialRulesLink: {
     alignSelf: "flex-start",
-    minHeight: 36,
+    minHeight: 44,
     justifyContent: "center",
     marginTop: spacing.xs,
   },

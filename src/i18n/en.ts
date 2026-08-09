@@ -17,6 +17,7 @@ export const en: Strings = {
     newGame: "New game",
     storageError:
       "Local saving failed. Export your games before closing the app.",
+    loading: "Loading Skull King Crew Ledger…",
     dismiss: "Dismiss",
   },
 
@@ -424,6 +425,7 @@ export const en: Strings = {
     copyLink: "Copy link",
     copied: "Link copied!",
     copyError: "Could not copy the link.",
+    shareLink: "Share link",
     qrLabel: "QR code opening the score tracking of this game",
     close: "Close",
   },
@@ -447,7 +449,7 @@ export const en: Strings = {
       "Tap any player for their full round-by-round details: bids, tricks and every bonus.",
     identityTitle: "Which player are you?",
     identityHint:
-      "Pick your name once to follow your own scores. It stays fixed for this game.",
+      "Choose your name to follow your own scores. It is remembered and can be changed for this game.",
     turnTitle: "Turn order",
     sortLabel: "Order",
     sortName: "A → Z",
@@ -455,9 +457,14 @@ export const en: Strings = {
     sortRank: "Rank",
     you: "You",
     openApp: "Open the app for my own games",
+    retry: "Retry connection",
+    changeIdentity: "Change who I am",
     invalidTitle: "This code could not be read",
     invalidBody:
       "The scanned link does not contain a readable game. Ask the scorekeeper to show the QR code again, then rescan it.",
+    connectionErrorTitle: "Could not reach the live game",
+    connectionErrorBody:
+      "Check your connection, then try again. The scorekeeper can keep sharing while you reconnect.",
   },
 
   results: {
@@ -586,6 +593,8 @@ export const en: Strings = {
     unavailable: "Not available",
     chartLabel: (leader, rounds) =>
       `Score evolution after ${rounds} ${rounds === 1 ? "round" : "rounds"}; ${leader} leads.`,
+    chartPoint: (round, total) => `Round ${round}, ${total} total`,
+    chartPlayer: (name, points) => `${name}: ${points.join(", ")}`,
     playerSummary: (games, wins) =>
       `${games} ${games === 1 ? "game" : "games"} · ${wins} ${
         wins === 1 ? "win" : "wins"

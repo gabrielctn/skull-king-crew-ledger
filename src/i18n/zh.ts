@@ -8,6 +8,7 @@ export const zh: Strings = {
     back: "返回",
     newGame: "新对局",
     storageError: "本地保存失败。关闭应用前请先导出对局。",
+    loading: "正在加载 Skull King Crew Ledger…",
     dismiss: "关闭",
   },
 
@@ -387,6 +388,7 @@ export const zh: Strings = {
     copyLink: "复制链接",
     copied: "链接已复制！",
     copyError: "无法复制链接。",
+    shareLink: "分享链接",
     qrLabel: "打开本局比分跟踪的二维码",
     close: "关闭",
   },
@@ -407,7 +409,7 @@ export const zh: Strings = {
     standingsTitle: "排名",
     tapHint: "点击任意玩家查看其逐回合完整明细，包括叫牌、墩数和每项奖励。",
     identityTitle: "你是哪位玩家？",
-    identityHint: "选择一次你的名字即可跟踪自己的得分，本局中保持不变。",
+    identityHint: "选择你的名字以跟踪自己的得分。选择会被记住，也可以在本局中更改。",
     turnTitle: "出牌顺序",
     sortLabel: "排序",
     sortName: "A→Z",
@@ -415,9 +417,13 @@ export const zh: Strings = {
     sortRank: "名次",
     you: "你",
     openApp: "打开应用记录我自己的对局",
+    retry: "重试连接",
+    changeIdentity: "更改我的身份",
     invalidTitle: "无法读取此二维码",
     invalidBody:
       "扫描的链接不包含可读取的对局。请记分员重新展示二维码，然后再扫描一次。",
+    connectionErrorTitle: "无法连接实时对局",
+    connectionErrorBody: "请检查网络后重试。记分员可以在你重新连接时继续分享。",
   },
 
   results: {
@@ -537,6 +543,8 @@ export const zh: Strings = {
     unavailable: "暂无",
     chartLabel: (leader, rounds) =>
       `已记录 ${rounds} 回合的得分走势；${leader} 当前领先。`,
+    chartPoint: (round, total) => `第 ${round} 回合，总分 ${total}`,
+    chartPlayer: (name, points) => `${name}：${points.join("；")}`,
     playerSummary: (games, wins) => `${games} 局 · ${wins} 胜`,
     bidSummary: (successes, attempts) => `${successes}/${attempts}`,
     recentGame: (date, rank, score) =>

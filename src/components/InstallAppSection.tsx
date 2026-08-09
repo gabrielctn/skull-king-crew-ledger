@@ -81,7 +81,9 @@ export default function InstallAppSection() {
 
   return (
     <>
-      <Text style={[styles.section, styles.sectionSpacing]}>{copy.title}</Text>
+      <Text style={[styles.section, styles.sectionSpacing]} accessibilityRole="header">
+        {copy.title}
+      </Text>
 
       {installed ? (
         <View style={styles.installedCard} accessibilityRole="summary">
@@ -171,7 +173,7 @@ function PlatformGuide({
 }) {
   return (
     <View style={[styles.platformCard, last && styles.platformCardLast]}>
-      <Text style={styles.platformTitle}>{title}</Text>
+      <Text style={styles.platformTitle} accessibilityRole="header">{title}</Text>
       {steps.map((step, index) => (
         <View key={index} style={styles.stepRow}>
           <View style={styles.stepBadge}>

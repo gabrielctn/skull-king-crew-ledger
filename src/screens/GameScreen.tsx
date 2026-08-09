@@ -514,7 +514,7 @@ export default function GameScreen({
         </Text>
       </TouchableOpacity>
       <View style={styles.roundInfo}>
-        <Text style={styles.roundTitle}>{t.game.round(displayRound)}</Text>
+        <Text style={styles.roundTitle} accessibilityRole="header">{t.game.round(displayRound)}</Text>
         <Text style={styles.roundCards}>{t.game.cardsDealt}</Text>
         <Stepper
           value={cards}
@@ -944,7 +944,7 @@ export default function GameScreen({
           ]}
         >
           <View style={styles.boardHeading}>
-            <Text style={styles.boardTitle}>{t.game.totalScoreTitle}</Text>
+            <Text style={styles.boardTitle} accessibilityRole="header">{t.game.totalScoreTitle}</Text>
             <Text style={styles.boardCaption}>
               {alreadyRecorded
                 ? t.game.totalIncludesRound
@@ -1017,7 +1017,7 @@ export default function GameScreen({
             accessibilityRole="alert"
             accessibilityViewIsModal
           >
-            <Text style={styles.confirmTitle}>{t.game.untouchedTitle}</Text>
+            <Text style={styles.confirmTitle} accessibilityRole="header">{t.game.untouchedTitle}</Text>
             <Text style={styles.confirmMessage}>{t.game.untouchedMessage}</Text>
             <View style={styles.confirmActions}>
               <TouchableOpacity

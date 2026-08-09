@@ -116,7 +116,7 @@ export default function JoinByCodeModal({ visible, onClose, onResolved }: Props)
                 resizeMode="contain"
               />
               <View style={styles.identityCopy}>
-                <Text style={styles.title}>{t.joinByCode.title}</Text>
+                <Text style={styles.title} accessibilityRole="header">{t.joinByCode.title}</Text>
                 <Text style={styles.subtitle}>{t.joinByCode.subtitle}</Text>
               </View>
             </View>

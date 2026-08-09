@@ -6,6 +6,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -24,6 +25,8 @@ import { qrCodeDataUrl } from "../qr";
 import { illustrations } from "../assets/illustrations";
 import { colors, radius, spacing } from "../theme";
 import { getResponsiveLayout } from "../responsive";
+import { copyTextToClipboard } from "../clipboard";
+import AppIcon from "./AppIcon";
 
 interface Props {
   visible: boolean;
@@ -83,11 +86,6 @@ export default function ShareLiveModal({ visible, game, onClose }: Props) {
     return dataUrl ? { url, dataUrl } : null;
   }, [visible, liveSessionId, baseUrl, qrSize]);
 
-  const canCopy =
-    Platform.OS === "web" &&
-    typeof navigator !== "undefined" &&
-    !!navigator.clipboard?.writeText;
-
   const showCopyFeedback = (state: "copied" | "error") => {
     setCopyState(state);
     if (copyTimer.current) clearTimeout(copyTimer.current);
@@ -95,11 +93,13 @@ export default function ShareLiveModal({ visible, game, onClose }: Props) {
   };
 
   const copy = (url: string) => {
-    if (!canCopy) return;
-    navigator.clipboard.writeText(url).then(
-      () => showCopyFeedback("copied"),
+    void copyTextToClipboard(url).then(
+      (copied) => showCopyFeedback(copied ? "copied" : "error"),
       () => showCopyFeedback("error")
     );
+  };
+  const share = (url: string) => {
+    void Share.share({ message: url }).catch(() => undefined);
   };
 
   const status = liveState.status;
@@ -154,7 +154,7 @@ export default function ShareLiveModal({ visible, game, onClose }: Props) {
                 resizeMode="contain"
               />
               <View style={styles.identityCopy}>
-                <Text style={styles.title}>{t.liveShare.title}</Text>
+                <Text style={styles.title} accessibilityRole="header">{t.liveShare.title}</Text>
                 <Text style={styles.subtitle}>{t.liveShare.subtitle}</Text>
               </View>
             </View>
@@ -217,16 +217,27 @@ export default function ShareLiveModal({ visible, game, onClose }: Props) {
                       </Text>
                     ) : null}
 
-                    {liveQr && canCopy ? (
+                    {liveQr ? (
                       <TouchableOpacity
                         style={styles.copyButton}
                         onPress={() => copy(liveQr.url)}
                         accessibilityRole="button"
                         accessibilityLabel={t.liveShare.copyLink}
                       >
-                        <Text style={styles.copyButtonText}>
-                          🔗 {t.liveShare.copyLink}
-                        </Text>
+                        <View style={styles.copyContents}>
+                          <AppIcon name="link-variant" size={18} color={colors.gold} />
+                          <Text style={styles.copyButtonText}>{t.liveShare.copyLink}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    ) : null}
+                    {liveQr && Platform.OS !== "web" ? (
+                      <TouchableOpacity
+                        style={styles.copyButton}
+                        onPress={() => share(liveQr.url)}
+                        accessibilityRole="button"
+                        accessibilityLabel={t.liveShare.shareLink}
+                      >
+                        <Text style={styles.copyButtonText}>{t.liveShare.shareLink}</Text>
                       </TouchableOpacity>
                     ) : null}
 
@@ -256,15 +267,13 @@ export default function ShareLiveModal({ visible, game, onClose }: Props) {
                       onPress={() => manager.start(game)}
                       disabled={starting}
                       accessibilityRole="button"
-                      accessibilityState={{ disabled: starting }}
+                      accessibilityState={{ busy: starting, disabled: starting }}
                     >
-                      {starting ? (
-                        <ActivityIndicator color={colors.bg} />
-                      ) : (
-                        <Text style={styles.startButtonText}>
-                          🛰 {t.liveShare.start}
-                        </Text>
-                      )}
+                      <View style={styles.startContents}>
+                        <AppIcon name="satellite-variant" size={19} color={colors.bg} />
+                        <Text style={styles.startButtonText}>{t.liveShare.start}</Text>
+                        {starting ? <ActivityIndicator color={colors.bg} accessible={false} /> : null}
+                      </View>
                     </TouchableOpacity>
                   </>
                 )}
@@ -341,10 +350,10 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   closeButton: {
-    width: 38,
-    height: 38,
+    width: 44,
+    height: 44,
     marginStart: spacing.sm,
-    borderRadius: 19,
+    borderRadius: 22,
     borderWidth: 1,
     borderColor: colors.cardBorder,
     backgroundColor: colors.bgElevated,
@@ -432,6 +441,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   startButtonBusy: { opacity: 0.7 },
+  startContents: { flexDirection: "row", alignItems: "center", columnGap: spacing.sm },
   startButtonText: { color: colors.bg, fontSize: 16, fontWeight: "800" },
   stopButton: {
     minHeight: 44,
@@ -463,6 +473,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   copyButtonText: { color: colors.gold, fontSize: 14, fontWeight: "800" },
+  copyContents: { flexDirection: "row", alignItems: "center", columnGap: spacing.xs },
   copyFeedbackSlot: { alignItems: "center" },
   copyFeedback: {
     color: colors.positive,

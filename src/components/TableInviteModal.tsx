@@ -130,7 +130,7 @@ export default function TableInviteModal({ visible, tableName, onClose }: Props)
                 resizeMode="contain"
               />
               <View style={styles.identityCopy}>
-                <Text style={styles.title}>{t.tableInvite.title}</Text>
+                <Text style={styles.title} accessibilityRole="header">{t.tableInvite.title}</Text>
                 <Text style={styles.subtitle} numberOfLines={2}>
                   {tableName
                     ? t.tableInvite.subtitleNamed(tableName)

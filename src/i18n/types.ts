@@ -40,6 +40,7 @@ export interface Strings {
     back: string;
     newGame: string;
     storageError: string;
+    loading: string;
     dismiss: string;
   };
 
@@ -440,6 +441,7 @@ export interface Strings {
     copyLink: string;
     copied: string;
     copyError: string;
+    shareLink: string;
     /** Accessibility description of the QR code image. */
     qrLabel: string;
     close: string;
@@ -467,9 +469,9 @@ export interface Strings {
     endedBody: string;
     standingsTitle: string;
     tapHint: string;
-    /** Heading for the one-time "which player are you?" picker. */
+    /** Heading for the remembered, changeable "which player are you?" picker. */
     identityTitle: string;
-    /** Sub-line explaining the identity pick stays fixed for the game. */
+    /** Sub-line explaining the remembered identity can be changed for the game. */
     identityHint: string;
     /** Section title above the dealer / play-order banner. */
     turnTitle: string;
@@ -482,8 +484,12 @@ export interface Strings {
     /** Chip marking the remembered "this is me" row in the standings. */
     you: string;
     openApp: string;
+    retry: string;
+    changeIdentity: string;
     invalidTitle: string;
     invalidBody: string;
+    connectionErrorTitle: string;
+    connectionErrorBody: string;
   };
 
   results: {
@@ -611,6 +617,8 @@ export interface Strings {
     recentGames: string;
     unavailable: string;
     chartLabel: (leader: string, rounds: number) => string;
+    chartPoint: (round: number, total: string) => string;
+    chartPlayer: (name: string, points: string[]) => string;
     playerSummary: (games: number, wins: number) => string;
     bidSummary: (successes: number, attempts: number) => string;
     recentGame: (date: string, rank: number, score: number) => string;

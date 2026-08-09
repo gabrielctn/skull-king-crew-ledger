@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   Platform,
   SafeAreaView,
@@ -61,6 +62,7 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
   const layout = getResponsiveLayout(width);
   const [scorePlayerId, setScorePlayerId] = useState<string | null>(null);
   const [rememberedId, setRememberedId] = useState<string | null>(null);
+  const [changingIdentity, setChangingIdentity] = useState(false);
   // How this viewer wants the standings ordered (a per-device preference, so
   // each spectator picks what is easiest to read on their own phone).
   const [sort, setSort] = useState<SpectatorSort>(DEFAULT_SPECTATOR_SORT);
@@ -73,6 +75,7 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
   const [liveStatus, setLiveStatus] = useState<SpectatorLiveStatus>(
     "connecting"
   );
+  const [retryAttempt, setRetryAttempt] = useState(0);
 
   // Follow the live session: subscribe on mount, refresh when the tab regains
   // focus (realtime channels can miss events while backgrounded).
@@ -100,7 +103,7 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
       watcher.stop();
       if (detachVisibility) detachVisibility();
     };
-  }, [liveSessionId]);
+  }, [liveSessionId, retryAttempt]);
 
   const activeGame = liveGame;
 
@@ -148,14 +151,14 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
   }, []);
 
   // Restore this device owner's "this is me" pick when the followed game
-  // matches a saved identity. The pick is made once (via the identity picker
-  // below) and is never reassigned by tapping other players, so re-scans and
-  // reloads always keep the same "you".
+  // matches a saved identity. Row taps never reassign it; the explicit picker
+  // below is the only way to deliberately change the remembered identity.
   useEffect(() => {
     let cancelled = false;
     if (!activeGame) return;
     setIdentityResolved(false);
     setRememberedId(null);
+    setChangingIdentity(false);
     void loadSpectatorIdentity().then((identity) => {
       if (cancelled) return;
       if (identity && identity.gameId === activeGame.id) {
@@ -177,6 +180,10 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
   const failedToLoad =
     liveGame === null &&
     (liveStatus === "notFound" || liveStatus === "error");
+  const retry = () => {
+    setLiveStatus("connecting");
+    setRetryAttempt((attempt) => attempt + 1);
+  };
 
   if (failedToLoad) {
     return (
@@ -187,8 +194,23 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
             style={styles.invalidMascot}
             resizeMode="contain"
           />
-          <Text style={styles.invalidTitle}>{t.spectator.invalidTitle}</Text>
-          <Text style={styles.invalidBody}>{t.spectator.invalidBody}</Text>
+          <Text style={styles.invalidTitle} accessibilityRole="header">
+            {liveStatus === "notFound"
+              ? t.spectator.invalidTitle
+              : t.spectator.connectionErrorTitle}
+          </Text>
+          <Text style={styles.invalidBody}>
+            {liveStatus === "notFound"
+              ? t.spectator.invalidBody
+              : t.spectator.connectionErrorBody}
+          </Text>
+          <TouchableOpacity
+            style={styles.retryButton}
+            onPress={retry}
+            accessibilityRole="button"
+          >
+            <Text style={styles.retryText}>{t.spectator.retry}</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.exitButton}
             onPress={onExit}
@@ -211,7 +233,30 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
             style={styles.invalidMascot}
             resizeMode="contain"
           />
-          <Text style={styles.connectingText}>{t.spectator.connecting}</Text>
+          <View
+            accessible
+            accessibilityRole="progressbar"
+            accessibilityLabel={t.spectator.connecting}
+          >
+            <ActivityIndicator color={colors.gold} accessible={false} />
+            <Text style={styles.connectingText} accessible={false}>
+              {t.spectator.connecting}
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={styles.retryButton}
+            onPress={retry}
+            accessibilityRole="button"
+          >
+            <Text style={styles.retryText}>{t.spectator.retry}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.exitButton}
+            onPress={onExit}
+            accessibilityRole="button"
+          >
+            <Text style={styles.exitButtonText}>{t.spectator.openApp}</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
@@ -225,10 +270,11 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
     setScorePlayerId(playerId);
   };
 
-  // The one-time "which player are you?" choice. Once set it is only ever
-  // restored from storage, never changed by row taps, so it stays put.
+  // The explicit "which player are you?" picker is the only way to change the
+  // remembered identity; row taps remain score-detail navigation only.
   const chooseIdentity = (playerId: string, playerName: string) => {
     setRememberedId(playerId);
+    setChangingIdentity(false);
     void saveSpectatorIdentity({
       gameId: activeGame.id,
       playerId,
@@ -304,7 +350,7 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
                 </View>
               ) : null}
             </View>
-            <Text style={styles.title}>{t.spectator.title}</Text>
+            <Text style={styles.title} accessibilityRole="header">{t.spectator.title}</Text>
             <Text style={styles.progress}>
               {activeGame.status === "finished"
                 ? t.spectator.finished
@@ -326,9 +372,9 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
           </Text>
         ) : null}
 
-        {identityResolved && !rememberedId ? (
+        {identityResolved && (!rememberedId || changingIdentity) ? (
           <View style={styles.identityCard}>
-            <Text style={styles.identityTitle}>
+            <Text style={styles.identityTitle} accessibilityRole="header">
               {t.spectator.identityTitle}
             </Text>
             <Text style={styles.identityHint}>{t.spectator.identityHint}</Text>
@@ -350,10 +396,21 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
             </View>
           </View>
         ) : null}
+        {identityResolved && rememberedId && !changingIdentity ? (
+          <TouchableOpacity
+            style={styles.changeIdentityButton}
+            onPress={() => setChangingIdentity(true)}
+            accessibilityRole="button"
+          >
+            <Text style={styles.changeIdentityText}>
+              {t.spectator.changeIdentity}
+            </Text>
+          </TouchableOpacity>
+        ) : null}
 
         {dealer ? (
           <>
-            <Text style={styles.sectionTitle}>{t.spectator.turnTitle}</Text>
+            <Text style={styles.sectionTitle} accessibilityRole="header">{t.spectator.turnTitle}</Text>
             <View style={styles.turnCard}>
               <Text style={styles.turnRound}>{t.game.round(currentRound)}</Text>
               <Text style={styles.turnDealer}>
@@ -410,12 +467,16 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
           </>
         ) : null}
 
-        <Text style={styles.sectionTitle}>{t.spectator.standingsTitle}</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">{t.spectator.standingsTitle}</Text>
         <Text style={styles.tapHint}>{t.spectator.tapHint}</Text>
         {board.length > 1 ? (
           <View style={styles.sortRow}>
             <Text style={styles.sortLabel}>{t.spectator.sortLabel}</Text>
-            <View style={styles.sortControl}>
+            <View
+              style={styles.sortControl}
+              accessibilityRole="radiogroup"
+              accessibilityLabel={t.spectator.sortLabel}
+            >
               {sortOptions.map((option) => {
                 const active = sort === option.key;
                 return (
@@ -423,8 +484,8 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
                     key={option.key}
                     style={[styles.sortChip, active && styles.sortChipActive]}
                     onPress={() => changeSort(option.key)}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: active }}
+                    accessibilityRole="radio"
+                    accessibilityState={{ checked: active }}
                     accessibilityLabel={option.label}
                   >
                     <Text
@@ -513,6 +574,22 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
 }
 
 const styles = StyleSheet.create({
+  retryButton: {
+    minHeight: 44,
+    alignSelf: "center",
+    justifyContent: "center",
+    paddingHorizontal: spacing.md,
+    marginTop: spacing.sm,
+  },
+  retryText: { color: colors.gold, fontSize: 14, fontWeight: "800" },
+  changeIdentityButton: {
+    minHeight: 44,
+    alignSelf: "flex-start",
+    justifyContent: "center",
+    paddingHorizontal: spacing.md,
+    marginBottom: spacing.md,
+  },
+  changeIdentityText: { color: colors.gold, fontSize: 14, fontWeight: "800" },
   safe: { flex: 1, backgroundColor: "transparent" },
   scroll: {
     width: "100%",
@@ -637,7 +714,7 @@ const styles = StyleSheet.create({
   },
   sortChip: {
     flex: 1,
-    minHeight: 34,
+    minHeight: 44,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: radius.sm - 2,
@@ -678,7 +755,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     margin: 4,
-    minHeight: 40,
+    minHeight: 44,
     justifyContent: "center",
     maxWidth: "100%",
   },

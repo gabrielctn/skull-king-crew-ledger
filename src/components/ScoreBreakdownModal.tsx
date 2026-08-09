@@ -194,8 +194,8 @@ export default function ScoreBreakdownModal({
                 resizeMode="contain"
               />
               <View style={styles.identityCopy}>
-                <Text style={styles.eyebrow}>{t.scoreBreakdown.title}</Text>
-                <Text style={styles.playerName} numberOfLines={1}>
+                <Text style={styles.eyebrow} accessibilityRole="header">{t.scoreBreakdown.title}</Text>
+                <Text style={styles.playerName} numberOfLines={1} accessibilityRole="header">
                   {player.name}
                 </Text>
               </View>
@@ -249,7 +249,7 @@ export default function ScoreBreakdownModal({
             showsVerticalScrollIndicator={false}
             onContentSizeChange={() => revealLatestRound()}
           >
-            <Text style={styles.sectionTitle}>
+            <Text style={styles.sectionTitle} accessibilityRole="header">
               {t.scoreBreakdown.historyTitle}
             </Text>
 

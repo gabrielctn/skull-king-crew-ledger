@@ -41,6 +41,7 @@ import WhatsNewModal from "../components/WhatsNewModal";
 import InstallAppSection from "../components/InstallAppSection";
 import GlassSurface from "../components/GlassSurface";
 import AnalyticsPreferences from "../components/AnalyticsPreferences";
+import AppIcon from "../components/AppIcon";
 
 const FEEDBACK_EMAIL = "gabrielcretin@gmail.com";
 const HEADER_HEIGHT = 60;
@@ -260,7 +261,7 @@ export default function SettingsScreen({
             >
               <Text style={styles.back}>‹ {t.common.back}</Text>
             </TouchableOpacity>
-            <Text style={styles.title}>{t.settings.title}</Text>
+            <Text style={styles.title} accessibilityRole="header">{t.settings.title}</Text>
             <View style={{ width: 50 }} />
           </GlassSurface>
         </View>
@@ -271,7 +272,7 @@ export default function SettingsScreen({
             { paddingTop: layout.screenPadding },
           ]}
         >
-        <Text style={styles.section}>{t.settings.languageTitle}</Text>
+        <Text style={styles.section} accessibilityRole="header">{t.settings.languageTitle}</Text>
         <View style={styles.languageList}>
           {SUPPORTED_LANGS.map((option: Lang, index) => (
             <TouchableOpacity
@@ -305,7 +306,7 @@ export default function SettingsScreen({
 
         {isWakeLockSupported() ? (
           <>
-            <Text style={[styles.section, styles.sectionSpacing]}>
+            <Text style={[styles.section, styles.sectionSpacing]} accessibilityRole="header">
               {t.settings.gameTitle}
             </Text>
             <View style={styles.settingRow}>
@@ -328,23 +329,35 @@ export default function SettingsScreen({
           </>
         ) : null}
 
-        <Text style={[styles.section, styles.sectionSpacing]}>
+        <Text style={[styles.section, styles.sectionSpacing]} accessibilityRole="header">
           {t.settings.dataTitle}
         </Text>
         <Text style={styles.dataHint}>{t.settings.dataHint}</Text>
         {cloudConfigured() ? (
           <>
             <View style={styles.cloudCard}>
-              <Text style={styles.cloudIcon}>
-                {cloudStatus === "synced"
-                  ? "☁️"
-                  : cloudStatus === "offline"
-                    ? "⚠️"
-                    : "🔄"}
-              </Text>
+              <View style={styles.cloudIcon}>
+                <AppIcon
+                  name={
+                    cloudStatus === "synced"
+                      ? "cloud-check-outline"
+                      : cloudStatus === "offline"
+                        ? "cloud-alert-outline"
+                        : "cloud-sync-outline"
+                  }
+                  size={22}
+                  color={
+                    cloudStatus === "offline" ? colors.negative : colors.gold
+                  }
+                />
+              </View>
               <View style={styles.cloudCopy}>
                 <Text style={styles.cloudTitle}>{t.settings.cloud.title}</Text>
-                <Text style={styles.cloudBody}>
+                <Text
+                  style={styles.cloudBody}
+                  accessibilityRole="summary"
+                  accessibilityLiveRegion="polite"
+                >
                   {cloudStatusText[cloudStatus]}
                 </Text>
               </View>
@@ -352,7 +365,7 @@ export default function SettingsScreen({
 
             {tables.length > 0 ? (
               <View style={styles.tablesBlock}>
-                <Text style={styles.codeLabel}>
+                <Text style={styles.codeLabel} accessibilityRole="header">
                   {t.settings.cloud.tablesTitle}
                 </Text>
                 <View style={styles.tablesList}>
@@ -387,15 +400,22 @@ export default function SettingsScreen({
                                 )
                           }
                         >
-                          <Text
-                            style={[
-                              styles.tableRowName,
-                              active && styles.tableRowNameActive,
-                            ]}
-                            numberOfLines={1}
-                          >
-                            ⚓ {tableLabel(membership)}
-                          </Text>
+                          <View style={styles.tableRowName}>
+                            <AppIcon
+                              name="anchor"
+                              size={16}
+                              color={active ? colors.gold : colors.text}
+                            />
+                            <Text
+                              style={[
+                                styles.tableRowNameText,
+                                active && styles.tableRowNameActive,
+                              ]}
+                              numberOfLines={1}
+                            >
+                              {tableLabel(membership)}
+                            </Text>
+                          </View>
                           {active ? (
                             <Text style={styles.tableActiveBadge}>
                               {t.settings.cloud.tableActive}
@@ -447,7 +467,7 @@ export default function SettingsScreen({
             ) : null}
 
             <View style={styles.tableNameRow}>
-              <Text style={styles.codeLabel}>
+              <Text style={styles.codeLabel} accessibilityRole="header">
                 {t.settings.cloud.tableNameLabel}
               </Text>
               <TextInput
@@ -480,9 +500,12 @@ export default function SettingsScreen({
                 onPress={onInviteToTable}
                 accessibilityRole="button"
               >
-                <Text style={styles.inviteButtonText}>
-                  ⚓ {t.settings.cloud.shareTitle}
-                </Text>
+                <View style={styles.inviteButtonContents}>
+                  <AppIcon name="anchor" size={18} color={colors.bg} />
+                  <Text style={styles.inviteButtonText}>
+                    {t.settings.cloud.shareTitle}
+                  </Text>
+                </View>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.joinButton}
@@ -542,7 +565,7 @@ export default function SettingsScreen({
           </Text>
         ) : null}
 
-        <Text style={[styles.section, styles.sectionSpacing]}>
+        <Text style={[styles.section, styles.sectionSpacing]} accessibilityRole="header">
           {t.settings.feedbackTitle}
         </Text>
         <Text style={styles.dataHint}>{t.settings.feedbackHint}</Text>
@@ -596,7 +619,7 @@ export default function SettingsScreen({
             style={styles.confirmDialog}
             accessibilityRole="alert"
           >
-            <Text style={styles.confirmTitle}>{t.settings.deleteAllTitle}</Text>
+            <Text style={styles.confirmTitle} accessibilityRole="header">{t.settings.deleteAllTitle}</Text>
             <Text style={styles.confirmMessage}>
               {t.settings.deleteAllMessage}
             </Text>
@@ -636,7 +659,7 @@ export default function SettingsScreen({
             style={styles.confirmDialog}
             accessibilityRole="alert"
           >
-            <Text style={styles.confirmTitle}>
+            <Text style={styles.confirmTitle} accessibilityRole="header">
               {t.settings.cloud.removeTableTitle}
             </Text>
             <Text style={styles.confirmMessage}>
@@ -774,7 +797,7 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     marginBottom: spacing.sm,
   },
-  cloudIcon: { fontSize: 18, marginEnd: spacing.sm, lineHeight: 22 },
+  cloudIcon: { marginEnd: spacing.sm },
   cloudCopy: { flex: 1 },
   cloudTitle: { color: colors.text, fontSize: 14, fontWeight: "800" },
   cloudBody: {
@@ -804,7 +827,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: spacing.md,
   },
-  tableRowName: { flex: 1, color: colors.text, fontSize: 15 },
+  tableRowName: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center" },
+  tableRowNameText: { flex: 1, minWidth: 0, color: colors.text, fontSize: 15, marginStart: spacing.xs },
   tableRowNameActive: { color: colors.gold, fontWeight: "800" },
   tableActiveBadge: {
     color: colors.bg,
@@ -871,6 +895,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
   },
   inviteButtonText: { color: colors.bg, fontSize: 15, fontWeight: "800" },
+  inviteButtonContents: { flexDirection: "row", alignItems: "center", columnGap: spacing.xs },
   joinButton: {
     minHeight: 48,
     alignItems: "center",
@@ -984,9 +1009,11 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     marginTop: spacing.lg,
   },
-  cancelBtn: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
+  cancelBtn: { minHeight: 44, justifyContent: "center", paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
   cancelText: { color: colors.text, fontSize: 15, fontWeight: "700" },
   confirmDeleteBtn: {
+    minHeight: 44,
+    justifyContent: "center",
     backgroundColor: colors.danger,
     borderRadius: radius.md,
     paddingHorizontal: spacing.md,

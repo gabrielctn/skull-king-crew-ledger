@@ -3,6 +3,10 @@ import { StyleSheet, Text, View } from "react-native";
 import { browserLocale, useI18n } from "../i18n/context";
 import { standings } from "../scoring";
 import { cumulativeScoreSeries } from "../stats";
+import {
+  createScoreChartFormatters,
+  scoreChartSummaries,
+} from "../scoreChartSummary";
 import { colors, radius, scoreSeriesColors, spacing } from "../theme";
 import type { Game } from "../types";
 
@@ -24,13 +28,13 @@ export default function ScoreChart({ game }: Props) {
       player.points.map((point) => point.roundNumber)
     )
   );
-  const formatScore = useMemo(
-    () =>
-      new Intl.NumberFormat(browserLocale(lang), {
-        maximumFractionDigits: 0,
-        signDisplay: "exceptZero",
-      }),
+  const chartFormatters = useMemo(
+    () => createScoreChartFormatters(browserLocale(lang)),
     [lang]
+  );
+  const summaries = useMemo(
+    () => scoreChartSummaries(series, chartFormatters.formatTotal, t.stats.chartPoint, t.stats.chartPlayer),
+    [series, chartFormatters, t]
   );
 
   if (roundsPlayed < 2) return null;
@@ -42,11 +46,7 @@ export default function ScoreChart({ game }: Props) {
   );
 
   return (
-    <View
-      style={styles.root}
-      accessible
-      accessibilityLabel={accessibilityLabel}
-    >
+    <View style={styles.root} accessibilityLabel={accessibilityLabel}>
       <Text accessibilityRole="header" style={styles.heading}>
         {t.stats.scoreEvolution}
       </Text>
@@ -54,7 +54,12 @@ export default function ScoreChart({ game }: Props) {
         const color =
           scoreSeriesColors[playerIndex % scoreSeriesColors.length];
         return (
-          <View key={player.playerId} style={styles.playerRow}>
+          <View
+            key={player.playerId}
+            style={styles.playerRow}
+            accessible
+            accessibilityLabel={summaries[playerIndex]?.label}
+          >
             <View style={styles.playerHeading}>
               <View style={[styles.legendSwatch, { backgroundColor: color }]} />
               <Text numberOfLines={1} style={styles.playerName}>
@@ -69,7 +74,7 @@ export default function ScoreChart({ game }: Props) {
                 >
                   <Text style={styles.roundNumber}>{point.roundNumber}</Text>
                   <Text style={[styles.total, { color }]}>
-                    {formatScore.format(point.total)}
+                    {chartFormatters.formatTotal(point.total)}
                   </Text>
                 </View>
               ))}

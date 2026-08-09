@@ -1,9 +1,10 @@
 import React from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { colors, radius, spacing } from "../theme";
 import { useI18n } from "../i18n/context";
 import { APP_STORE_ANNUAL_COST_EUR } from "../support";
 import GlassSurface from "./GlassSurface";
+import AppIcon from "./AppIcon";
 
 interface Props {
   visible: boolean;
@@ -41,44 +42,43 @@ export default function SupportModal({
           style={styles.dialog}
           accessibilityViewIsModal
         >
-          <Text
-            style={styles.coin}
-            accessible={false}
-            accessibilityElementsHidden
-            importantForAccessibility="no-hide-descendants"
-            aria-hidden
+          <ScrollView
+            contentContainerStyle={styles.dialogContent}
+            showsVerticalScrollIndicator={false}
           >
-            ☕
-          </Text>
-          <Text style={styles.title}>{t.supportPrompt.title}</Text>
-          <Text style={styles.body}>{t.supportPrompt.body}</Text>
-          <View style={styles.costCard}>
-            <Text style={styles.costText}>
-              {t.supportPrompt.cost(APP_STORE_ANNUAL_COST_EUR)}
+            <AppIcon name="coffee" size={34} color={colors.gold} />
+            <Text style={styles.title} accessibilityRole="header">
+              {t.supportPrompt.title}
             </Text>
-          </View>
-          <TouchableOpacity
-            style={styles.donateButton}
-            onPress={onDonate}
-            accessibilityRole="link"
-            accessibilityLabel={t.supportPrompt.donate}
-          >
-            <Text style={styles.donateText}>{t.supportPrompt.donate}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.laterButton}
-            onPress={onLater}
-            accessibilityRole="button"
-          >
-            <Text style={styles.laterText}>{t.supportPrompt.later}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.neverButton}
-            onPress={onNever}
-            accessibilityRole="button"
-          >
-            <Text style={styles.neverText}>{t.supportPrompt.never}</Text>
-          </TouchableOpacity>
+            <Text style={styles.body}>{t.supportPrompt.body}</Text>
+            <View style={styles.costCard}>
+              <Text style={styles.costText}>
+                {t.supportPrompt.cost(APP_STORE_ANNUAL_COST_EUR)}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.donateButton}
+              onPress={onDonate}
+              accessibilityRole="link"
+              accessibilityLabel={t.supportPrompt.donate}
+            >
+              <Text style={styles.donateText}>{t.supportPrompt.donate}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.laterButton}
+              onPress={onLater}
+              accessibilityRole="button"
+            >
+              <Text style={styles.laterText}>{t.supportPrompt.later}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.neverButton}
+              onPress={onNever}
+              accessibilityRole="button"
+            >
+              <Text style={styles.neverText}>{t.supportPrompt.never}</Text>
+            </TouchableOpacity>
+          </ScrollView>
         </GlassSurface>
       </View>
     </Modal>
@@ -96,13 +96,15 @@ const styles = StyleSheet.create({
   dialog: {
     width: "100%",
     maxWidth: 460,
+    maxHeight: "84%",
     borderColor: colors.goldDim,
     borderWidth: 1,
     borderRadius: radius.lg,
+  },
+  dialogContent: {
     padding: spacing.lg,
     alignItems: "center",
   },
-  coin: { fontSize: 34 },
   title: {
     color: colors.gold,
     fontSize: 24,
