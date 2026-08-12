@@ -6,6 +6,8 @@ import { es } from "../src/i18n/es";
 import { fr } from "../src/i18n/fr";
 import { zh } from "../src/i18n/zh";
 import { CURRENT_RELEASE } from "../src/releases";
+import { keyboardInsetFromViewport } from "../src/keyboardInset";
+import { normalizeInviteCode } from "../src/tableInvites";
 
 let passed = 0;
 let failed = 0;
@@ -402,6 +404,45 @@ check(
   joinByCodeSource.includes("autoFocus={visible}") &&
     joinByCodeSource.includes("accessible={false}") &&
     joinByCodeSource.includes("aria-hidden")
+);
+check(
+  "the join placeholder shows exactly what to type, with no separator to guess at",
+  [en, fr, es, de, ar, zh].every((locale) => {
+    const shown = locale.joinByCode.placeholder;
+    return normalizeInviteCode(shown) === shown;
+  })
+);
+check(
+  "the join sheet lifts clear of the keyboard on both platforms",
+  joinByCodeSource.includes("<KeyboardAvoidingView") &&
+    joinByCodeSource.includes(
+      'behavior={Platform.OS === "ios" ? "padding" : undefined}'
+    ) &&
+    joinByCodeSource.includes("useKeyboardInset(visible)") &&
+    joinByCodeSource.includes("paddingBottom: keyboardInset")
+);
+check(
+  "an open keyboard is measured as the band it hides below the visual viewport",
+  keyboardInsetFromViewport(844, { height: 508, offsetTop: 0 }) === 336
+);
+check(
+  "a viewport scrolled by the focused field still clears the whole keyboard",
+  keyboardInsetFromViewport(844, { height: 508, offsetTop: 40 }) === 296
+);
+check(
+  "a closed keyboard leaves the sheet on the bottom edge",
+  keyboardInsetFromViewport(844, { height: 844, offsetTop: 0 }) === 0 &&
+    keyboardInsetFromViewport(844, { height: 843.5, offsetTop: 0 }) === 0
+);
+check(
+  "a visual viewport taller than the layout never pads the sheet negatively",
+  keyboardInsetFromViewport(844, { height: 900, offsetTop: 0 }) === 0
+);
+check(
+  "the tablet sheet keeps its bottom padding once the keyboard closes",
+  joinByCodeSource.includes(
+    "paddingBottom: keyboardInset + (layout.isTablet ? spacing.lg : 0)"
+  ) && joinByCodeSource.includes("keyboardInset > 0 &&")
 );
 check(
   "join busy buttons own web busy state without duplicate progress indicators",

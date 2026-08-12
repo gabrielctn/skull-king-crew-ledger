@@ -2,7 +2,9 @@ import React from "react";
 import {
   ActivityIndicator,
   Image,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -20,6 +22,7 @@ import {
 } from "../cloudSync";
 import { INVITE_CODE_LENGTH } from "../tableInvites";
 import { illustrations } from "../assets/illustrations";
+import { useKeyboardInset } from "../keyboardInset";
 import { useI18n } from "../i18n/context";
 import { getResponsiveLayout } from "../responsive";
 import { colors, radius, spacing } from "../theme";
@@ -44,6 +47,7 @@ export default function JoinByCodeModal({ visible, onClose, onResolved }: Props)
   const { t } = useI18n();
   const { width } = useWindowDimensions();
   const layout = getResponsiveLayout(width);
+  const keyboardInset = useKeyboardInset(visible);
   const [draft, setDraft] = React.useState("");
   const [busy, setBusy] = React.useState(false);
   const [failure, setFailure] = React.useState<InviteFailure | "malformed" | null>(
@@ -96,7 +100,21 @@ export default function JoinByCodeModal({ visible, onClose, onResolved }: Props)
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <View style={[styles.backdrop, layout.isTablet && styles.backdropWide]}>
+      {/*
+        The sheet sits on the bottom edge, which is exactly where the keyboard
+        opens. Native lifts it from the real keyboard frame; the web has no
+        such frame, so the visual viewport supplies the inset there.
+      */}
+      <KeyboardAvoidingView
+        style={[
+          styles.backdrop,
+          layout.isTablet && styles.backdropWide,
+          keyboardInset > 0 && {
+            paddingBottom: keyboardInset + (layout.isTablet ? spacing.lg : 0),
+          },
+        ]}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
         <Pressable
           style={StyleSheet.absoluteFill}
           onPress={onClose}
@@ -195,7 +213,7 @@ export default function JoinByCodeModal({ visible, onClose, onResolved }: Props)
             <Text style={styles.hint}>{t.joinByCode.hint}</Text>
           </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

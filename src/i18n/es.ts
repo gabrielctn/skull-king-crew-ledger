@@ -254,7 +254,7 @@ export const es: Strings = {
   joinByCode: {
     title: "Unirse a una mesa",
     subtitle: "Escribe el código que aparece en el otro teléfono",
-    placeholder: "K7M-4QP",
+    placeholder: "K7M4QP",
     inputLabel: (length) => `Código de invitación de ${length} caracteres`,
     submit: "Unirse a la mesa",
     hint: "Un código dura 15 minutos. Si el tuyo ha caducado, pide uno nuevo a quien lleve la mesa.",

@@ -250,7 +250,7 @@ export const fr: Strings = {
   joinByCode: {
     title: "Rejoindre une table",
     subtitle: "Tapez le code affiché sur l’autre téléphone",
-    placeholder: "K7M-4QP",
+    placeholder: "K7M4QP",
     inputLabel: (length) => `Code d’invitation à ${length} caractères`,
     submit: "Rejoindre la table",
     hint: "Un code reste valable 15 minutes. Si le vôtre a expiré, demandez-en un nouveau à la personne qui tient la table.",

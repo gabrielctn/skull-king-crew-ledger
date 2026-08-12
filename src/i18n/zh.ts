@@ -230,7 +230,7 @@ export const zh: Strings = {
   joinByCode: {
     title: "加入牌桌",
     subtitle: "输入另一部手机上显示的代码",
-    placeholder: "K7M-4QP",
+    placeholder: "K7M4QP",
     inputLabel: (length) => `${length} 位邀请代码`,
     submit: "加入牌桌",
     hint: "代码有效期为 15 分钟。若已过期，请向管理牌桌的人再要一个。",

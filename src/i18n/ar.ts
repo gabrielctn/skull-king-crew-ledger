@@ -319,7 +319,7 @@ export const ar: Strings = {
   joinByCode: {
     title: "الانضمام إلى طاولة",
     subtitle: "اكتب الرمز الظاهر على الهاتف الآخر",
-    placeholder: "K7M-4QP",
+    placeholder: "K7M4QP",
     inputLabel: (length) => `رمز دعوة من ${length} أحرف`,
     submit: "الانضمام إلى الطاولة",
     hint: "يدوم الرمز 15 دقيقة. إن انتهت صلاحية رمزك، اطلب رمزًا جديدًا ممّن يمسك الطاولة.",
