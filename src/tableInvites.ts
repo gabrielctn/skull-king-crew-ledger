@@ -53,6 +53,27 @@ export function formatInviteCode(code: string): string {
 }
 
 /**
+ * Group a code as it is being typed, so the separator the host is showing
+ * appears on its own and nobody has to wonder whether to type it.
+ *
+ * Returns null for anything that cannot be an invite code under way, which is
+ * how the join field tells a pasted `SKC1.` code or link apart and leaves it
+ * alone. Case and look-alikes are folded here for the same reason the decoder
+ * forgives them: the code was read off someone else's screen.
+ *
+ * Note that a complete group never trails a separator ("K7M", not "K7M-"):
+ * re-adding one the moment it is deleted would trap the cursor there.
+ */
+export function formatInviteCodeInput(input: string): string | null {
+  const folded = foldLookAlikes(input);
+  // Anything outside the alphabet and its separators means a code or a link.
+  if (!/^[0-9A-Z\- ]*$/.test(folded)) return null;
+  const compact = folded.replace(/[^0-9A-Z]/g, "");
+  if (compact.length > INVITE_CODE_LENGTH) return null;
+  return formatInviteCode(compact);
+}
+
+/**
  * True when the input can only have been meant as an invite code, so the join
  * field can tell it apart from a pasted `SKC1.` code or link without asking.
  */

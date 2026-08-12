@@ -159,6 +159,7 @@ export const ar: Strings = {
     version: (version, date) => `الإصدار ${version} · ${date}`,
     items: [
       "يبقى حقل رمز الطاولة ظاهرًا أثناء كتابتك له.",
+      "تُضاف الشرطة في رمز الطاولة تلقائيًا.",
     ],
     historyTitle: "الإصدارات السابقة",
     history: {
@@ -325,7 +326,7 @@ export const ar: Strings = {
   joinByCode: {
     title: "الانضمام إلى طاولة",
     subtitle: "اكتب الرمز الظاهر على الهاتف الآخر",
-    placeholder: "K7M4QP",
+    placeholder: "K7M-4QP",
     inputLabel: (length) => `رمز دعوة من ${length} أحرف`,
     submit: "الانضمام إلى الطاولة",
     hint: "يدوم الرمز 15 دقيقة. إن انتهت صلاحية رمزك، اطلب رمزًا جديدًا ممّن يمسك الطاولة.",

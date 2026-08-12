@@ -7,7 +7,11 @@ import { fr } from "../src/i18n/fr";
 import { zh } from "../src/i18n/zh";
 import { CURRENT_RELEASE } from "../src/releases";
 import { keyboardInsetFromViewport } from "../src/keyboardInset";
-import { normalizeInviteCode } from "../src/tableInvites";
+import {
+  formatInviteCode,
+  formatInviteCodeInput,
+  normalizeInviteCode,
+} from "../src/tableInvites";
 
 let passed = 0;
 let failed = 0;
@@ -406,11 +410,41 @@ check(
     joinByCodeSource.includes("aria-hidden")
 );
 check(
-  "the join placeholder shows exactly what to type, with no separator to guess at",
+  "the join placeholder shows a code the way the host displays it",
   [en, fr, es, de, ar, zh].every((locale) => {
     const shown = locale.joinByCode.placeholder;
-    return normalizeInviteCode(shown) === shown;
+    const code = normalizeInviteCode(shown);
+    return code !== null && formatInviteCode(code) === shown;
   })
+);
+check(
+  "the separator is typed for the player, once a group is complete",
+  formatInviteCodeInput("K7M4") === "K7M-4" &&
+    formatInviteCodeInput("K7M4QP") === "K7M-4QP"
+);
+check(
+  "a complete group holds no trailing separator, so it can be deleted",
+  formatInviteCodeInput("K7M") === "K7M" && formatInviteCodeInput("") === ""
+);
+check(
+  "typing lower case or a look-alike still lands on the real code",
+  formatInviteCodeInput("k7m4qp") === "K7M-4QP" &&
+    formatInviteCodeInput("KIM0") === "K1M-0"
+);
+check(
+  "a code pasted with its separator is left as it already reads",
+  formatInviteCodeInput("K7M-4QP") === "K7M-4QP" &&
+    formatInviteCodeInput("K7M 4QP") === "K7M-4QP"
+);
+check(
+  "a pasted table code or join link is never regrouped as an invite code",
+  formatInviteCodeInput("SKC1.eyJhIjoxfQ") === null &&
+    formatInviteCodeInput("https://example.com/app#join=SKC1.eyJhIjoxfQ") ===
+      null
+);
+check(
+  "the join field passes through whatever the formatter declines to touch",
+  joinByCodeSource.includes("formatInviteCodeInput(value) ?? value")
 );
 check(
   "the join sheet lifts clear of the keyboard on both platforms",

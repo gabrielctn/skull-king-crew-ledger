@@ -20,7 +20,7 @@ import {
   classifyJoinInput,
   cloudBackupManager,
 } from "../cloudSync";
-import { INVITE_CODE_LENGTH } from "../tableInvites";
+import { INVITE_CODE_LENGTH, formatInviteCodeInput } from "../tableInvites";
 import { illustrations } from "../assets/illustrations";
 import { useKeyboardInset } from "../keyboardInset";
 import { useI18n } from "../i18n/context";
@@ -159,7 +159,9 @@ export default function JoinByCodeModal({ visible, onClose, onResolved }: Props)
               autoFocus={visible}
               value={draft}
               onChangeText={(value) => {
-                setDraft(value);
+                // Non-null only while the input can still be an invite code:
+                // a pasted table code or link passes through as typed.
+                setDraft(formatInviteCodeInput(value) ?? value);
                 setFailure(null);
               }}
               onSubmitEditing={() => void submit()}

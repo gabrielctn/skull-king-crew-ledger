@@ -88,6 +88,7 @@ export const de: Strings = {
     version: (version, date) => `Version ${version} · ${date}`,
     items: [
       "Das Feld für den Tischcode bleibt sichtbar, während du ihn eingibst.",
+      "Der Bindestrich im Tischcode wird für dich gesetzt.",
     ],
     historyTitle: "Frühere Versionen",
     history: {
@@ -256,7 +257,7 @@ export const de: Strings = {
   joinByCode: {
     title: "Einem Tisch beitreten",
     subtitle: "Gib den Code ein, der auf dem anderen Handy steht",
-    placeholder: "K7M4QP",
+    placeholder: "K7M-4QP",
     inputLabel: (length) => `Einladungscode mit ${length} Zeichen`,
     submit: "Tisch beitreten",
     hint: "Ein Code gilt 15 Minuten. Ist deiner abgelaufen, lass dir von der Person, die den Tisch führt, einen neuen geben.",

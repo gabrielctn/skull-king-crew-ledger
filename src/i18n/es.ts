@@ -90,6 +90,7 @@ export const es: Strings = {
     version: (version, date) => `Versión ${version} · ${date}`,
     items: [
       "El campo del código de mesa permanece visible mientras lo escribes.",
+      "El guion del código de mesa se escribe solo.",
     ],
     historyTitle: "Versiones anteriores",
     history: {
@@ -260,7 +261,7 @@ export const es: Strings = {
   joinByCode: {
     title: "Unirse a una mesa",
     subtitle: "Escribe el código que aparece en el otro teléfono",
-    placeholder: "K7M4QP",
+    placeholder: "K7M-4QP",
     inputLabel: (length) => `Código de invitación de ${length} caracteres`,
     submit: "Unirse a la mesa",
     hint: "Un código dura 15 minutos. Si el tuyo ha caducado, pide uno nuevo a quien lleve la mesa.",

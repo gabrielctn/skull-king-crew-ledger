@@ -93,6 +93,7 @@ export const en: Strings = {
     version: (version, date) => `Version ${version} · ${date}`,
     items: [
       "The join code box stays in view while you type it.",
+      "The dash in a join code is typed for you.",
     ],
     historyTitle: "Previous versions",
     history: {
@@ -258,7 +259,7 @@ export const en: Strings = {
   joinByCode: {
     title: "Join a table",
     subtitle: "Type the code showing on the other phone",
-    placeholder: "K7M4QP",
+    placeholder: "K7M-4QP",
     inputLabel: (length) => `${length}-character invite code`,
     submit: "Join the table",
     hint: "A code lasts 15 minutes. If yours has expired, ask whoever is keeping the table for a new one.",
