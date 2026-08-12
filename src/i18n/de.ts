@@ -87,10 +87,13 @@ export const de: Strings = {
     title: "Neuigkeiten",
     version: (version, date) => `Version ${version} · ${date}`,
     items: [
-      "Erfasse jeden Stich ohne Gewinner, nicht nur den des Krakens: auch der Weiße Wal und die Erweiterung lassen welche zurück.",
+      "Das Feld für den Tischcode bleibt sichtbar, während du ihn eingibst.",
     ],
     historyTitle: "Frühere Versionen",
     history: {
+      "1.13.0": [
+        "Erfasse jeden Stich ohne Gewinner, nicht nur den des Krakens: auch der Weiße Wal und die Erweiterung lassen welche zurück.",
+      ],
       "1.12.0": [
         "Tritt einem Tisch mit dem 6-stelligen Code bei, den dir deine Freundin oder dein Freund zeigt.",
       ],

@@ -92,10 +92,13 @@ export const en: Strings = {
     title: "What's new",
     version: (version, date) => `Version ${version} · ${date}`,
     items: [
-      "Record any trick nobody won, not just the Kraken's: the White Whale and the expansion leave tricks without a winner too.",
+      "The join code box stays in view while you type it.",
     ],
     historyTitle: "Previous versions",
     history: {
+      "1.13.0": [
+        "Record any trick nobody won, not just the Kraken's: the White Whale and the expansion leave tricks without a winner too.",
+      ],
       "1.12.0": [
         "Join a table with the 6-character code your friend shows you.",
       ],

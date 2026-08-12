@@ -88,10 +88,13 @@ export const fr: Strings = {
     title: "Nouveautés",
     version: (version, date) => `Version ${version} · ${date}`,
     items: [
-      "Enregistrez tout pli que personne ne remporte, pas seulement celui du Kraken : la Baleine blanche et l’extension en laissent aussi.",
+      "Le champ du code de table reste visible pendant que vous le saisissez.",
     ],
     historyTitle: "Versions précédentes",
     history: {
+      "1.13.0": [
+        "Enregistrez tout pli que personne ne remporte, pas seulement celui du Kraken : la Baleine blanche et l’extension en laissent aussi.",
+      ],
       "1.12.0": [
         "Rejoignez une table avec le code à 6 caractères que votre ami vous montre.",
       ],

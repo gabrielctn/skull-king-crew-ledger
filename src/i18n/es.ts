@@ -89,10 +89,13 @@ export const es: Strings = {
     title: "Novedades",
     version: (version, date) => `Versión ${version} · ${date}`,
     items: [
-      "Registra cualquier baza que nadie gane, no solo la del Kraken: la Ballena Blanca y la expansión también dejan bazas sin ganador.",
+      "El campo del código de mesa permanece visible mientras lo escribes.",
     ],
     historyTitle: "Versiones anteriores",
     history: {
+      "1.13.0": [
+        "Registra cualquier baza que nadie gane, no solo la del Kraken: la Ballena Blanca y la expansión también dejan bazas sin ganador.",
+      ],
       "1.12.0": [
         "Únete a una mesa con el código de 6 caracteres que te muestra tu amigo.",
       ],
