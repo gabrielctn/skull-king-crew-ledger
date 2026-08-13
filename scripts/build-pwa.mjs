@@ -3,7 +3,7 @@
  * Post-export PWA step. Run after `expo export -p web`.
  *
  * Turns the static `dist/` export into an installable, offline-capable PWA:
- *   - copies the web manifest + icons into dist/
+ *   - copies the web manifest, icons, and static legal/support pages into dist/
  *   - generates a versioned service worker with a precache list of every built file
  *   - injects the manifest link, theme-color and apple meta tags into index.html
  *   - writes .nojekyll so GitHub Pages serves the `_expo/` folder
@@ -42,6 +42,9 @@ if (!existsSync(dist)) fail("dist/ not found — run `expo export -p web` first.
 // 1. Copy the manifest and icons into the export.
 copyFileSync(join(webSrc, "manifest.webmanifest"), join(dist, "manifest.webmanifest"));
 cpSync(join(webSrc, "icons"), join(dist, "icons"), { recursive: true });
+copyFileSync(join(webSrc, "privacy.html"), join(dist, "privacy.html"));
+copyFileSync(join(webSrc, "support.html"), join(dist, "support.html"));
+copyFileSync(join(webSrc, "legal.css"), join(dist, "legal.css"));
 
 // 2. Inject the PWA head tags into index.html (idempotent). Done before hashing so
 // the precache version reflects the final, deployed index.html.

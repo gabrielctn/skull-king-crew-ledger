@@ -9,7 +9,7 @@
     "prebuild:ios": "expo prebuild --platform ios",
     "build:web": "expo export -p web && node scripts/build-pwa.mjs",
     "serve:web": "npx serve dist -l 8080",
-    "test": "npm run typecheck && npm run test:scoring && npm run test:stats && npm run test:app-store-screenshots && npm run test:storage && npm run test:backup && npm run test:livesession && npm run test:cloudsync && npm run test:tables && npm run test:responsive && npm run test:home-layout && npm run test:setup-validation && npm run test:round-completion-feedback && npm run test:support && npm run test:preferences && npm run test:ux && npm run test:ui-foundations && npm run test:xcode-cloud && npm run test:assets && npm run test:branding",
+    "test": "npm run typecheck && npm run test:scoring && npm run test:stats && npm run test:app-store-screenshots && npm run test:storage && npm run test:backup && npm run test:livesession && npm run test:cloudsync && npm run test:tables && npm run test:responsive && npm run test:home-layout && npm run test:setup-validation && npm run test:round-completion-feedback && npm run test:support && npm run test:preferences && npm run test:ux && npm run test:ui-foundations && npm run test:xcode-cloud && npm run test:assets && npm run test:branding && npm run test:legal-pages",
     "typecheck": "tsc --noEmit",
     "test:scoring": "node --import tsx scripts/test-scoring.ts",
     "test:stats": "node --import tsx scripts/test-stats.ts",
@@ -32,6 +32,7 @@
     "test:xcode-cloud": "node --import tsx scripts/test-xcode-cloud.ts",
     "test:assets": "node --import tsx scripts/test-assets.ts",
     "test:branding": "node --import tsx scripts/test-branding.ts",
+    "test:legal-pages": "node --import tsx scripts/test-legal-pages.ts",
     "android": "expo run:android"
   },
   "dependencies": {
