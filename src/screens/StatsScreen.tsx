@@ -753,7 +753,6 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "transparent" },
   headerLayer: {
     width: "100%",
-    paddingTop: spacing.sm,
     zIndex: 20,
   },
   header: {
@@ -762,7 +761,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    borderRadius: radius.lg,
+    borderBottomLeftRadius: radius.lg,
+    borderBottomRightRadius: radius.lg,
   },
   backButton: { width: 92, minHeight: 44, justifyContent: "center" },
   back: { color: colors.gold, fontSize: 17 },

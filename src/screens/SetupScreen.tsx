@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -34,6 +34,7 @@ import { useI18n } from "../i18n/context";
 import { getResponsiveLayout } from "../responsive";
 import GlassSurface from "../components/GlassSurface";
 import AppIcon from "../components/AppIcon";
+import { focusPlayerInput } from "../playerInputFocus";
 
 interface Props {
   gameHistory: Game[];
@@ -64,6 +65,17 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
   const [customizationVisible, setCustomizationVisible] = useState(false);
   const [focusedPlayerId, setFocusedPlayerId] = useState<string | null>(null);
   const inputRefs = useRef<Record<string, TextInput | null>>({});
+  const pendingPlayerFocusId = useRef<string | null>(null);
+
+  useEffect(() => {
+    const pendingId = pendingPlayerFocusId.current;
+    if (pendingId === null) return;
+    const focusTimer = setTimeout(() => {
+      pendingPlayerFocusId.current = null;
+      focusPlayerInput(pendingId, inputRefs.current, setFocusedPlayerId);
+    }, 0);
+    return () => clearTimeout(focusTimer);
+  }, [players.length]);
 
   const suggestions = useMemo(
     () => playerNameSuggestions(gameHistory, players.map((player) => player.name)),
@@ -97,8 +109,10 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
 
   const addPlayer = () => {
     if (players.length >= MAX_SETUP_PLAYERS) return;
+    const player = { id: newId(), name: "" };
     selectionHaptic();
-    setPlayers((prev) => [...prev, { id: newId(), name: "" }]);
+    pendingPlayerFocusId.current = player.id;
+    setPlayers((prev) => [...prev, player]);
   };
 
   const removePlayer = (id: string) =>

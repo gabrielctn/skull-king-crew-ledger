@@ -734,7 +734,6 @@ const styles = StyleSheet.create({
   keyboardAvoider: { flex: 1 },
   headerLayer: {
     width: "100%",
-    paddingTop: spacing.sm,
     zIndex: 20,
   },
   header: {
@@ -743,7 +742,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    borderRadius: radius.lg,
+    borderBottomLeftRadius: radius.lg,
+    borderBottomRightRadius: radius.lg,
   },
   back: { color: colors.gold, fontSize: 17 },
   backButton: { width: 92, minHeight: 44, justifyContent: "center" },

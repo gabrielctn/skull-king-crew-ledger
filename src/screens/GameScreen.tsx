@@ -751,28 +751,6 @@ export default function GameScreen({
           layout.gameColumns === 2 && styles.scrollDesktop,
         ]}
       >
-        {showLootTracker ? (
-          <View
-            onLayout={(event) => {
-              lootIssueOffset.current = event.nativeEvent.layout.y;
-            }}
-            style={layout.gameColumns === 2 ? styles.fullWidth : undefined}
-          >
-            <LootTracker
-              key={`${game.id}_${displayRound}`}
-              players={game.players}
-              entries={draft}
-              lootUses={lootUses}
-              roundRecorded={alreadyRecorded}
-              legacyLootCount={playerIds.reduce(
-                (total, id) => total + (draft[id]?.legacyLoot ?? 0),
-                0
-              )}
-              onChange={updateLootUses}
-            />
-          </View>
-        ) : null}
-
         {game.players.map((p) => {
           const entry = draft[p.id] ?? emptyEntry();
           const roundScore = scoreRound(
@@ -918,6 +896,28 @@ export default function GameScreen({
             </View>
           );
         })}
+
+        {showLootTracker ? (
+          <View
+            onLayout={(event) => {
+              lootIssueOffset.current = event.nativeEvent.layout.y;
+            }}
+            style={layout.gameColumns === 2 ? styles.fullWidth : undefined}
+          >
+            <LootTracker
+              key={`${game.id}_${displayRound}`}
+              players={game.players}
+              entries={draft}
+              lootUses={lootUses}
+              roundRecorded={alreadyRecorded}
+              legacyLootCount={playerIds.reduce(
+                (total, id) => total + (draft[id]?.legacyLoot ?? 0),
+                0
+              )}
+              onChange={updateLootUses}
+            />
+          </View>
+        ) : null}
 
         <View
           style={[

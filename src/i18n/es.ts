@@ -56,8 +56,8 @@ export const es: Strings = {
     tableTitle: "Tu mesa",
     tableHint: (name) =>
       name
-        ? `Tus partidas van a la mesa «${name}».`
-        : "Tus partidas van a tu mesa compartida.",
+        ? `Las partidas que puntúas aquí se guardan en la mesa «${name}». Todos los miembros de la mesa comparten el mismo historial de partidas y la misma clasificación.`
+        : "Las partidas que puntúas aquí se guardan en esta mesa. Todos los miembros de la mesa comparten el mismo historial de partidas y la misma clasificación.",
     tableInvite: "Invitar",
     tableJoin: "Unirse",
     freeAdFree: "Gratis y sin anuncios",
@@ -89,11 +89,18 @@ export const es: Strings = {
     title: "Novedades",
     version: (version, date) => `Versión ${version} · ${date}`,
     items: [
-      "El campo del código de mesa permanece visible mientras lo escribes.",
-      "El guion del código de mesa se escribe solo.",
+      "Desliza desde el borde de la pantalla para volver atrás.",
+      "Tu mesa ahora indica dónde se guardan las partidas y qué comparten todos sus miembros.",
+      "Los encabezados de Ajustes y Estadísticas permanecen arriba al desplazarte.",
+      "El campo del jugador nuevo queda listo para escribir en cuanto lo añades.",
+      "Las alianzas de Botín aparecen ahora justo encima de las bazas que nadie gana.",
     ],
     historyTitle: "Versiones anteriores",
     history: {
+      "1.13.1": [
+        "El campo del código de mesa permanece visible mientras lo escribes.",
+        "El guion del código de mesa se escribe solo.",
+      ],
       "1.13.0": [
         "Registra cualquier baza que nadie gane, no solo la del Kraken: la Ballena Blanca y la expansión también dejan bazas sin ganador.",
       ],

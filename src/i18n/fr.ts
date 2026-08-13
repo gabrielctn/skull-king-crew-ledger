@@ -55,8 +55,8 @@ export const fr: Strings = {
     tableTitle: "Votre table",
     tableHint: (name) =>
       name
-        ? `Vos parties rejoignent la table « ${name} ».`
-        : "Vos parties rejoignent votre table partagée.",
+        ? `Les parties dont vous comptez les points ici sont enregistrées dans la table « ${name} ». Tous les membres de la table partagent le même historique et le même classement.`
+        : "Les parties dont vous comptez les points ici sont enregistrées dans cette table. Tous les membres de la table partagent le même historique et le même classement.",
     tableInvite: "Inviter",
     tableJoin: "Rejoindre",
     freeAdFree: "Gratuite et sans publicité",
@@ -88,11 +88,18 @@ export const fr: Strings = {
     title: "Nouveautés",
     version: (version, date) => `Version ${version} · ${date}`,
     items: [
-      "Le champ du code de table reste visible pendant que vous le saisissez.",
-      "Le tiret du code de table s’écrit tout seul.",
+      "Balayez depuis le bord de l’écran pour revenir en arrière.",
+      "Votre table indique maintenant où les parties sont enregistrées et ce que tous ses membres partagent.",
+      "Les en-têtes des Réglages et des Statistiques restent bien en place pendant le défilement.",
+      "Le champ du nouveau joueur est prêt à être saisi dès que vous l’ajoutez.",
+      "Les alliances Butin se trouvent maintenant juste au-dessus des plis remportés par personne.",
     ],
     historyTitle: "Versions précédentes",
     history: {
+      "1.13.1": [
+        "Le champ du code de table reste visible pendant que vous le saisissez.",
+        "Le tiret du code de table s’écrit tout seul.",
+      ],
       "1.13.0": [
         "Enregistrez tout pli que personne ne remporte, pas seulement celui du Kraken : la Baleine blanche et l’extension en laissent aussi.",
       ],

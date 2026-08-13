@@ -60,8 +60,8 @@ export const en: Strings = {
     tableTitle: "Your table",
     tableHint: (name) =>
       name
-        ? `Your games join the “${name}” table.`
-        : "Your games join your shared table.",
+        ? `Games you score here are saved to “${name}”. Everyone at the table shares the same game history and leaderboard.`
+        : "Games you score here are saved to this table. Everyone at the table shares the same game history and leaderboard.",
     tableInvite: "Invite",
     tableJoin: "Join",
     freeAdFree: "Free and ad-free",
@@ -92,11 +92,18 @@ export const en: Strings = {
     title: "What's new",
     version: (version, date) => `Version ${version} · ${date}`,
     items: [
-      "The join code box stays in view while you type it.",
-      "The dash in a join code is typed for you.",
+      "Swipe from the edge of the screen to go back.",
+      "Your table now explains where games are saved and what everyone shares.",
+      "Settings and Statistics headers stay neatly at the top while you scroll.",
+      "A new player’s name field is ready to type in as soon as you add them.",
+      "Loot alliances now sit just above tricks nobody won.",
     ],
     historyTitle: "Previous versions",
     history: {
+      "1.13.1": [
+        "The join code box stays in view while you type it.",
+        "The dash in a join code is typed for you.",
+      ],
       "1.13.0": [
         "Record any trick nobody won, not just the Kraken's: the White Whale and the expansion leave tricks without a winner too.",
       ],

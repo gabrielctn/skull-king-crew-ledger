@@ -55,8 +55,8 @@ export const de: Strings = {
     tableTitle: "Dein Tisch",
     tableHint: (name) =>
       name
-        ? `Deine Spiele landen am Tisch „${name}“.`
-        : "Deine Spiele landen an deinem gemeinsamen Tisch.",
+        ? `Partien, die du hier wertest, werden am Tisch „${name}“ gespeichert. Alle an diesem Tisch teilen dieselbe Spielhistorie und dieselbe Rangliste.`
+        : "Partien, die du hier wertest, werden an diesem Tisch gespeichert. Alle an diesem Tisch teilen dieselbe Spielhistorie und dieselbe Rangliste.",
     tableInvite: "Einladen",
     tableJoin: "Beitreten",
     freeAdFree: "Kostenlos und werbefrei",
@@ -87,11 +87,18 @@ export const de: Strings = {
     title: "Neuigkeiten",
     version: (version, date) => `Version ${version} · ${date}`,
     items: [
-      "Das Feld für den Tischcode bleibt sichtbar, während du ihn eingibst.",
-      "Der Bindestrich im Tischcode wird für dich gesetzt.",
+      "Wische vom Bildschirmrand, um zurückzugehen.",
+      "Dein Tisch erklärt jetzt, wo Partien gespeichert werden und was alle am Tisch teilen.",
+      "Die Kopfzeilen von Einstellungen und Statistiken bleiben beim Scrollen sauber oben.",
+      "Nach dem Hinzufügen ist das Namensfeld des neuen Spielers sofort bereit.",
+      "Beute-Allianzen stehen jetzt direkt über den Stichen, die niemand gewinnt.",
     ],
     historyTitle: "Frühere Versionen",
     history: {
+      "1.13.1": [
+        "Das Feld für den Tischcode bleibt sichtbar, während du ihn eingibst.",
+        "Der Bindestrich im Tischcode wird für dich gesetzt.",
+      ],
       "1.13.0": [
         "Erfasse jeden Stich ohne Gewinner, nicht nur den des Krakens: auch der Weiße Wal und die Erweiterung lassen welche zurück.",
       ],

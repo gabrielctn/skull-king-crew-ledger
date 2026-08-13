@@ -14,6 +14,13 @@ import {
   screenFromHistoryState,
 } from "../src/navigation";
 import { screenTransitionAction } from "../src/screenTransitionPolicy";
+import {
+  BACK_SWIPE_EDGE_WIDTH,
+  backSwipeCommits,
+  backSwipeTravel,
+  isBackSwipe,
+} from "../src/backSwipePolicy";
+import { focusPlayerInput } from "../src/playerInputFocus";
 import { STATS_ICON_META } from "../src/statsIcons";
 
 let failures = 0;
@@ -283,6 +290,109 @@ check(
     historyStateForScreen({}, "results", "deleted-game"),
     historyGames
   ).screen === "home"
+);
+
+// --- setup input focus -----------------------------------------------------
+
+let focusedPlayerId: string | null = null;
+let inputFocusCount = 0;
+const playerInputFocused = focusPlayerInput(
+  "p3",
+  {
+    p3: {
+      focus() {
+        inputFocusCount += 1;
+      },
+    },
+  },
+  (id) => {
+    focusedPlayerId = id;
+  }
+);
+
+check(
+  "pending player focus activates the mounted input and focused-player state",
+  playerInputFocused && focusedPlayerId === "p3" && inputFocusCount === 1
+);
+check(
+  "pending player focus is harmless when the input did not mount",
+  !focusPlayerInput("missing", {}, () => {
+    throw new Error("missing inputs must not update focus state");
+  })
+);
+
+// --- back swipe ------------------------------------------------------------
+
+const swipe = (over: Partial<Parameters<typeof isBackSwipe>[0]> = {}) => ({
+  x0: 4,
+  dx: 40,
+  dy: 2,
+  width: 390,
+  rtl: false,
+  ...over,
+});
+
+check(
+  "a drag from the leading edge is a back swipe",
+  isBackSwipe(swipe())
+);
+check(
+  "a drag starting past the edge strip is left to the screen",
+  !isBackSwipe(swipe({ x0: BACK_SWIPE_EDGE_WIDTH + 1 }))
+);
+check(
+  "a scroll is not a back swipe, however far it travels",
+  !isBackSwipe(swipe({ dx: 12, dy: 60 }))
+);
+check(
+  "a tap at the edge is not a back swipe",
+  !isBackSwipe(swipe({ dx: 3 }))
+);
+check(
+  "dragging away from the leading edge is not a back swipe",
+  !isBackSwipe(swipe({ dx: -40 }))
+);
+check(
+  "Arabic swipes back from the right edge, not the left",
+  isBackSwipe(swipe({ x0: 388, dx: -40, rtl: true })) &&
+    !isBackSwipe(swipe({ x0: 4, dx: 40, rtl: true }))
+);
+
+check(
+  "the screen follows the finger",
+  backSwipeTravel({ dx: 120, width: 390, rtl: false }) === 120
+);
+check(
+  "the screen never follows past its own width, or backwards",
+  backSwipeTravel({ dx: 900, width: 390, rtl: false }) === 390 &&
+    backSwipeTravel({ dx: -50, width: 390, rtl: false }) === 0
+);
+check(
+  "Arabic follows the finger the other way",
+  backSwipeTravel({ dx: -120, width: 390, rtl: true }) === -120 &&
+    backSwipeTravel({ dx: 120, width: 390, rtl: true }) === 0
+);
+
+check(
+  "letting go a third of the way across goes back",
+  backSwipeCommits({ dx: 140, vx: 0, width: 390, rtl: false })
+);
+check(
+  "letting go short of that springs back",
+  !backSwipeCommits({ dx: 60, vx: 0, width: 390, rtl: false })
+);
+check(
+  "a short flick still goes back",
+  backSwipeCommits({ dx: 60, vx: 1.2, width: 390, rtl: false })
+);
+check(
+  "a flick back towards the edge never commits",
+  !backSwipeCommits({ dx: 60, vx: -1.2, width: 390, rtl: false })
+);
+check(
+  "Arabic commits on the mirrored travel and flick",
+  backSwipeCommits({ dx: -140, vx: 0, width: 390, rtl: true }) &&
+    !backSwipeCommits({ dx: 140, vx: 0, width: 390, rtl: true })
 );
 
 if (failures > 0) process.exit(1);

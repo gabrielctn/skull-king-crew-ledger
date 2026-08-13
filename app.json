@@ -2,7 +2,7 @@
   "expo": {
     "name": "Skull King Crew Ledger",
     "slug": "skull-king-crew-ledger",
-    "version": "1.13.1",
+    "version": "1.13.2",
     "scheme": "skullking",
     "orientation": "default",
     "userInterfaceStyle": "dark",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.gabrielcretin.skullking",
-      "buildNumber": "11",
+      "buildNumber": "12",
       "infoPlist": {
         "CFBundleDisplayName": "Skull King Crew Ledger",
         "CFBundleName": "Skull King Crew Ledger",

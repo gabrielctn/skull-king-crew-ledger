@@ -116,6 +116,7 @@ import {
 } from "./src/navigation";
 import type { AppScreen } from "./src/navigation";
 import ScreenTransition from "./src/components/ScreenTransition";
+import BackSwipe from "./src/components/BackSwipe";
 
 type PendingCurrentGame = Game | null | undefined;
 
@@ -1068,6 +1069,7 @@ export default function App() {
         )}
         {!spectatorActive && (
           <ScreenTransition key={screen} routeKey={screen}>
+          <BackSwipe enabled={screen !== "home"} onBack={handleHome}>
         {screen === "home" && (
           <HomeScreen
             gameHistory={gameHistory}
@@ -1137,6 +1139,7 @@ export default function App() {
             onReview={() => navigate("game", game.id)}
           />
         )}
+          </BackSwipe>
           </ScreenTransition>
         )}
         <SupportModal

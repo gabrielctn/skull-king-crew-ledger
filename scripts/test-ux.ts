@@ -100,6 +100,66 @@ const playerFacingTextSources = [
   "web/manifest.webmanifest",
 ].map((path) => readFileSync(path, "utf8"));
 
+const tableHintCases = [
+  [
+    en.home.tableHint("Black Pearl"),
+    "Games you score here are saved to “Black Pearl”. Everyone at the table shares the same game history and leaderboard.",
+  ],
+  [
+    en.home.tableHint(null),
+    "Games you score here are saved to this table. Everyone at the table shares the same game history and leaderboard.",
+  ],
+  [
+    fr.home.tableHint("Perle Noire"),
+    "Les parties dont vous comptez les points ici sont enregistrées dans la table « Perle Noire ». Tous les membres de la table partagent le même historique et le même classement.",
+  ],
+  [
+    fr.home.tableHint(null),
+    "Les parties dont vous comptez les points ici sont enregistrées dans cette table. Tous les membres de la table partagent le même historique et le même classement.",
+  ],
+  [
+    de.home.tableHint("Schwarze Perle"),
+    "Partien, die du hier wertest, werden am Tisch „Schwarze Perle“ gespeichert. Alle an diesem Tisch teilen dieselbe Spielhistorie und dieselbe Rangliste.",
+  ],
+  [
+    de.home.tableHint(null),
+    "Partien, die du hier wertest, werden an diesem Tisch gespeichert. Alle an diesem Tisch teilen dieselbe Spielhistorie und dieselbe Rangliste.",
+  ],
+  [
+    es.home.tableHint("Perla Negra"),
+    "Las partidas que puntúas aquí se guardan en la mesa «Perla Negra». Todos los miembros de la mesa comparten el mismo historial de partidas y la misma clasificación.",
+  ],
+  [
+    es.home.tableHint(null),
+    "Las partidas que puntúas aquí se guardan en esta mesa. Todos los miembros de la mesa comparten el mismo historial de partidas y la misma clasificación.",
+  ],
+  [
+    ar.home.tableHint("اللؤلؤة السوداء"),
+    "تُحفظ المباريات التي تسجّل نقاطها هنا في طاولة «اللؤلؤة السوداء». ويشترك جميع أعضاء الطاولة في سجل المباريات نفسه ولوحة الصدارة نفسها.",
+  ],
+  [
+    ar.home.tableHint(null),
+    "تُحفظ المباريات التي تسجّل نقاطها هنا في هذه الطاولة. ويشترك جميع أعضاء الطاولة في سجل المباريات نفسه ولوحة الصدارة نفسها.",
+  ],
+  [
+    zh.home.tableHint("黑珍珠号"),
+    "你在这里计分的对局会保存到「黑珍珠号」牌桌。牌桌上的所有成员共享同一份对局记录和同一个排行榜。",
+  ],
+  [
+    zh.home.tableHint(null),
+    "你在这里计分的对局会保存到这张牌桌。牌桌上的所有成员共享同一份对局记录和同一个排行榜。",
+  ],
+] as const;
+
+check(
+  "shared-table hints state where games are saved and what the crew shares",
+  tableHintCases.every(([actual, expected]) => actual === expected)
+);
+check(
+  "the shared-table explanation can wrap without line clamping",
+  !/<Text style=\{styles\.tableHint\} numberOfLines=/.test(homeSource)
+);
+
 check(
   "release versions stay aligned",
   [packageJson.version, packageLock.version, packageLock.packages[""].version, appConfig.version]
@@ -145,6 +205,29 @@ check(
     glassSource.includes('Platform.OS === "android"') &&
     glassSource.includes('"systemUltraThinMaterialDark"') &&
     !glassSource.includes("experimentalBlurMethod")
+);
+
+function stickyHeaderStyleBlock(source: string): string {
+  const start = source.indexOf("headerLayer:");
+  const end = source.indexOf("backButton:", start);
+  return start >= 0 && end > start ? source.slice(start, end) : "";
+}
+
+const stickyHeaderStyles = [
+  stickyHeaderStyleBlock(settingsSource),
+  stickyHeaderStyleBlock(statsSource),
+];
+
+check(
+  "Settings and Statistics headers fill the top and round only the bottom",
+  stickyHeaderStyles.every(
+    (source) =>
+      source.length > 0 &&
+      !source.includes("paddingTop:") &&
+      !source.includes("borderRadius: radius.lg") &&
+      source.includes("borderBottomLeftRadius: radius.lg") &&
+      source.includes("borderBottomRightRadius: radius.lg")
+  )
 );
 check(
   "settings and statistics glass headers overlay scrolling content",
@@ -512,6 +595,12 @@ check(
   gameSource.includes("aria-pressed={discards.kraken > 0}")
 );
 check(
+  "the free and ad-free line is centred on its own row above the two actions",
+  /styles\.freeAdFree[\s\S]{0,140}styles\.supportActions/.test(homeSource) &&
+    /freeAdFree: \{[^}]*textAlign: "center"/.test(homeSource) &&
+    /supportActions: \{\s*flexDirection: "row"/.test(homeSource)
+);
+check(
   "inviting and joining are one tap from the home screen",
   homeSource.includes("t.home.tableInvite") &&
     homeSource.includes("t.home.tableJoin") &&
@@ -685,6 +774,17 @@ check(
   "the trick check counts every discarded trick, named or not",
   gameSource.includes("tricksTotal + discards.total") &&
     gameSource.includes("ghostTricks(game, tricksTotal, cards, discards.total)")
+);
+
+const playerScoringIndex = gameSource.indexOf("{game.players.map((p) => {");
+const lootAlliancesIndex = gameSource.indexOf("<LootTracker");
+const discardedTricksIndex = gameSource.indexOf("{t.game.discardedTitle}");
+
+check(
+  "Loot alliances follow every player and immediately precede discarded tricks",
+  playerScoringIndex >= 0 &&
+    lootAlliancesIndex > playerScoringIndex &&
+    discardedTricksIndex > lootAlliancesIndex
 );
 check(
   "the podium keeps its silver-gold-bronze shape in RTL",

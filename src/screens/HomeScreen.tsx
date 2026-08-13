@@ -349,7 +349,7 @@ export default function HomeScreen({
                     {t.home.tableTitle}
                   </Text>
                 </View>
-                <Text style={styles.tableHint} numberOfLines={2}>
+                <Text style={styles.tableHint}>
                   {t.home.tableHint(tableName)}
                 </Text>
                 <View style={styles.tableActions}>
@@ -466,27 +466,29 @@ export default function HomeScreen({
 
             <View style={styles.support}>
               <Text style={styles.freeAdFree}>{t.home.freeAdFree}</Text>
-              <TouchableOpacity
-                style={styles.supportBtn}
-                onPress={openSupportPage}
-                accessibilityRole="link"
-                accessibilityLabel={t.home.support}
-                accessibilityHint={t.home.supportHint}
-              >
-                <AppIcon name="coffee-outline" size={16} color={colors.gold} />
-                <Text style={styles.supportText}>{t.home.support}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.legalBtn}
-                onPress={() => setSupportDetailsOpen((open) => !open)}
-                accessibilityRole="button"
-                accessibilityLabel={t.home.legalAndCosts}
-                accessibilityState={{ expanded: supportDetailsOpen }}
-                aria-expanded={supportDetailsOpen}
-              >
-                <Text style={styles.legalText}>{t.home.legalAndCosts}</Text>
-                <DisclosureChevron expanded={supportDetailsOpen} />
-              </TouchableOpacity>
+              <View style={styles.supportActions}>
+                <TouchableOpacity
+                  style={styles.supportBtn}
+                  onPress={openSupportPage}
+                  accessibilityRole="link"
+                  accessibilityLabel={t.home.support}
+                  accessibilityHint={t.home.supportHint}
+                >
+                  <AppIcon name="coffee-outline" size={16} color={colors.gold} />
+                  <Text style={styles.supportText}>{t.home.support}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.legalBtn}
+                  onPress={() => setSupportDetailsOpen((open) => !open)}
+                  accessibilityRole="button"
+                  accessibilityLabel={t.home.legalAndCosts}
+                  accessibilityState={{ expanded: supportDetailsOpen }}
+                  aria-expanded={supportDetailsOpen}
+                >
+                  <Text style={styles.legalText}>{t.home.legalAndCosts}</Text>
+                  <DisclosureChevron expanded={supportDetailsOpen} />
+                </TouchableOpacity>
+              </View>
               {supportDetailsOpen ? (
                 <View style={styles.supportDetails}>
                   <Text style={styles.supportHint}>{t.home.supportHint}</Text>
@@ -843,12 +845,15 @@ const styles = StyleSheet.create({
   },
   support: {
     marginTop: spacing.xl,
+    alignItems: "center",
+  },
+  supportActions: {
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "center",
   },
-  freeAdFree: { color: colors.textDim, fontSize: 12, marginEnd: spacing.sm },
+  freeAdFree: { color: colors.textDim, fontSize: 12, textAlign: "center" },
   supportBtn: {
     minHeight: 44,
     flexDirection: "row",
