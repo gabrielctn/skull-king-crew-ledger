@@ -36,9 +36,13 @@ yarn-error.*
 # Tooling
 .superpowers/
 .worktrees/
-.playwright-cli/page-*.yml
+.playwright-cli/
 output/playwright/
 
 # Legacy native Xcode scaffold (superseded by the Expo project)
 # Skull-King/
 # Skull-King.xcodeproj/
+
+# Planning docs and marketing assets are kept on disk but out of git.
+docs/superpowers/
+marketing/
