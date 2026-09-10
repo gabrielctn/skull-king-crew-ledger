@@ -221,8 +221,8 @@ export default function SetupScreen({ gameHistory, onStart, onBack }: Props) {
         >
           <View style={styles.greeter}>
             <Image
-              source={illustrations.parrot}
-              style={styles.parrot}
+              source={illustrations.compass}
+              style={styles.compass}
               resizeMode="contain"
             />
             <Text style={styles.greeterText}>{t.setup.crew}</Text>
@@ -685,7 +685,7 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xl,
   },
   greeter: { alignItems: "center", marginBottom: spacing.md },
-  parrot: { width: 104, height: 118 },
+  compass: { width: 104, height: 118 },
   greeterText: {
     color: colors.textDim,
     fontSize: 13,

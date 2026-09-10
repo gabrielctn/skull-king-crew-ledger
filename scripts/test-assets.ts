@@ -34,11 +34,9 @@ function walk(path: string): string[] {
 }
 
 const transparentIllustrations = [
-  "assets/illustrations/skull-king.png",
+  "assets/illustrations/ledger.png",
   "assets/illustrations/compass.png",
-  "assets/illustrations/parrot.png",
-  "assets/illustrations/mermaid.png",
-  "assets/illustrations/treasure-chest.png",
+  "assets/illustrations/trophy.png",
 ];
 
 for (const path of transparentIllustrations) {

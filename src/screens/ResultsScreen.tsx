@@ -165,8 +165,8 @@ export default function ResultsScreen({
       >
         <View style={styles.chest}>
           <Image
-            source={illustrations.treasureChest}
-            style={styles.treasureChest}
+            source={illustrations.trophy}
+            style={styles.trophy}
             resizeMode="contain"
           />
         </View>
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   chest: { marginTop: spacing.xs, marginBottom: -spacing.sm },
-  treasureChest: { width: 132, height: 115 },
+  trophy: { width: 132, height: 115 },
   title: { color: colors.gold, fontSize: 34, fontWeight: "800" },
   winner: {
     color: colors.text,

@@ -51,10 +51,10 @@ export default function RulesModal({ visible, onClose }: Props) {
         <SafeAreaView style={[styles.sheet, layout.isTablet && styles.sheetWide]}>
           <View style={styles.header}>
             <View style={styles.titleRow}>
-              <View style={styles.mermaidCrop}>
+              <View style={styles.ledgerWrap}>
                 <Image
-                  source={illustrations.mermaid}
-                  style={styles.mermaid}
+                  source={illustrations.ledger}
+                  style={styles.ledger}
                   resizeMode="contain"
                 />
               </View>
@@ -121,17 +121,15 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.cardBorder,
   },
   titleRow: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: spacing.sm },
-  mermaidCrop: {
+  ledgerWrap: {
     width: 42,
     height: 48,
     overflow: "hidden",
     alignItems: "center",
   },
-  mermaid: {
-    position: "absolute",
-    top: -3,
-    width: 82,
-    height: 102,
+  ledger: {
+    width: 42,
+    height: 48,
   },
   title: { flexShrink: 1, minWidth: 0, color: colors.gold, fontSize: 20, fontWeight: "800" },
   close: { minHeight: 44, justifyContent: "center", paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },

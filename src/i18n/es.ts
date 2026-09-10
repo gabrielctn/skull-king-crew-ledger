@@ -12,21 +12,21 @@ export const es: Strings = {
     newGame: "Nueva partida",
     storageError:
       "No se ha podido guardar localmente. Exporta tus partidas antes de cerrar la aplicación.",
-    loading: "Cargando Skull King Crew Ledger…",
+    loading: "Cargando Skull Ledger…",
     dismiss: "Cerrar",
   },
 
   cookies: {
     accessibilityLabel: "Opciones de cookies analíticas",
     message:
-      "Usamos cookies de Google Analytics para conocer las visitas y mejorar Skull King Crew Ledger.",
+      "Usamos cookies de Google Analytics para conocer las visitas y mejorar Skull Ledger.",
     decline: "Rechazar",
     accept: "Aceptar",
   },
 
   home: {
-    title: "Skull King",
-    subtitle: "Crew Ledger",
+    title: "Skull",
+    subtitle: "Ledger",
     unofficial: "Aplicación no oficial creada por fans",
     resume: "Continuar partida",
     activeTitle: "Partida en curso",
@@ -173,11 +173,11 @@ export const es: Strings = {
       title: "Instalar la aplicación",
       installedTitle: "Aplicación instalada",
       installedBody:
-        "Skull King Crew Ledger está en tu dispositivo. Se abre como cualquier app y funciona totalmente sin conexión.",
+        "Skull Ledger está en tu dispositivo. Se abre como cualquier app y funciona totalmente sin conexión.",
       promptHint:
-        "Añade Skull King Crew Ledger a tu pantalla de inicio para acceder con un toque y jugar sin conexión.",
+        "Añade Skull Ledger a tu pantalla de inicio para acceder con un toque y jugar sin conexión.",
       manualHint:
-        "Añade Skull King Crew Ledger a tu pantalla de inicio para acceder con un toque y jugar sin conexión. Sigue los pasos de tu teléfono más abajo.",
+        "Añade Skull Ledger a tu pantalla de inicio para acceder con un toque y jugar sin conexión. Sigue los pasos de tu teléfono más abajo.",
       button: "Instalar ahora",
       error:
         "No se pudo iniciar la instalación. Sigue los pasos manuales de abajo.",
@@ -506,7 +506,7 @@ export const es: Strings = {
       `Puesto ${rank}, ${name}, ${total} puntos`,
     review: "Revisar ronda por ronda",
     rematch: "Revancha con la misma tripulación",
-    installTitle: "Lleva Skull King Crew Ledger a bordo",
+    installTitle: "Lleva Skull Ledger a bordo",
     installHint:
       "Instala la aplicación para acceder rápidamente y jugar sin conexión.",
     installIosHint:

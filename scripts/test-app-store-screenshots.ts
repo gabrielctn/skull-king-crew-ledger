@@ -214,7 +214,7 @@ deepEq(
   [
     "Score every round. We do the math.",
     "Everyone follows the scores live.",
-    "Crown the winner.",
+    "Celebrate the winner.",
     "Build your crew’s hall of fame.",
     "One crew. One shared ledger.",
     "Classic, Rascal and expansion cards.",
@@ -228,7 +228,7 @@ deepEq(
   [
     "Notez chaque manche. On fait les calculs.",
     "Tout l’équipage suit les scores en direct.",
-    "Couronnez le vainqueur.",
+    "Célébrez le vainqueur.",
     "Créez le palmarès de votre équipage.",
     "Un équipage. Un carnet partagé.",
     "Classique, Rascal et cartes d’extension.",

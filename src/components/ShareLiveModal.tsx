@@ -149,7 +149,7 @@ export default function ShareLiveModal({ visible, game, onClose }: Props) {
           <View style={styles.header}>
             <View style={styles.identity}>
               <Image
-                source={illustrations.parrot}
+                source={illustrations.compass}
                 style={styles.mascot}
                 resizeMode="contain"
               />

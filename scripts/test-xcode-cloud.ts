@@ -52,7 +52,9 @@ function runPostClone(createWorkspace: boolean) {
     npxStub,
     `#!/bin/sh
 if [ "\${STUB_CREATE_WORKSPACE:-0}" = "1" ]; then
-  mkdir -p "$CI_PRIMARY_REPOSITORY_PATH/ios/SkullKingCrewLedger.xcworkspace"
+  mkdir -p "$CI_PRIMARY_REPOSITORY_PATH/ios/SkullLedger.xcworkspace"
+  mkdir -p "$CI_PRIMARY_REPOSITORY_PATH/ios/SkullLedger.xcodeproj/xcshareddata/xcschemes"
+  echo '<Scheme BlueprintName="SkullLedger" />' > "$CI_PRIMARY_REPOSITORY_PATH/ios/SkullLedger.xcodeproj/xcshareddata/xcschemes/SkullLedger.xcscheme"
 fi
 exit 0
 `
@@ -81,11 +83,11 @@ exit 0
 
 console.log("\nXcode Cloud technical identity");
 check(
-  "Expo uses the Crew Ledger project name",
-  appConfig.expo.name === "Skull King Crew Ledger"
+  "Expo uses the Skull Ledger project name",
+  appConfig.expo.name === "Skull Ledger"
 );
 check(
-  "Expo uses the Crew Ledger project slug",
+  "Expo preserves the existing project slug",
   appConfig.expo.slug === "skull-king-crew-ledger"
 );
 
@@ -94,24 +96,35 @@ const failure = runPostClone(false);
 
 try {
   check(
-    "post-clone accepts the Crew Ledger workspace",
+    "post-clone accepts the Skull Ledger workspace",
     success.result.status === 0
   );
   check("post-clone preserves its CI scripts", success.scriptSurvived);
   check(
-    "post-clone rejects a missing Crew Ledger workspace",
+    "the stored Cloud workspace path remains available after rebranding",
+    existsSync(join(success.fixture, "ios/SkullKingCrewLedger.xcworkspace"))
+  );
+  const schemes = join(success.fixture, "ios/SkullLedger.xcodeproj/xcshareddata/xcschemes");
+  const legacyScheme = join(schemes, "SkullKingCrewLedger.xcscheme");
+  check(
+    "the stored Cloud scheme builds the same rebranded target",
+    existsSync(legacyScheme) &&
+      readFileSync(legacyScheme, "utf8") === readFileSync(join(schemes, "SkullLedger.xcscheme"), "utf8")
+  );
+  check(
+    "post-clone rejects a missing Skull Ledger workspace",
     failure.result.status !== 0
   );
   check(
     "the missing-workspace error names the expected path",
     failure.result.stderr.includes(
-      "prebuild did not generate ios/SkullKingCrewLedger.xcworkspace."
+      "prebuild did not generate ios/SkullLedger.xcworkspace."
     )
   );
   check(
-    "the diagnostic names the Crew Ledger Expo project",
+    "the diagnostic names the Skull Ledger Expo project",
     failure.result.stderr.includes(
-      'Check that expo.name in app.json is still "Skull King Crew Ledger".'
+      'Check that expo.name in app.json is still "Skull Ledger".'
     )
   );
   check(

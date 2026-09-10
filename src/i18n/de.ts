@@ -12,21 +12,21 @@ export const de: Strings = {
     newGame: "Neues Spiel",
     storageError:
       "Die lokale Speicherung ist fehlgeschlagen. Exportiere deine Spiele, bevor du die App schließt.",
-    loading: "Skull King Crew Ledger wird geladen…",
+    loading: "Skull Ledger wird geladen…",
     dismiss: "Schließen",
   },
 
   cookies: {
     accessibilityLabel: "Auswahl für Analyse-Cookies",
     message:
-      "Wir verwenden Google-Analytics-Cookies, um Besuche zu verstehen und Skull King Crew Ledger zu verbessern.",
+      "Wir verwenden Google-Analytics-Cookies, um Besuche zu verstehen und Skull Ledger zu verbessern.",
     decline: "Ablehnen",
     accept: "Akzeptieren",
   },
 
   home: {
-    title: "Skull King",
-    subtitle: "Crew Ledger",
+    title: "Skull",
+    subtitle: "Ledger",
     unofficial: "Inoffizielle Fan-App",
     resume: "Spiel fortsetzen",
     activeTitle: "Laufendes Spiel",
@@ -169,11 +169,11 @@ export const de: Strings = {
       title: "App installieren",
       installedTitle: "App installiert",
       installedBody:
-        "Skull King Crew Ledger ist auf deinem Gerät installiert. Die App öffnet sich wie jede andere und funktioniert komplett offline.",
+        "Skull Ledger ist auf deinem Gerät installiert. Die App öffnet sich wie jede andere und funktioniert komplett offline.",
       promptHint:
-        "Füge Skull King Crew Ledger zum Startbildschirm hinzu, um die App mit einem Tipp zu öffnen und offline zu spielen.",
+        "Füge Skull Ledger zum Startbildschirm hinzu, um die App mit einem Tipp zu öffnen und offline zu spielen.",
       manualHint:
-        "Füge Skull King Crew Ledger zum Startbildschirm hinzu, um die App mit einem Tipp zu öffnen und offline zu spielen. Folge unten den Schritten für dein Telefon.",
+        "Füge Skull Ledger zum Startbildschirm hinzu, um die App mit einem Tipp zu öffnen und offline zu spielen. Folge unten den Schritten für dein Telefon.",
       button: "Jetzt installieren",
       error:
         "Die Installation konnte nicht starten. Nutze die manuellen Schritte unten.",
@@ -501,7 +501,7 @@ export const de: Strings = {
       `Platz ${rank}, ${name}, ${total} Punkte`,
     review: "Runden einzeln ansehen",
     rematch: "Revanche mit derselben Crew",
-    installTitle: "Skull King Crew Ledger an Bord behalten",
+    installTitle: "Skull Ledger an Bord behalten",
     installHint: "Installiere die App für schnellen Zugriff und vollständig offline spielbare Partien.",
     installIosHint:
       "Tippe auf Teilen und „Zum Home-Bildschirm“. In Chrome zuerst „Mehr anzeigen“ öffnen.",

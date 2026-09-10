@@ -49,8 +49,8 @@ export const APP_STORE_SCREENSHOT_SHOTS = [
     index: 3,
     stem: "03-crown-the-winner",
     headline: {
-      en: "Crown the winner.",
-      fr: "Couronnez le vainqueur.",
+      en: "Celebrate the winner.",
+      fr: "Célébrez le vainqueur.",
     },
     rawSources: ["results-top", "results-details"],
   },

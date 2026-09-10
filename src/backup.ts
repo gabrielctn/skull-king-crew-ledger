@@ -667,7 +667,7 @@ export function parseBackup(json: string): BackupPayloadV1 {
     throw new BackupError("invalid_format", "Backup root must be an object");
   }
   if (raw.format !== BACKUP_FORMAT) {
-    throw new BackupError("invalid_format", "Not a Skull King backup");
+    throw new BackupError("invalid_format", "Not a Skull Ledger backup");
   }
   if (raw.version !== BACKUP_FORMAT_VERSION) {
     throw new BackupError(
@@ -787,7 +787,7 @@ function defaultBackupFilename(now = new Date()): string {
   const date = Number.isNaN(now.getTime())
     ? "backup"
     : now.toISOString().slice(0, 10);
-  return `skull-king-backup-${date}.json`;
+  return `skull-ledger-backup-${date}.json`;
 }
 
 /** Trigger a browser download for already serialized backup JSON. */

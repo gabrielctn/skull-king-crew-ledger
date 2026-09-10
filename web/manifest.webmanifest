@@ -1,7 +1,7 @@
 {
-  "name": "Skull King Crew Ledger",
-  "short_name": "Skull King Crew Ledger",
-  "description": "Skull King Crew Ledger is an unofficial fan-made scoring app. Works fully offline.",
+  "name": "Skull Ledger",
+  "short_name": "Skull Ledger",
+  "description": "Skull Ledger is an unofficial fan-made scoring app. Works fully offline.",
   "id": "/skull-king-crew-ledger/",
   "start_url": "/skull-king-crew-ledger/",
   "scope": "/skull-king-crew-ledger/",

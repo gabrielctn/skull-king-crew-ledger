@@ -83,21 +83,21 @@ export const ar: Strings = {
     newGame: "مباراة جديدة",
     storageError:
       "فشل الحفظ المحلي. صدّر مبارياتك قبل إغلاق التطبيق.",
-    loading: "جارٍ تحميل Skull King Crew Ledger…",
+    loading: "جارٍ تحميل Skull Ledger…",
     dismiss: "إغلاق",
   },
 
   cookies: {
     accessibilityLabel: "خيارات ملفات تعريف الارتباط التحليلية",
     message:
-      "نستخدم ملفات تعريف ارتباط Google Analytics لفهم الزيارات وتحسين Skull King Crew Ledger.",
+      "نستخدم ملفات تعريف ارتباط Google Analytics لفهم الزيارات وتحسين Skull Ledger.",
     decline: "رفض",
     accept: "قبول",
   },
 
   home: {
-    title: "Skull King",
-    subtitle: "Crew Ledger",
+    title: "Skull",
+    subtitle: "Ledger",
     unofficial: "تطبيق غير رسمي من المعجبين",
     resume: "متابعة المباراة",
     activeTitle: "مباراة جارية",
@@ -243,11 +243,11 @@ export const ar: Strings = {
       title: "تثبيت التطبيق",
       installedTitle: "تم تثبيت التطبيق",
       installedBody:
-        "تطبيق Skull King Crew Ledger الآن على جهازك. يفتح مثل أي تطبيق ويعمل دون اتصال تمامًا.",
+        "تطبيق Skull Ledger الآن على جهازك. يفتح مثل أي تطبيق ويعمل دون اتصال تمامًا.",
       promptHint:
-        "أضف Skull King Crew Ledger إلى شاشتك الرئيسية للوصول بلمسة واحدة واللعب دون اتصال.",
+        "أضف Skull Ledger إلى شاشتك الرئيسية للوصول بلمسة واحدة واللعب دون اتصال.",
       manualHint:
-        "أضف Skull King Crew Ledger إلى شاشتك الرئيسية للوصول بلمسة واحدة واللعب دون اتصال. اتبع الخطوات الخاصة بهاتفك أدناه.",
+        "أضف Skull Ledger إلى شاشتك الرئيسية للوصول بلمسة واحدة واللعب دون اتصال. اتبع الخطوات الخاصة بهاتفك أدناه.",
       button: "تثبيت الآن",
       error: "تعذّر بدء التثبيت. اتبع الخطوات اليدوية أدناه.",
       guideTitle: "كيفية تثبيته يدويًا",
@@ -572,7 +572,7 @@ export const ar: Strings = {
       `المركز ${rank}، ${name}، ${total} نقطة`,
     review: "مراجعة الجولات واحدة تلو الأخرى",
     rematch: "إعادة اللعب مع الطاقم نفسه",
-    installTitle: "احتفظ بـ Skull King Crew Ledger على متن السفينة",
+    installTitle: "احتفظ بـ Skull Ledger على متن السفينة",
     installHint: "ثبّت التطبيق للوصول السريع واللعب دون اتصال.",
     installIosHint:
       "اضغط على مشاركة ثم «إضافة إلى الشاشة الرئيسية». في Chrome افتح «عرض المزيد» أولًا.",

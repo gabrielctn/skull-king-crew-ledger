@@ -190,7 +190,7 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
       <SafeAreaView style={styles.safe}>
         <View style={[styles.invalidWrap, { maxWidth: layout.formMaxWidth }]}>
           <Image
-            source={illustrations.parrot}
+            source={illustrations.compass}
             style={styles.invalidMascot}
             resizeMode="contain"
           />
@@ -332,7 +332,7 @@ export default function SpectatorScreen({ liveSessionId, onExit }: Props) {
       >
         <View style={styles.header}>
           <Image
-            source={illustrations.treasureChest}
+            source={illustrations.trophy}
             style={styles.mascot}
             resizeMode="contain"
           />

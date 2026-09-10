@@ -45,7 +45,7 @@ const visibleBranding = JSON.stringify({
 
 check(
   "native and PWA names match the App Store name",
-  appConfig.name === "Skull King Crew Ledger" &&
+  appConfig.name === "Skull Ledger" &&
     appConfig.slug === "skull-king-crew-ledger" &&
     displayName === appConfig.name &&
     appConfig.ios.infoPlist.CFBundleName === displayName &&
@@ -59,7 +59,7 @@ check(
   "localized home branding matches the app name",
   [en, fr, de, es, ar, zh].every(
     ({ home }) =>
-      home.title === "Skull King" && home.subtitle === "Crew Ledger"
+      home.title === "Skull" && home.subtitle === "Ledger"
   )
 );
 check(
@@ -73,10 +73,10 @@ check(
     manifest.id === "/skull-king-crew-ledger/"
 );
 check(
-  "the Xcode project name matches the Xcode Cloud workflow",
-  // Prebuild removes spaces to derive SkullKingCrewLedger for the project,
-  // workspace and shared scheme stored by the App Store Connect workflow.
-  appConfig.name.replace(/[^A-Za-z0-9]/g, "") === "SkullKingCrewLedger"
+  "the generated Xcode project uses the rebranded name",
+  // Prebuild removes spaces to derive SkullLedger for the project,
+  // workspace and shared scheme. CI supplies aliases for the stored Cloud names.
+  appConfig.name.replace(/[^A-Za-z0-9]/g, "") === "SkullLedger"
 );
 check(
   "PWA descriptions are explicitly unofficial",
@@ -143,7 +143,7 @@ check(
     iosConfigPlugin.includes("config.ios?.buildNumber")
 );
 check(
-  "native App Intent sources use the current app name",
+  "native App Intent integration keeps its existing technical identifiers",
   iosConfigPlugin.includes("SkullKingCrewLedger") &&
     !iosConfigPlugin.includes("SkullKingScoreKeeper")
 );

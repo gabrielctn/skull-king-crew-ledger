@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Skull King Crew Ledger",
+    "name": "Skull Ledger",
     "slug": "skull-king-crew-ledger",
     "version": "1.13.2",
     "scheme": "skullking",
@@ -16,19 +16,19 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.gabrielcretin.skullking",
-      "buildNumber": "12",
+      "buildNumber": "29",
       "infoPlist": {
-        "CFBundleDisplayName": "Skull King Crew Ledger",
-        "CFBundleName": "Skull King Crew Ledger",
+        "CFBundleDisplayName": "Skull Ledger",
+        "CFBundleName": "Skull Ledger",
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "web": {
       "bundler": "metro",
       "favicon": "./assets/favicon.png",
-      "name": "Skull King Crew Ledger",
-      "shortName": "Skull King Crew Ledger",
-      "description": "Skull King Crew Ledger is an unofficial fan-made scoring app. Works offline.",
+      "name": "Skull Ledger",
+      "shortName": "Skull Ledger",
+      "description": "Skull Ledger is an unofficial fan-made scoring app. Works offline.",
       "themeColor": "#0b1722",
       "backgroundColor": "#0b1722",
       "display": "standalone",

@@ -16,7 +16,7 @@ export const SUPPORT_URL = "https://buymeacoffee.com/gabrielctn";
 
 /**
  * Yearly cost, in euros, of the Apple Developer Program membership required to
- * keep Skull King Crew Ledger published on the App Store. Locales format this
+ * keep Skull Ledger published on the App Store. Locales format this
  * number themselves so the amount lives in exactly one place.
  */
 export const APP_STORE_ANNUAL_COST_EUR = 100;

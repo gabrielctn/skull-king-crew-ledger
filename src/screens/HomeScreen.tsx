@@ -238,8 +238,8 @@ export default function HomeScreen({
                 />
               </View>
               <Image
-                source={illustrations.skullKing}
-                style={[styles.skullKing, { width: heroSize.skull, height: heroSize.height }]}
+                source={illustrations.ledger}
+                style={[styles.ledger, { width: heroSize.skull, height: heroSize.height }]}
                 resizeMode="contain"
               />
             </View>
@@ -625,7 +625,7 @@ const styles = StyleSheet.create({
     pointerEvents: "none",
   },
   compass: { opacity: 0.16 },
-  skullKing: {},
+  ledger: {},
   unofficial: {
     color: colors.goldDim,
     fontSize: 11,

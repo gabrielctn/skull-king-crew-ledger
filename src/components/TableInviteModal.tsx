@@ -125,7 +125,7 @@ export default function TableInviteModal({ visible, tableName, onClose }: Props)
           <View style={styles.header}>
             <View style={styles.identity}>
               <Image
-                source={illustrations.treasureChest}
+                source={illustrations.ledger}
                 style={styles.mascot}
                 resizeMode="contain"
               />

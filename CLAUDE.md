@@ -1,4 +1,4 @@
-# Skull King Crew Ledger — working notes
+# Skull Ledger — working notes
 
 An offline-first PWA (React Native + Expo web + TypeScript) for scoring Skull
 King, deployed as a static site to GitHub Pages, with an optional Supabase

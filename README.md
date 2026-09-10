@@ -1,4 +1,4 @@
-# ☠️ Skull King Crew Ledger
+# Skull Ledger
 
 A fan-made, installable **offline-first PWA** for keeping score in the **Skull King**
 card game, built with **React Native + Expo (web) + TypeScript** and deployed as a
@@ -187,9 +187,11 @@ regenerating the Xcode project does not erase them.
 Prebuild names the Xcode project, its shared scheme and its workspace after
 `expo.name`, and the Xcode Cloud workflow in App Store Connect stores those
 names. They are deliberately aligned with the product name: prebuild generates
-`ios/SkullKingCrewLedger.xcworkspace` and the shared `SkullKingCrewLedger`
-scheme, and the Xcode Cloud workflow stores those exact values. The app is also
-titled "Skull King Crew Ledger" through `ios.infoPlist.CFBundleDisplayName` on
+`ios/SkullLedger.xcworkspace` and the shared `SkullLedger`
+scheme. The post-clone script also provides the old workspace and scheme
+names as compatibility aliases, so the existing Xcode Cloud workflow continues
+to build the rebranded target without a settings migration. The app is also
+titled "Skull Ledger" through `ios.infoPlist.CFBundleDisplayName` on
 iOS and `web.name` on the web. `ios/ci_scripts/ci_post_clone.sh`, which generates
 the project on Xcode Cloud, verifies the workspace before Xcode resolves it.
 

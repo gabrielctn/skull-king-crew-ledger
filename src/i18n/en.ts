@@ -17,21 +17,21 @@ export const en: Strings = {
     newGame: "New game",
     storageError:
       "Local saving failed. Export your games before closing the app.",
-    loading: "Loading Skull King Crew Ledger…",
+    loading: "Loading Skull Ledger…",
     dismiss: "Dismiss",
   },
 
   cookies: {
     accessibilityLabel: "Analytics cookie choices",
     message:
-      "We use Google Analytics cookies to understand visits and improve Skull King Crew Ledger.",
+      "We use Google Analytics cookies to understand visits and improve Skull Ledger.",
     decline: "Decline",
     accept: "Accept",
   },
 
   home: {
-    title: "Skull King",
-    subtitle: "Crew Ledger",
+    title: "Skull",
+    subtitle: "Ledger",
     unofficial: "Unofficial fan-made app",
     resume: "Resume game",
     activeTitle: "Game in progress",
@@ -174,11 +174,11 @@ export const en: Strings = {
       title: "Install the app",
       installedTitle: "App installed",
       installedBody:
-        "Skull King Crew Ledger is installed on your device. It opens like any app and works fully offline.",
+        "Skull Ledger is installed on your device. It opens like any app and works fully offline.",
       promptHint:
-        "Add Skull King Crew Ledger to your home screen for one-tap access and offline play.",
+        "Add Skull Ledger to your home screen for one-tap access and offline play.",
       manualHint:
-        "Add Skull King Crew Ledger to your home screen for one-tap access and offline play. Follow the steps for your phone below.",
+        "Add Skull Ledger to your home screen for one-tap access and offline play. Follow the steps for your phone below.",
       button: "Install now",
       error: "Installation could not start. Try the manual steps below.",
       guideTitle: "How to install it by hand",
@@ -501,7 +501,7 @@ export const en: Strings = {
       `Rank ${rank}, ${name}, ${total} points`,
     review: "Review round-by-round",
     rematch: "Rematch with the same crew",
-    installTitle: "Keep Skull King Crew Ledger aboard",
+    installTitle: "Keep Skull Ledger aboard",
     installHint: "Install the app for quick access and fully offline play.",
     installIosHint:
       "Tap Share and “Add to Home Screen”. In Chrome, open “See more” first.",
