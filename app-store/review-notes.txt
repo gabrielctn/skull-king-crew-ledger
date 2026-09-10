@@ -1,0 +1,10 @@
+Skull Ledger is an independently developed utility for recording scores while users play a physical card game. It does not provide a playable digital version of that game.
+
+Changes addressing Guideline 4.1(a):
+- Renamed the app from Skull King Crew Ledger to Skull Ledger, including the store listing, device display name and in-app branding.
+- Replaced the crowned-skull app icon and launch artwork with an original score-ledger illustration.
+- Removed the crowned skull, mermaid, parrot and skull-decorated treasure chest illustrations from the app. The app now uses ledger, compass and trophy illustrations.
+- Revised both English and French descriptions to lead with our independent product identity and scorekeeping features. The remaining reference to the physical game identifies compatibility and explicitly disclaims affiliation or endorsement.
+- Replaced the store screenshots with captures from the revised app.
+
+No sign-up is required. To test offline scorekeeping, tap New game, enter player names and start. Shared tables and live following need an internet connection.
